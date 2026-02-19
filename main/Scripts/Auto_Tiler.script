@@ -1,0 +1,221 @@
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	-- UP | DOWN | LEFT | RIGHT
+	self.aval_tiles = {
+		[0] = 1,
+		[1] = 2,
+		[2] = 3,
+		[3] = 4,
+		[4] = 5,
+		[5] = 6,
+		[6] = 7,
+		[7] = 8,
+		[8] = 9,
+		[9] = 10,
+		[10] = 11,
+		[11] = 12,
+		[12] = 13,
+		[13] = 14,
+		[14] = 15,
+		[15] = 16,
+	}
+	self.pressed = false 
+end
+local function clr_screen()
+	for y = 0, 23 do 
+		for x = 0, 37 do 
+			tilemap.set_tile("/Map#Standard","zero",x,y, 0 ) 
+			tilemap.set_tile("/Map#Standard","wall",x,y, 0 ) 
+			tilemap.set_tile("/Map#Standard","wall_on_top",x,y, 0 ) 
+			tilemap.set_tile("/Map#Standard","peak",x,y, 0 ) 
+			msg.post("/Shadow_Map#shdw_map","Place_shadow",{shadow = 0 , x = x, y = y ,layer = "shadow_1"})
+			msg.post("/Shadow_Map#shdw_map","Place_shadow",{shadow = 0 , x = x, y = y ,layer = "shadow_2"})
+		end
+	end
+end
+local function Room_gen_floor()
+	local y = 11
+	local x = 21
+	local dir = {{-1,0},{1,0},{0,-1},{0,1}}
+	for i=1,500 do 
+		if math.random(1,10) < math.random(1,10)  then
+			y = y + dir[math.random(1,4)][1]
+		else
+			x = x + dir[math.random(1,4)][2]
+		end
+		y = math.min(math.max(y, 1), 21)
+		x = math.min(math.max(x, 1), 36)
+		tilemap.set_tile("/Map#Standard","zero",x,y, 18) 
+	end
+end
+local function wall_placer()
+	local directions = {
+		{-1, -1}, {0, -1}, {1, -1},  
+		{-1,  0},          {1,  0}, 
+		{-1,  1}, {0,  1}, {1,  1}    
+	}
+	for y = 0, 23 do 
+		for x = 0, 37 do 
+			if tilemap.get_tile_info("/Map#Standard", "zero", x, y).index == 18 then
+				tilemap.set_tile("/Map#Standard","zero",x,y,math.random(25,28))
+				for i, ofdir in ipairs(directions) do 
+					local dx = x + ofdir[2]
+					local dy = y + ofdir[1]
+					if  tilemap.get_tile_info("/Map#Standard", "zero", dx, dy).index == 0  then
+						tilemap.set_tile("/Map#Standard","wall",dx,dy,24)
+						tilemap.set_tile("/Map#Standard","zero",dx,dy,math.random(22,23))
+					end
+				end	
+			end
+		end
+	end
+end
+
+local function shadow_gen()
+	for y = 0, 23 do 
+		for x = 0, 37 do 
+			if tilemap.get_tile_info("/Map#Standard", "peak", x, y).index ~= 0 then
+				local cur_tile = tilemap.get_tile_info("/Map#Standard", "peak", x, y).index
+				msg.post("/Shadow_Map#shdw_map","Place_shadow",{shadow = cur_tile , x = x, y = y ,layer = "shadow_1" })
+			end
+			if tilemap.get_tile_info("/Map#Standard", "wall_on_top", x, y).index ~= 0 then 
+				local cur_tile = tilemap.get_tile_info("/Map#Standard", "wall_on_top", x, y).index
+				msg.post("/Shadow_Map#shdw_map","Place_shadow",{shadow = cur_tile , x = x, y = y ,layer = "shadow_2"})
+			end
+		end
+	end
+end
+
+local function angel_gen()
+	for y = 0, 23 do 
+		for x = 0, 37 do 
+			if  tilemap.get_tile_info("/Map#Standard", "wall", x, y).index ~= 24  then
+				if math.random(20) <= 2 and tilemap.get_tile_info("/Map#Standard", "zero", x, y).index ~= 0   then
+					tilemap.set_tile("/Map#Standard","peak",x,y,19) 
+					--msg.post("/Shadow_Map#shdw_map","Place_shadow",{shadow = 19, x = x, y = y })
+				end
+			end
+		end
+	end
+end
+
+local function auto_tiler(self)
+	local dir = {{-1,0},{1,0},{0,-1},{0,1}}
+	local total = 0 
+	for y = 0, 23  do 
+		for x = 0, 37 do 
+			if tilemap.get_tile_info("/Map#Standard", "wall", x, y).index == 24 then 
+				for i, ofdir in ipairs(dir) do 
+					local dx = x + ofdir[2]
+					local dy = y + ofdir[1]
+					if i == 1 then 
+						if tilemap.get_tile_info("/Map#Standard", "wall", dx, dy).index == 24 then
+							total  = total + 8
+						end
+					elseif i == 2 then 
+						if tilemap.get_tile_info("/Map#Standard", "wall", dx, dy).index == 24 then
+							total  = total + 1
+						end
+					elseif i == 3 then 
+						if tilemap.get_tile_info("/Map#Standard", "wall", dx, dy).index == 24 then
+							total  = total + 2
+						end
+					elseif i == 4 then 
+						if tilemap.get_tile_info("/Map#Standard", "wall", dx, dy).index == 24 then
+							total  = total + 4
+						end
+					end
+				end
+				--print(total)
+				tilemap.set_tile("/Map#Standard","wall_on_top",x,y,self.aval_tiles[total])
+				total = 0 
+			end
+			--msg.post("/Shadow_Map#shdw_map","Place_shadow",{shadow = set_tile, x = x, y = y })
+		end
+	end
+end
+
+local function map_assembler(self) 
+	Room_gen_floor()
+	wall_placer()
+	auto_tiler(self)
+	angel_gen()
+	shadow_gen()
+end
+	
+function final(self)
+end
+
+function update(self, dt)
+end
+function on_message(self, message_id, message, sender)
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("touch")  and self.pressed == false   then 
+		self.pressed = true
+		auto_tiler(self)
+		if self.pressed == true then
+			timer.delay(0.3,false,function()  
+				self.pressed = false
+			end)
+		end
+	end
+	if action_id == hash("angl") and  self.pressed == false   then 
+		angel_gen()
+		self.pressed = true
+		if self.pressed == true then
+			timer.delay(0.3,false,function()  
+				self.pressed = false
+			end)
+		end
+	end
+	if action_id == hash("flor")  and self.pressed == false  then 
+		self.pressed = true
+		Room_gen_floor()
+		if self.pressed == true then
+			timer.delay(0.3,false,function()  
+				self.pressed = false
+			end)
+		end
+	end
+	if action_id == hash("ruum")  and self.pressed == false  then 
+		self.pressed = true
+		wall_placer()
+		if self.pressed == true then
+			timer.delay(0.3,false,function()  
+				self.pressed = false
+			end)
+		end
+	end
+	if action_id == hash("asm") and self.pressed == false then
+		self.pressed = true 
+		map_assembler(self)
+		if self.pressed == true then
+			timer.delay(0.3,false,function()  
+				self.pressed = false
+			end)
+		end
+	end
+	if action_id == hash("cls") and self.pressed == false then
+		self.pressed = true 
+		clr_screen()
+		if self.pressed == true then
+			timer.delay(0.3,false,function()  
+				self.pressed = false
+			end)
+		end
+	end
+	if action_id == hash("shdw") and self.pressed == false then
+		self.pressed = true 
+		shadow_gen()
+		if self.pressed == true then
+			timer.delay(0.3,false,function()  
+				self.pressed = false
+			end)
+		end
+	end
+end
+
+function on_reload(self)
+end

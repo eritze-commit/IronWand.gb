@@ -1,0 +1,10 @@
+image: "/main/assets/Images/one_pixel.png"
+tile_width: 1
+tile_height: 1
+collision_groups: "default"
+animations {
+  id: "anim"
+  start_tile: 1
+  end_tile: 1
+}
+extrude_borders: 2

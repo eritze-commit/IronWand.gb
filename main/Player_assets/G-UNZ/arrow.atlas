@@ -1,0 +1,4 @@
+images {
+  image: "/main/Player_assets/G-UNZ/arrow_1.png"
+}
+extrude_borders: 2

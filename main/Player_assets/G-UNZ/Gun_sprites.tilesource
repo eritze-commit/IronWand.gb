@@ -1,0 +1,65 @@
+image: "/main/Player_assets/G-UNZ/GUN_Sheet_1.png"
+tile_width: 16
+tile_height: 11
+collision_groups: "default"
+animations {
+  id: "ak47"
+  start_tile: 5
+  end_tile: 5
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "arrow"
+  start_tile: 7
+  end_tile: 7
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "awp"
+  start_tile: 6
+  end_tile: 6
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "m4"
+  start_tile: 10
+  end_tile: 10
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "mp5"
+  start_tile: 3
+  end_tile: 3
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "p90"
+  start_tile: 8
+  end_tile: 8
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "pistol"
+  start_tile: 1
+  end_tile: 1
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "revolver"
+  start_tile: 9
+  end_tile: 9
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "shotgun"
+  start_tile: 2
+  end_tile: 2
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "uzi"
+  start_tile: 4
+  end_tile: 4
+  playback: PLAYBACK_NONE
+}
+extrude_borders: 2

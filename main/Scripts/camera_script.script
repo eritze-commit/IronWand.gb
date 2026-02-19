@@ -1,0 +1,117 @@
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	self.speed = 4
+	self.cur_zoom = 5.0
+	self.pressed = false 
+	self.dir = vmath.vector3()
+	-- Add initialization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	
+	local camera_pos = go.get_position("#")
+		local pl_pos =  go.get_position("Pl_Sprite")
+		--local x_y = vmath.vector3(pl_pos.x,pl_pos.y,730)
+		local lerp_vl = 0.06
+		
+
+		local target = vmath.vector3(
+			pl_pos.x ,
+			pl_pos.y , 
+			camera_pos.z
+			) 
+
+			local new_pos = vmath.lerp(lerp_vl,camera_pos,target)
+			go.set_position(new_pos, "#")
+		
+		--print("camera pos ", target)
+
+	
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function fixed_update(self, dt)
+	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
+	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
+	-- Physics section of game.project
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("camera_snap") then 
+		--local dashing = false
+		--print("GOT MESSAGE")
+		local dashing = message.dashing
+		self.dir = message.dir
+		if dashing then 
+			
+			local camera_pos = go.get_position("#")
+			local pl_pos =  go.get_position("Player")
+			--local lerp_vl = 0.6
+			local target = vmath.vector3(
+			pl_pos.x + self.dir.x  * 5,
+			pl_pos.y + self.dir.y * 5, 
+			camera_pos.z) 
+			--print(self.dir.x,self.dir.y)
+			--print("MOVED THIS SHEIIIT ")
+			--local new_pos = vmath.lerp(lerp_vl,camera_pos,target)
+			go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD ,target , go.EASING_OUTCUBIC, 0.1, 0)
+			--go.set_position(target, "#")
+
+		end
+		--print(self.dashing)
+	end
+	-- Add message-handling code here
+	-- Learn more: https://defold.com/manuals/message-passing/
+	-- Remove this function if not needed
+end
+
+function on_input(self, action_id, action)
+	
+	if action_id == hash("more") and self.pressed == false then 
+		self.cur_zoom = self.cur_zoom + 1.0
+		camera.set_orthographic_zoom("#Camera",self.cur_zoom  )
+		self.pressed = true 
+		if self.pressed == true then
+			timer.delay(0.2,false,function()  
+				self.pressed = false
+			end)
+		end
+	end
+	if action_id == hash("less") and self.pressed == false then 
+		self.pressed = true 
+		self.cur_zoom = self.cur_zoom - 1.0
+		camera.set_orthographic_zoom("#Camera",self.cur_zoom  )
+		if self.pressed == true then
+			timer.delay(0.2,false,function()  
+				self.pressed = false
+			end)
+		end
+	end
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

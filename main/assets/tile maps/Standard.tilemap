@@ -1,0 +1,32 @@
+tile_set: "/main/assets/tile sources/BW.tilesource"
+layers {
+  id: "zero"
+  z: 0.0
+  cell {
+    x: -2
+    y: -2
+    tile: 20
+  }
+  cell {
+    x: 37
+    y: 23
+    tile: 20
+  }
+}
+layers {
+  id: "layer"
+  z: 0.0
+}
+layers {
+  id: "wall"
+  z: 0.5
+}
+layers {
+  id: "peak"
+  z: 1.04
+}
+layers {
+  id: "wall_on_top"
+  z: 1.1
+}
+material: "/builtins/materials/tile_map.material"

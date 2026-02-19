@@ -1,0 +1,8 @@
+color_attachments {
+  width: 640
+  height: 480
+}
+depth_stencil_attachment {
+  width: 0
+  height: 0
+}

@@ -1,0 +1,35 @@
+tile_set: "/main/assets/tile sources/shadow_map.tilesource"
+layers {
+  id: "layer"
+  z: 0.0
+  cell {
+    x: -1
+    y: -1
+    tile: 20
+  }
+  cell {
+    x: 33
+    y: 23
+    tile: 20
+  }
+}
+layers {
+  id: "shadow_1"
+  z: 1.25
+  cell {
+    x: -1
+    y: -1
+    tile: 17
+  }
+  cell {
+    x: 37
+    y: 23
+    tile: 17
+  }
+}
+layers {
+  id: "shadow_2"
+  z: 1.25
+}
+material: "/builtins/materials/tile_map.material"
+blend_mode: BLEND_MODE_MULT

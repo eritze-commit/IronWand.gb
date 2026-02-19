@@ -1,0 +1,9 @@
+script: "/main/Shader_adjecent_files/Post_processing/Bloom_display_render.render_script"
+render_resources {
+  name: "Screen"
+  path: "/main/Shader_adjecent_files/Post_processing/Screen.render_target"
+}
+render_resources {
+  name: "dark_mask"
+  path: "/main/Shader_adjecent_files/Post_processing/Darkness_mask.render_target"
+}

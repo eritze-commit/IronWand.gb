@@ -1,0 +1,4 @@
+images {
+  image: "/main/assets/Images/MONO_OUTLINE_TEST_SPRITE.png"
+}
+extrude_borders: 2

@@ -1,0 +1,16 @@
+tile_set: "/main/Enemy_Assets/Pixel.tilesource"
+layers {
+  id: "layer1"
+  z: 0.0
+  cell {
+    x: -1
+    y: -1
+    tile: 0
+  }
+  cell {
+    x: 500
+    y: 329
+    tile: 0
+  }
+}
+material: "/builtins/materials/tile_map.material"

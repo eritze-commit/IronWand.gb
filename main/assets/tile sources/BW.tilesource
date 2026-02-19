@@ -1,0 +1,163 @@
+image: "/main/assets/Images/Mono_TILES_16_1.png"
+tile_width: 16
+tile_height: 16
+collision: "/main/assets/Images/Mono_TILES_16_1.png"
+convex_hulls {
+  index: 0
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 4
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 8
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 12
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 16
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 20
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 24
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 28
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 32
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 36
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 40
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 44
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 48
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 52
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 56
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 60
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 64
+  count: 0
+  collision_group: ""
+}
+convex_hulls {
+  index: 64
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 68
+  count: 10
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 78
+  count: 10
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 88
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 92
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 96
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 100
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 104
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 108
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 112
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 116
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 120
+  count: 0
+  collision_group: ""
+}
+convex_hulls {
+  index: 120
+  count: 0
+  collision_group: ""
+}
+collision_groups: "nothing"
+collision_groups: "wall"
+animations {
+  id: "anim"
+  start_tile: 1
+  end_tile: 1
+}
+extrude_borders: 2
+sprite_trim_mode: SPRITE_TRIM_MODE_4

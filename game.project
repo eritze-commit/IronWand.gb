@@ -1,0 +1,38 @@
+[bootstrap]
+main_collection = /main/main.collectionc
+render = /main/Shader_adjecent_files/Post_processing/Bloom_renderer.renderc
+
+[script]
+shared_state = 1
+
+[display]
+width = 640
+height = 480
+dynamic_orientation = 0
+fullscreen = 0
+
+[android]
+input_method = HiddenInputField
+
+[html5]
+scale_mode = stretch
+
+[project]
+title = IronWand.gb
+minimum_log_level = 1
+
+[graphics]
+default_texture_min_filter = nearest
+default_texture_mag_filter = nearest
+texture_profiles = /builtins/graphics/default.texture_profiles
+
+[physics]
+gravity_y = 0.0
+use_fixed_timestep = 1
+type = 2D
+allow_dynamic_transforms = 1
+debug = 0
+
+[profiler]
+track_cpu = 0
+

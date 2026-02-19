@@ -1,0 +1,99 @@
+name: "main"
+collection_instances {
+  id: "Player_ROOT"
+  collection: "/main/Player_assets/Player_ROOT.collection"
+  position {
+    x: 372.0
+    y: 108.0
+  }
+}
+scale_along_z: 0
+embedded_instances {
+  id: "world"
+  children: "Map"
+  children: "Shadow_Map"
+  data: ""
+  scale3 {
+    z: 1.02
+  }
+}
+embedded_instances {
+  id: "Map"
+  data: "components {\n"
+  "  id: \"Auto_Tiler\"\n"
+  "  component: \"/main/Scripts/Auto_Tiler.script\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"Standard\"\n"
+  "  component: \"/main/assets/tile maps/Standard.tilemap\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"collisionobject\"\n"
+  "  type: \"collisionobject\"\n"
+  "  data: \"collision_shape: \\\"/main/assets/tile maps/Standard.tilemap\\\"\\n"
+  "type: COLLISION_OBJECT_TYPE_STATIC\\n"
+  "mass: 0.0\\n"
+  "friction: 0.1\\n"
+  "restitution: 0.5\\n"
+  "group: \\\"wall\\\"\\n"
+  "mask: \\\"entity\\\"\\n"
+  "locked_rotation: true\\n"
+  "\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "Shadow_Map"
+  data: "components {\n"
+  "  id: \"shadow_map_tiles\"\n"
+  "  component: \"/main/assets/tile maps/shadow_map_tiles.tilemap\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"shdw_map\"\n"
+  "  component: \"/main/Scripts/shadow_map.script\"\n"
+  "}\n"
+  ""
+  position {
+    y: -9.0
+  }
+}
+embedded_instances {
+  id: "PathFinder"
+  data: "components {\n"
+  "  id: \"Pathfind_map\"\n"
+  "  component: \"/main/Enemy_Assets/Pathfind_map.tilemap\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"Pathfinding\"\n"
+  "  component: \"/main/Enemy_Assets/Pathfinding.script\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "post proccessing "
+  data: "components {\n"
+  "  id: \"Post_jproccess_script\"\n"
+  "  component: \"/main/Shader_adjecent_files/Post_processing/Post_jproccess_script.script\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"posProc\"\n"
+  "  type: \"model\"\n"
+  "  data: \"mesh: \\\"/builtins/assets/meshes/cube.dae\\\"\\n"
+  "name: \\\"{{NAME}}\\\"\\n"
+  "materials {\\n"
+  "  name: \\\"default\\\"\\n"
+  "  material: \\\"/main/Shader_adjecent_files/Post_processing/Blurr_F_pass.material\\\"\\n"
+  "}\\n"
+  "\"\n"
+  "}\n"
+  ""
+  position {
+    x: 374.0
+    y: 108.0
+    z: 10.0
+  }
+  scale3 {
+    x: 10.0
+    y: 10.0
+  }
+}

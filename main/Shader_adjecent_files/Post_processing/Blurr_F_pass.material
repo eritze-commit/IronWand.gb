@@ -1,0 +1,17 @@
+name: "sprite"
+tags: "blurfpass"
+vertex_program: "/main/Shader_adjecent_files/Post_processing/Bloom_V.vp"
+fragment_program: "/main/Shader_adjecent_files/Post_processing/Blurr_F_pass_frag.fp"
+fragment_constants {
+  name: "uTime"
+  type: CONSTANT_TYPE_USER
+  value {
+  }
+}
+samplers {
+  name: "texture_sampler"
+  wrap_u: WRAP_MODE_CLAMP_TO_EDGE
+  wrap_v: WRAP_MODE_CLAMP_TO_EDGE
+  filter_min: FILTER_MODE_MIN_NEAREST
+  filter_mag: FILTER_MODE_MAG_NEAREST
+}

@@ -1,0 +1,4 @@
+images {
+  image: "/main/assets/Images/Iron_Wand_TYpeFont.png"
+}
+extrude_borders: 2

@@ -1,0 +1,19 @@
+function init(self)
+	
+	
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("Place_shadow") then 
+		local set_tile = message.shadow 
+		local x = message.x
+		local layer = message.layer
+		local y = message.y
+		tilemap.set_tile("/Shadow_Map#shadow_map_tiles", layer ,x,y,set_tile) 
+	end
+	
+	-- Add message-handling code here
+	-- Learn more: https://defold.com/manuals/message-passing/
+	-- Remove this function if not needed
+end
+

@@ -1,0 +1,108 @@
+key_trigger {
+  input: KEY_4
+  action: "angl"
+}
+key_trigger {
+  input: KEY_3
+  action: "touch"
+}
+key_trigger {
+  input: KEY_1
+  action: "flor"
+}
+key_trigger {
+  input: KEY_2
+  action: "ruum"
+}
+key_trigger {
+  input: KEY_5
+  action: "asm"
+}
+key_trigger {
+  input: KEY_6
+  action: "cls"
+}
+key_trigger {
+  input: KEY_7
+  action: "shdw"
+}
+key_trigger {
+  input: KEY_UP
+  action: "more"
+}
+key_trigger {
+  input: KEY_DOWN
+  action: "less"
+}
+key_trigger {
+  input: KEY_G
+  action: "swap"
+}
+key_trigger {
+  input: KEY_W
+  action: "up"
+}
+key_trigger {
+  input: KEY_A
+  action: "left"
+}
+key_trigger {
+  input: KEY_S
+  action: "down"
+}
+key_trigger {
+  input: KEY_D
+  action: "right"
+}
+key_trigger {
+  input: KEY_E
+  action: "dash"
+}
+key_trigger {
+  input: KEY_F
+  action: "trigger"
+}
+mouse_trigger {
+  input: MOUSE_BUTTON_LEFT
+  action: "g_left"
+}
+mouse_trigger {
+  input: MOUSE_BUTTON_RIGHT
+  action: "g_right"
+}
+gamepad_trigger {
+  input: GAMEPAD_LPAD_DOWN
+  action: "down"
+}
+gamepad_trigger {
+  input: GAMEPAD_LPAD_LEFT
+  action: "left"
+}
+gamepad_trigger {
+  input: GAMEPAD_LPAD_RIGHT
+  action: "right"
+}
+gamepad_trigger {
+  input: GAMEPAD_LPAD_UP
+  action: "up"
+}
+gamepad_trigger {
+  input: GAMEPAD_RPAD_LEFT
+  action: "dash"
+}
+gamepad_trigger {
+  input: GAMEPAD_RSHOULDER
+  action: "g_right"
+}
+gamepad_trigger {
+  input: GAMEPAD_LSHOULDER
+  action: "g_left"
+}
+gamepad_trigger {
+  input: GAMEPAD_RPAD_RIGHT
+  action: "swap"
+}
+gamepad_trigger {
+  input: GAMEPAD_RPAD_DOWN
+  action: "trigger"
+}

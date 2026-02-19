@@ -1,0 +1,212 @@
+local dash_timer = 0.1
+local can_dash = true 
+local dash_cooldown = 2
+local dash_state = false  
+local dash_init = false 
+local last_position = vmath.vector3()
+local dash_dir = vmath.vector3()
+local dash_speed = 300
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	self.speed = 80
+	self.horizontal = "Left"
+	self.new_pos = vmath.vector3(0, 0, 0)
+	self.running = ""
+	self.pos = go.get_position(".")
+	self.last_pos  = vmath.vector3(0, 0, 0)
+	self.state = ""
+	self.prev_state = ""
+	self.dir = vmath.vector3(0, 0, 0)
+	self.correction = vmath.vector3()
+	self.input={left= false, right = false ,up = false, down = false ,roll = false}
+	-- Add initialization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function final(self)
+	--sprite.play_flipbook(".", hash(string.format(self.running.."_"..self.vertical.."_"..self.horizontal)))
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+local function input_direction(self) 
+	self.dir = vmath.vector3(0,0,0) 
+	if self.input.right then 
+		--physics.apply_force()
+		self.dir.x = self.dir.x + 1 
+		self.prev_state = "right"
+		self.horizontal = "Right"
+	end
+	if self.input.left then 
+
+		self.dir.x = self.dir.x - 1 
+		self.prev_state = "left"
+		self.horizontal = "Left"
+	end
+	if self.input.up then 
+		self.dir.y = self.dir.y + 1 
+		self.prev_state = "up"
+	end
+	if self.input.bottom then 
+		self.dir.y = self.dir.y - 1 
+		self.prev_state = "down"
+	end
+
+end
+local function dash(self) 
+	--sound.stop("sounds#Dash")
+	if dash_state == false and can_dash  then 
+		if vmath.length_sqr(self.dir) > 0  then
+			sound.stop("sounds#Dash")
+			sound.play("sounds#Dash",{speed = math.random(1.0,6.0),gain=math.random(1,1.5)})
+		end
+		msg.post("Pl_Sprite#Pl_Sprite_Script","dash",{dash = true})
+		dash_state = true 
+		can_dash = false
+		dash_init = true 
+		last_position = go.get_position(".")
+		msg.post("dsh_trg#dash_trigger","dsh_trg",{dashing = true, lst_pos = last_position, time = dash_timer})
+		if vmath.length_sqr(self.dir) > 0  then
+			dash_dir = vmath.normalize(self.dir)
+		else
+			dash_dir = self.dir
+		end 
+		msg.post("camera#camera_script","camera_snap",{dashing = true, dir = dash_dir })
+		local angle = math.atan2(dash_dir.y,dash_dir.x)
+		if vmath.length_sqr(dash_dir) > 0  then
+			go.set_rotation(vmath.quat_rotation_z(angle),"Particle #Plr_Dash" )
+		--	msg.post("dsh_trg#dash_trigger","dsh_trg",{dashing = false, lst_pos = last_position})
+			msg.post("camera#camera_script","camera_snap",{dashing = false , dir = dash_dir })
+			particlefx.play("Particle #Plr_Dash")
+			--particlefx.play("Particle #PLr_Trail")
+		end
+		
+		timer.delay(dash_timer, false, function()
+			dash_state = false 
+			msg.post("Pl_Sprite#Pl_Sprite_Script","dash_end",{dash = false,  cng_spr = "walking" })
+			particlefx.stop("Particle #Plr_Dash")
+			--particlefx.stop("Particle #PLr_Trail")
+			dash_init = false 
+			timer.delay(dash_cooldown, false, function()
+				
+				--particlefx.stop("Particle #PLr_Trail")
+				--particlefx.stop("Particle #PLr_Trail")
+				can_dash = true 
+			end)
+		end
+		
+		)
+		
+	end
+end
+function update(self, dt)
+	input_direction(self) 
+	--print("self.dir :"..self.dir)
+	if vmath.length_sqr(self.dir) > 0 and  dash_state == false  then 
+		self.pos = go.get_position(".")
+		--local velocity = go.get("#collisionobject", "linear_velocity")
+		
+		--local linear_velocity = vmath.vector3(velocity.x + self.dir.x * self.speed,velocity.y + self.dir.y * self.speed,1.05)
+		
+		--go.set("#collisionobject","linear_velocity",linear_velocity)
+		--go.set_position(go.get("position"), "#collisionobject")
+		
+		-- math.floor(player.y / grid_size) * grid_size
+		self.new_pos = self.pos + vmath.normalize(self.dir) * self.speed * dt
+		--self.new_pos = vmath.vector3(math.floor(self.new_pos.x ), math.floor(self.new_pos.y), 1.05 )
+		go.set_position(self.new_pos, ".") 
+		--local cur_pos = go.get_position(".")
+		--local new_pos = vmath.vector3(math.floor(cur_pos.x),math.floor(cur_pos.y),cur_pos.z)
+		--go.set_position(new_pos , ".")
+		--print(go.get_position("."))
+	end
+
+	--self.cur_anim = hash(self.running.."_"..self.horizontal)
+	--if self.state ~= self.prev_state  then
+	--	sprite.play_flipbook("#sprite",self.cur_anim)
+	--	self.state = self.prev_state
+	--end
+	--print("player pos "..self.pos)
+	-- self.prev_state = ""
+	--msg.post(self.camera,hash("FLW"),{ value = true })
+	if dash_init then
+		self.pos = go.get_position(".")
+		self.pos = self.pos + dash_dir * dash_speed * dt
+		go.set_position(self.pos, ".")
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	--[[
+	if message_id ==  hash("contact_point_response") then
+		--print("colided with wall ")
+		if message.other_group == hash("wall") then
+			if dash_init == true then
+				--local next_pos = vmath.lerp(0.01,last_position,self.pos)
+				--_Ggo.set_position(next_pos, ".")
+				if 	message.distance > 0 then 
+					go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD ,last_position , go.EASING_INOUTSINE, 0.15, 0)
+					--self.dir = vmath.vector3(0,0,0)
+				local cur_pos = go.get_position(".")
+				 cur_pos = cur_pos + message.normal * message.distance 
+				go.set_position( cur_pos , ".")
+				dash_init = false 
+				--go.set_position(resolved, ".")
+		--	end
+		--end
+	end
+end
+end
+end
+	--]]
+end
+
+function on_input(self, action_id, action)
+	--got_input(self,action_id)
+	--print("ACTION "..action_id)
+	if action_id == hash("right") then
+		if action.pressed then
+			self.input.right = true
+			msg.post("Pl_Sprite#Pl_Sprite_Script","right_dir_change",{dir = true })
+		elseif action.released then
+			self.input.right = false
+			msg.post("Pl_Sprite#Pl_Sprite_Script","right_dir_change",{dir = false })
+		end
+	end
+	if  action_id == hash("left") then 
+		if action.pressed then
+			self.input.left = true
+			msg.post("Pl_Sprite#Pl_Sprite_Script","left_dir_change",{dir = true })
+		elseif action.released then
+			self.input.left = false
+			msg.post("Pl_Sprite#Pl_Sprite_Script","left_dir_change",{dir = false })
+		end
+	end
+	if  action_id == hash("down") then 
+		if action.pressed then
+			self.input.bottom = true
+			msg.post("Pl_Sprite#Pl_Sprite_Script","down_dir_change",{dir = true })
+		elseif action.released then
+			self.input.bottom = false
+			msg.post("Pl_Sprite#Pl_Sprite_Script","down_dir_change",{dir = false })
+		end
+	end
+	if action_id == hash("up") then 
+		if action.pressed then
+			msg.post("Pl_Sprite#Pl_Sprite_Script","up_dir_change",{dir = true })
+			self.input.up = true
+		elseif action.released then
+			msg.post("Pl_Sprite#Pl_Sprite_Script","up_dir_change",{dir = false })
+			self.input.up = false
+		end
+	end
+	if action_id == hash("dash") then 
+		--print("preseed the x button ")
+		dash(self)
+	end
+	--print("input"..self.input.right..self.input.left..self.input.bottom..self.input.up)
+
+end

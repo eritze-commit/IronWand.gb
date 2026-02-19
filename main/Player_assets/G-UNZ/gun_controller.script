@@ -1,0 +1,202 @@
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	self.rot = 0
+	self.btn_prst = false
+	self.input_polls = {left = false, right = false}
+	self.csp =  go.get("gun_cont#slot","position")
+	self.gun_swap = {"pistol","uzi","awp","ak47","shotgun","mp5","m4","revolver","p90"}
+	self.recoil_offset = vmath.vector3(0,0,0)
+	self.cur_gun = 1
+	self.cur_pos = vmath.vector3()
+	self.can_shoot =  true
+	self.opo_dir = vmath.vector3(0,0,0)
+
+	self.gun_master_list = {
+		["pistol"] = {spread = 10, bul_speed = 300, delay = 0.3, ammount = 1, recoil = 2},
+		["uzi"] = {spread = 30, bul_speed = 250, delay = 0.06, ammount = 1, recoil = 3.5},
+		["awp"] = {spread = 1, bul_speed = 400, delay = 1, ammount = 1, recoil = 5},
+		["ak47"] = {spread = 15, bul_speed = 250, delay = 0.09, ammount = 1, recoil = 2},
+		["shotgun"] = {spread = 40, bul_speed = 200, delay = 1, ammount = 10, recoil = 7},
+		["mp5"] = {spread = 10, bul_speed = 250, delay = 0.2, ammount = 2, recoil = 1},
+		--["arrow"] = {spread = 0, bul_speed = 0, delay = 0.1, ammount = 0, recoil = 0},
+		["m4"] = {spread = 5, bul_speed = 300, delay = 0.1, ammount = 1, recoil = 1.5},
+		["revolver"] = {spread = 3, bul_speed = 350, delay = 0.7, ammount = 1, recoil = 4},
+		["p90"] = {spread = 2, bul_speed = 250, delay = 0.05, ammount = 1, recoil = 1},
+	}
+	
+	self.gun_state = {
+		[0] = {flip = false, z_order = 1.19, slot = "gun_cont#slot" },
+		[-45] = {flip = false, z_order = 1.21, slot = "gun_cont#slot" },
+		[-90] = {flip = false, z_order = 1.21, slot = "gun_cont#slot" },
+		[-135] = {flip = true, z_order = 1.21, slot = "gun_cont#slot" },
+		[-180] = {flip = true, z_order = 1.19, slot = "gun_cont#slot" },
+		[-225] = {flip = true, z_order = 1.19, slot = "gun_cont#slot" },
+		[-270] = {flip = true, z_order = 1.19, slot = "gun_cont#slot" },
+		[-315] = {flip = false, z_order = 1.19, slot = "gun_cont#slot" },
+		[-360] = {flip = false, z_order = 1.19, slot = "gun_cont#slot" },
+
+
+		[45] = {flip = false, z_order = 1.19, slot = "gun_cont#slot" },
+		[90] = {flip = false, z_order = 1.19, slot = "gun_cont#slot" },
+		[135] = {flip = true, z_order = 1.19, slot = "gun_cont#slot" },
+		[180] = {flip = true, z_order = 1.19, slot = "gun_cont#slot" },
+		[225] = {flip = true, z_order = 1.21, slot = "gun_cont#slot" },
+		[270] = {flip = true, z_order = 1.21, slot = "gun_cont#slot" },
+		[315] = {flip = false, z_order = 1.21, slot = "gun_cont#slot" },
+		[360] = {flip = false, z_order = 1.19, slot = "gun_cont#slot" },
+			
+	}	
+	self.cur_z = 1.19
+	
+	-- Add initialization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+local gun_rot_delay = 0.15
+function update(self, dt)
+	
+	if self.input_polls.right or self.input_polls.left then 
+		if self.input_polls.right then 
+			self.rot = self.rot - 45
+			
+			if  self.rot < -360 then 
+				self.rot = 0
+				self.rot = self.rot - 45
+			end
+			
+			--go.set_rotation(vmath.quat_rotation_z(math.rad(self.rot)), ".") 
+			go.animate(".","rotation",go.PLAYBACK_ONCE_FORWARD,vmath.quat_rotation_z(math.rad(self.rot)),go.EASING_OUTBACK,gun_rot_delay )
+		end
+		if self.input_polls.left then 
+			self.rot = self.rot + 45
+			if self.rot > 360 then
+				self.rot = 0
+				self.rot = self.rot + 45
+			end
+			--go.set_rotation(vmath.quat_rotation_z(math.rad(self.rot)), ".") 
+			go.animate(".","rotation",go.PLAYBACK_ONCE_FORWARD,vmath.quat_rotation_z(math.rad(self.rot)),go.EASING_OUTBACK,gun_rot_delay )
+		end
+		
+		print("CUR SELF DEGREEES " , self.rot)
+		if self.gun_state[self.rot] ~= nil then 
+			sprite.set_vflip(self.gun_state[self.rot].slot, self.gun_state[self.rot].flip)
+			self.cur_z = self.gun_state[self.rot].z_order
+		end
+		self.input_polls.right = false
+		self.input_polls.left = false
+	end
+
+	--print(self.csp)
+	
+	local my_pos = go.get_position(".")
+	local pl_pos =  go.get_position("Pl_Sprite")
+	
+	local x_y = vmath.vector3(pl_pos.x,pl_pos.y,self.cur_z)
+
+	local new_pos = vmath.lerp(0.4,my_pos,x_y)
+	
+	go.set_position(new_pos, ".")
+	self.cur_pos = pl_pos
+			
+	
+end
+local gun_relapse = false
+
+local function Gun_shoot(self)
+	if gun_relapse  ~= true then
+		self.can_shoot = false
+		self.gun_relapse = true
+
+		timer.delay( self.gun_master_list[self.gun_swap[self.cur_gun]].delay ,false,
+		function() 
+			gun_relapse = false
+		end)
+
+		local opo_deg = (self.rot + 180) % 360
+		local opo_rot_rad = math.rad(opo_deg)
+		local direction = vmath.vector3(
+		math.cos(opo_rot_rad),
+		math.sin(opo_rot_rad),
+		0
+	)
+	local cur_pos = self.cur_pos
+	cur_pos.z = self.cur_z
+	direction = cur_pos + direction * self.gun_master_list[self.gun_swap[self.cur_gun]].recoil
+	go.animate(".","position", go.PLAYBACK_ONCE_FORWARD, direction,go.EASING_OUTBACK , (gun_rot_delay/4) ,0,
+	function() 
+		timer.delay(self.gun_master_list[self.gun_swap[self.cur_gun]].delay ,false,
+		function()
+			self.can_shoot = true
+		end) 	
+	end)
+	
+	for i = 1 , self.gun_master_list[self.gun_swap[self.cur_gun]].ammount do
+		particlefx.stop("gun_cont#Gun_kickback_trtc")
+		particlefx.play("gun_cont#Gun_kickback_trtc")
+		local bullet_dir = self.rot
+		if math.random(0,10) > 5 then
+			bullet_dir = bullet_dir + math.random(0,self.gun_master_list[self.gun_swap[self.cur_gun]].spread) 
+		else
+			bullet_dir = bullet_dir - math.random(0,self.gun_master_list[self.gun_swap[self.cur_gun]].spread) 
+		end
+	
+		local cur_dir_rad = math.rad(bullet_dir)
+		local dir = vmath.vector3(
+		math.cos(cur_dir_rad),
+		math.sin(cur_dir_rad),
+		self.cur_z) 
+	
+		local bullet_objct =  factory.create("gun_cont#bullet_spawner",go.get_world_position("target_trig"))
+		msg.post(bullet_objct,"spawn_data",{ spawn_dir = dir, speed = self.gun_master_list[self.gun_swap[self.cur_gun]].bul_speed})
+	end
+	
+	end
+end
+function on_message(self, message_id, message, sender)
+end
+function on_input(self, action_id, action)
+	if self.can_shoot then
+	if action_id == hash("trigger") then 
+		Gun_shoot(self)
+	end
+	end
+	if action_id == hash("swap") then 
+		if self.btn_prst ~= true then
+			self.btn_prst = true
+
+			timer.delay( gun_rot_delay ,false,
+			function() 
+				self.btn_prst = false
+			end)
+			self.cur_gun = self.cur_gun + 1 
+			if self.cur_gun > 9 then 
+				self.cur_gun = 1 
+			end
+			sprite.play_flipbook("gun_cont#slot", self.gun_swap[self.cur_gun])
+		end
+	end
+	if action_id == hash("g_right") then 
+		if self.btn_prst ~= true then
+			self.btn_prst = true
+
+			timer.delay( gun_rot_delay ,false,
+			function() 
+				self.btn_prst = false
+			 end)
+			self.input_polls.right = true 
+		end
+	end
+	if action_id == hash("g_left") then 
+		if self.btn_prst ~= true then
+			self.btn_prst = true
+
+			timer.delay(gun_rot_delay ,false,
+			function() 
+				self.btn_prst = false
+			end)
+			self.input_polls.left = true 
+		end
+	end
+end
+function on_reload(self)
+end

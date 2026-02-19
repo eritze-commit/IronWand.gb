@@ -1,0 +1,4 @@
+images {
+  image: "/main/assets/Images/undershadow.png"
+}
+extrude_borders: 2

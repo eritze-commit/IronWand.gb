@@ -1,0 +1,4 @@
+images {
+  image: "/main/assets/Images/one_pixel.png"
+}
+extrude_borders: 2

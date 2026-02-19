@@ -1,0 +1,16 @@
+#version 140
+
+in mediump vec2 texcoord0;
+out mediump vec2 var_texcoord0;
+
+void main()
+{
+	var_texcoord0 = texcoord0;
+
+	// 2. Map 0.0 -> 1.0 range to the -1.0 -> 1.0 range
+	// x * 2.0 - 1.0 turns 0 into -1 and 1 into 1.
+	vec2 screenPos = texcoord0 * 2.0 - 1.0;
+
+	// 3. Set the position (Z is 0, W is 1)
+	gl_Position = vec4(screenPos, 0.0, 1.0);
+}
