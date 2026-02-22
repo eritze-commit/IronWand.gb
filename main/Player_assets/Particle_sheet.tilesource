@@ -9,8 +9,14 @@ animations {
   fps: 60
 }
 animations {
+  id: "New Animation"
+  start_tile: 1
+  end_tile: 1
+}
+animations {
   id: "Triangle_dark"
-  start_tile: 7
-  end_tile: 10
+  start_tile: 2
+  end_tile: 5
+  fps: 60
 }
 extrude_borders: 2

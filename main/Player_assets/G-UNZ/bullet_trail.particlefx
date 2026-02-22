@@ -8,12 +8,19 @@ emitters {
   tile_source: "/main/Player_assets/Particle_sheet.tilesource"
   animation: "Flip_throu"
   material: "/builtins/materials/particlefx.material"
-  max_particle_count: 128
+  blend_mode: BLEND_MODE_SCREEN
+  max_particle_count: 20
   type: EMITTER_TYPE_BOX
   properties {
     key: EMITTER_KEY_SPAWN_RATE
     points {
-      y: 10.0
+      y: 40.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_SIZE_X
+    points {
+      y: 1.0
     }
   }
   properties {
@@ -25,7 +32,7 @@ emitters {
   properties {
     key: EMITTER_KEY_PARTICLE_SPEED
     points {
-      y: 20.0
+      y: 100.0
     }
   }
   properties {
@@ -68,15 +75,15 @@ emitters {
   particle_properties {
     key: PARTICLE_KEY_SCALE
     points {
-      y: 0.369571
-      t_x: 0.67908937
-      t_y: -0.7340556
+      y: 0.187115
+      t_x: 0.97823066
+      t_y: -0.2075207
     }
     points {
       x: 1.0
-      y: 0.010728
-      t_x: 0.99239385
-      t_y: -0.1231032
+      y: 0.005029
+      t_x: 0.9721436
+      t_y: -0.23438607
     }
   }
   particle_properties {
@@ -108,15 +115,15 @@ emitters {
   particle_properties {
     key: PARTICLE_KEY_ROTATION
     points {
-      y: 6.826433
-      t_x: 3.2071548E-5
-      t_y: 1.0
+      y: 0.854048
+      t_x: 0.09308006
+      t_y: -0.99565864
     }
     points {
       x: 1.0
-      y: 6.826433
-      t_x: 3.3161148E-5
-      t_y: 1.0
+      y: -2.014046
+      t_x: 0.060334176
+      t_y: -0.99817824
     }
   }
   particle_properties {

@@ -12,16 +12,16 @@ function init(self)
 	self.opo_dir = vmath.vector3(0,0,0)
 
 	self.gun_master_list = {
-		["pistol"] = {spread = 10, bul_speed = 300, delay = 0.3, ammount = 1, recoil = 2},
-		["uzi"] = {spread = 30, bul_speed = 250, delay = 0.06, ammount = 1, recoil = 3.5},
-		["awp"] = {spread = 1, bul_speed = 400, delay = 1, ammount = 1, recoil = 5},
-		["ak47"] = {spread = 15, bul_speed = 250, delay = 0.09, ammount = 1, recoil = 2},
+		["pistol"] = {spread = 10, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 2},
+		["uzi"] = {spread = 30, bul_speed = 210, delay = 0.06, ammount = 1, recoil = 3.5},
+		["awp"] = {spread = 1, bul_speed = 300, delay = 1, ammount = 1, recoil = 10},
+		["ak47"] = {spread = 15, bul_speed = 210, delay = 0.09, ammount = 1, recoil = 2},
 		["shotgun"] = {spread = 40, bul_speed = 200, delay = 1, ammount = 10, recoil = 7},
-		["mp5"] = {spread = 10, bul_speed = 250, delay = 0.2, ammount = 2, recoil = 1},
+		["mp5"] = {spread = 10, bul_speed = 210, delay = 0.2, ammount = 2, recoil = 1},
 		--["arrow"] = {spread = 0, bul_speed = 0, delay = 0.1, ammount = 0, recoil = 0},
-		["m4"] = {spread = 5, bul_speed = 300, delay = 0.1, ammount = 1, recoil = 1.5},
-		["revolver"] = {spread = 3, bul_speed = 350, delay = 0.7, ammount = 1, recoil = 4},
-		["p90"] = {spread = 2, bul_speed = 250, delay = 0.05, ammount = 1, recoil = 1},
+		["m4"] = {spread = 0, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 1.5},
+		["revolver"] = {spread = 3, bul_speed = 250, delay = 0.7, ammount = 1, recoil = 4},
+		["p90"] = {spread = 2, bul_speed = 210, delay = 0.05, ammount = 1, recoil = 1},
 	}
 	
 	self.gun_state = {
@@ -54,7 +54,6 @@ function init(self)
 end
 local gun_rot_delay = 0.15
 function update(self, dt)
-	
 	if self.input_polls.right or self.input_polls.left then 
 		if self.input_polls.right then 
 			self.rot = self.rot - 45
@@ -63,6 +62,7 @@ function update(self, dt)
 				self.rot = 0
 				self.rot = self.rot - 45
 			end
+			vmath.vector3()
 			
 			--go.set_rotation(vmath.quat_rotation_z(math.rad(self.rot)), ".") 
 			go.animate(".","rotation",go.PLAYBACK_ONCE_FORWARD,vmath.quat_rotation_z(math.rad(self.rot)),go.EASING_OUTBACK,gun_rot_delay )
@@ -104,6 +104,13 @@ local gun_relapse = false
 
 local function Gun_shoot(self)
 	if gun_relapse  ~= true then
+		local s_s_max = 1.1
+		local s_s_min = 0.9
+		local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+		sound.stop("gun_cont#shoot_sound_effect")
+		
+		sound.play("gun_cont#shoot_sound_effect",{speed = random_offset, gain = 0.5})
+		print(random_offset)
 		self.can_shoot = false
 		self.gun_relapse = true
 
@@ -115,10 +122,10 @@ local function Gun_shoot(self)
 		local opo_deg = (self.rot + 180) % 360
 		local opo_rot_rad = math.rad(opo_deg)
 		local direction = vmath.vector3(
-		math.cos(opo_rot_rad),
+		math.cos(opo_rot_rad ),
 		math.sin(opo_rot_rad),
 		0
-	)
+		)
 	local cur_pos = self.cur_pos
 	cur_pos.z = self.cur_z
 	direction = cur_pos + direction * self.gun_master_list[self.gun_swap[self.cur_gun]].recoil
@@ -142,14 +149,14 @@ local function Gun_shoot(self)
 	
 		local cur_dir_rad = math.rad(bullet_dir)
 		local dir = vmath.vector3(
-		math.cos(cur_dir_rad),
-		math.sin(cur_dir_rad),
+			math.cos(cur_dir_rad),
+			math.sin(cur_dir_rad),
 		self.cur_z) 
 	
-		local bullet_objct =  factory.create("gun_cont#bullet_spawner",go.get_world_position("target_trig"))
+		local bullet_objct =  factory.create("gun_cont#bullet_spawner",go.get_world_position("target_trig"),nil,{type = 1 })
 		msg.post(bullet_objct,"spawn_data",{ spawn_dir = dir, speed = self.gun_master_list[self.gun_swap[self.cur_gun]].bul_speed})
+		
 	end
-	
 	end
 end
 function on_message(self, message_id, message, sender)

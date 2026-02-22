@@ -1,3 +1,5 @@
+go.property("type", 1)
+
 function init(self)
 	self.spawned = false
 	self.speed = 0
@@ -18,13 +20,19 @@ function update(self, dt)
 		self.cur_pos = go.get_position(".")
 		self.cur_pos = self.cur_pos + self.dir * self.speed * dt
 		go.set_position(self.cur_pos, ".")
+
 		
 	end
 end
 function on_message(self, message_id, message, sender)
+	if message_id == hash("get_type") then
+		msg.post(sender,"break_wall" ,{type = "ball"}) 
+	end
+	
 	if message_id == hash("contact_point_response")  then
-		go.delete(".")
-		particlefx.stop("#bullet_trail")
+			go.delete(".")
+			particlefx.stop("#bullet_trail")
+	
 	end
 	if message_id == hash("spawn_data") then
 		timer.delay(3, false, function() 
@@ -32,6 +40,8 @@ function on_message(self, message_id, message, sender)
 		end)	
 		particlefx.play("#bullet_trail")
 		--print("GOT DATA WHY YOU PIECE OF SHIT NOT APPEARING ")
+		
+
 		self.speed = message.speed
 		self.dir = message.spawn_dir
 		self.spawned = true

@@ -4,14 +4,17 @@ textures {
 }
 nodes {
   position {
-    x: 604.0
-    y: 220.0
+    x: 324.0
+    y: 323.0
+  }
+  size {
+    x: 600.0
+    y: 300.0
   }
   type: TYPE_BOX
   texture: "Logo/Iron_Wand_TYpeFont"
   id: "box"
   inherit_alpha: true
-  size_mode: SIZE_MODE_AUTO
 }
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT

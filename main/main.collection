@@ -13,6 +13,10 @@ embedded_instances {
   children: "Map"
   children: "Shadow_Map"
   data: ""
+  position {
+    x: 16.0
+    y: 16.0
+  }
   scale3 {
     z: 1.02
   }
@@ -38,6 +42,12 @@ embedded_instances {
   "group: \\\"wall\\\"\\n"
   "mask: \\\"entity\\\"\\n"
   "locked_rotation: true\\n"
+  "\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"factory\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/main/enviormental assets/angel_statue.go\\\"\\n"
   "\"\n"
   "}\n"
   ""
@@ -95,5 +105,21 @@ embedded_instances {
   scale3 {
     x: 10.0
     y: 10.0
+  }
+}
+embedded_instances {
+  id: "Ambient_decor"
+  data: "components {\n"
+  "  id: \"SLow_Dust_Particle\"\n"
+  "  component: \"/main/particles/SLow_Dust_Particle.particlefx\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"Ambient_decor_s\"\n"
+  "  component: \"/main/enviormental assets/Ambient_decor_s.script\"\n"
+  "}\n"
+  ""
+  position {
+    x: 637.0
+    y: -34.0
   }
 }

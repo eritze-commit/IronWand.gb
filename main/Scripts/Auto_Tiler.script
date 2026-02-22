@@ -20,10 +20,16 @@ function init(self)
 		[15] = 16,
 	}
 	self.pressed = false 
+
 end
+local object_que = {}
 local function clr_screen()
 	for y = 0, 23 do 
 		for x = 0, 37 do 
+				for i = 1 , #object_que do 
+					go.delete(object_que[i])
+			end
+			object_que = {}
 			tilemap.set_tile("/Map#Standard","zero",x,y, 0 ) 
 			tilemap.set_tile("/Map#Standard","wall",x,y, 0 ) 
 			tilemap.set_tile("/Map#Standard","wall_on_top",x,y, 0 ) 
@@ -87,11 +93,20 @@ local function shadow_gen()
 end
 
 local function angel_gen()
+	local grid_size = 16
+	local offset = 8
+	
 	for y = 0, 23 do 
+		local loc_y = (y * grid_size) + offset
 		for x = 0, 37 do 
-			if  tilemap.get_tile_info("/Map#Standard", "wall", x, y).index ~= 24  then
+			local loc_x = (x * grid_size) + offset
+			if  tilemap.get_tile_info("/Map#Standard", "zero", x, y).index == 18  then
 				if math.random(20) <= 2 and tilemap.get_tile_info("/Map#Standard", "zero", x, y).index ~= 0   then
-					tilemap.set_tile("/Map#Standard","peak",x,y,19) 
+					--tilemap.set_tile("/Map#Standard","peak",x+15,y+15,19) 
+					local statue = factory.create("/Map#factory",vmath.vector3(loc_x,loc_y,0))
+					table.insert(object_que, statue)
+					print("CURRENT OBJECT - ",statue)
+					--table.insert(self.object_que,statue)
 					--msg.post("/Shadow_Map#shdw_map","Place_shadow",{shadow = 19, x = x, y = y })
 				end
 			end
@@ -136,10 +151,12 @@ local function auto_tiler(self)
 end
 
 local function map_assembler(self) 
-	Room_gen_floor()
+	for i = 1, math.random(1,5) do 
+		Room_gen_floor()
+	end
+	angel_gen()
 	wall_placer()
 	auto_tiler(self)
-	angel_gen()
 	shadow_gen()
 end
 	
@@ -149,6 +166,15 @@ end
 function update(self, dt)
 end
 function on_message(self, message_id, message, sender)
+	if message_id == hash("clear_object_self") then 
+		print("GOT THE FUCKING MESSEGE BRUH YOU FUCKING CLEAR ",message.id)
+		for i = #object_que , 1 , -1 do 
+			if object_que[i] == message.id then
+				table.remove(object_que,i)
+				break
+			end
+		end
+	end
 end
 
 function on_input(self, action_id, action)

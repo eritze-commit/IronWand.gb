@@ -1,0 +1,76 @@
+function init(self)
+	self.durab = 5
+	self.can_attack = true
+	self.first_pos = go.get_position(".")
+	self.shaking = false
+	self.sound_enabled = false 
+	self.objects_normal = vmath.vector3()
+end
+
+function final(self)
+	if self.sound_enabled then 
+		sound.stop("#break_explode_sound")
+		sound.play("#break_explode_sound")
+	end
+	particlefx.stop("#explode_triangle_fx")
+	particlefx.play("#explode_triangle_fx")
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function fixed_update(self, dt)
+	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
+	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
+	-- Physics section of game.project
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+local messages_got = 0
+function on_message(self, message_id, message, sender)
+	if message_id == hash("contact_point_response") then 
+		msg.post(message.other_id,"get_type",{type = 1 })
+		self.objects_normal = message.normal
+	end
+
+	if message_id == hash("break_wall") then
+		self.sound_enabled = true
+		messages_got = messages_got + 1 
+		if self.can_attack == true then
+			self.can_attack = false
+			local nrml = self.objects_normal
+			go.animate(".","position",go.PLAYBACK_ONCE_FORWARD,vmath.vector3(self.first_pos.x + nrml.x*(1), self.first_pos.y + nrml.y*(1),nrml.z),go.EASING_LINEAR,0.05,0, function( ) 
+				go.animate(".","position",go.PLAYBACK_ONCE_FORWARD,self.first_pos,go.EASING_LINEAR,0.01,0)
+				self.can_attack = true
+			end)
+			self.durab = self.durab - 1
+			if self.durab <= 0 then
+				msg.post("/Map#Auto_Tiler","clear_object_self",{id = go.get_id()})
+				go.delete(".")
+			end
+				
+		end
+	end
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	--    msg.post(".", "acquire_input_focus")
+	--
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

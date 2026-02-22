@@ -61,8 +61,8 @@ function on_message(self, message_id, message, sender)
 			local pl_pos =  go.get_position("Player")
 			--local lerp_vl = 0.6
 			local target = vmath.vector3(
-			pl_pos.x + self.dir.x  * 5,
-			pl_pos.y + self.dir.y * 5, 
+			pl_pos.x + self.dir.x  * 10,
+			pl_pos.y + self.dir.y * 10, 
 			camera_pos.z) 
 			--print(self.dir.x,self.dir.y)
 			--print("MOVED THIS SHEIIIT ")
