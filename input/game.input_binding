@@ -62,6 +62,14 @@ key_trigger {
   input: KEY_F
   action: "trigger"
 }
+key_trigger {
+  input: KEY_Y
+  action: "Enem_node"
+}
+key_trigger {
+  input: KEY_C
+  action: "clear_nodes"
+}
 mouse_trigger {
   input: MOUSE_BUTTON_LEFT
   action: "g_left"
@@ -121,4 +129,12 @@ gamepad_trigger {
 gamepad_trigger {
   input: GAMEPAD_LSTICK_UP
   action: "up"
+}
+gamepad_trigger {
+  input: GAMEPAD_RPAD_UP
+  action: "focus"
+}
+gamepad_trigger {
+  input: GAMEPAD_RTRIGGER
+  action: "asm"
 }

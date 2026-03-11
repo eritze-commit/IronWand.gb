@@ -4,6 +4,9 @@ function init(self)
 	self.cur_zoom = 5.0
 	self.pressed = false 
 	self.dir = vmath.vector3()
+	self.gun_focus = false
+	self.offset = vmath.vector3()
+	self.dash_strenght = 10
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
@@ -15,60 +18,59 @@ function final(self)
 	-- Remove this function if not needed
 end
 
+local pl_pos = vmath.vector3()
+local lerp_vl = 0.06
+
 function update(self, dt)
 	
 	local camera_pos = go.get_position("#")
-		local pl_pos =  go.get_position("Pl_Sprite")
+
+	if  self.gun_focus == false then 
+		pl_pos =  go.get_position("Pl_Sprite")
+		lerp_vl = 0.06
+	else
+		pl_pos =  go.get_position("gun_cont") + (self.offset * 40)
+		lerp_vl = 0.04
+	end
 		--local x_y = vmath.vector3(pl_pos.x,pl_pos.y,730)
-		local lerp_vl = 0.06
+
+		local target = vmath.vector3(pl_pos.x ,pl_pos.y , camera_pos.z) 
 		
-
-		local target = vmath.vector3(
-			pl_pos.x ,
-			pl_pos.y , 
-			camera_pos.z
-			) 
-
-			local new_pos = vmath.lerp(lerp_vl,camera_pos,target)
-			go.set_position(new_pos, "#")
+		local new_pos = vmath.lerp(lerp_vl,camera_pos,target)
+		go.set_position(new_pos, "#")
 		
 		--print("camera pos ", target)
-
-	
-	-- Add update code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
 end
 
 function fixed_update(self, dt)
-	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
-	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
-	-- Physics section of game.project
-	-- Add update code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
 end
 
 function on_message(self, message_id, message, sender)
+	if message_id == hash("gun_focus") then
+		self.gun_focus = message.focus 
+		self.offset = message.dir 
+	end
 	if message_id == hash("camera_snap") then 
-		--local dashing = false
-		--print("GOT MESSAGE")
-		local dashing = message.dashing
-		self.dir = message.dir
-		if dashing then 
+		if not self.gun_focus then
+			--local dashing = false
+			--print("GOT MESSAGE")
+			local dashing = message.dashing
+			self.dir = message.dir
+			if dashing then 
 			
-			local camera_pos = go.get_position("#")
-			local pl_pos =  go.get_position("Player")
-			--local lerp_vl = 0.6
-			local target = vmath.vector3(
-			pl_pos.x + self.dir.x  * 10,
-			pl_pos.y + self.dir.y * 10, 
-			camera_pos.z) 
-			--print(self.dir.x,self.dir.y)
-			--print("MOVED THIS SHEIIIT ")
-			--local new_pos = vmath.lerp(lerp_vl,camera_pos,target)
-			go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD ,target , go.EASING_OUTCUBIC, 0.1, 0)
-			--go.set_position(target, "#")
+				local camera_pos = go.get_position("#")
+				local pl_pos =  go.get_position("Player")
+				--local lerp_vl = 0.6
+				local target = vmath.vector3(
+				pl_pos.x + self.dir.x  * self.dash_strenght ,
+				pl_pos.y + self.dir.y * self.dash_strenght , 
+				camera_pos.z) 
+				--print(self.dir.x,self.dir.y)
+				--print("MOVED THIS SHEIIIT ")
+				--local new_pos = vmath.lerp(lerp_vl,camera_pos,target)
+				go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD ,target , go.EASING_OUTCUBIC, 0.1, 0)
+				--go.set_position(target, "#")
+			end
 
 		end
 		--print(self.dashing)

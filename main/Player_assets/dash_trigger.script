@@ -45,7 +45,7 @@ function on_message(self, message_id, message, sender)
 		
 		if message.other_group == hash("wall") then
 			if dash_init == true then
-				print("colided with wall ")
+				--print("colided with wall ")
 				--local next_pos = vmath.lerp(0.01,last_position,self.pos)
 				--_Ggo.set_position(next_pos, ".")
 				if 	message.distance > 0 then 

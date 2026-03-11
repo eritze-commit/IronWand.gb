@@ -72,6 +72,10 @@ embedded_instances {
   data: "components {\n"
   "  id: \"Pathfind_map\"\n"
   "  component: \"/main/Enemy_Assets/Pathfind_map.tilemap\"\n"
+  "  position {\n"
+  "    x: 16.0\n"
+  "    y: 16.0\n"
+  "  }\n"
   "}\n"
   "components {\n"
   "  id: \"Pathfinding\"\n"
@@ -111,7 +115,7 @@ embedded_instances {
   id: "Ambient_decor"
   data: "components {\n"
   "  id: \"SLow_Dust_Particle\"\n"
-  "  component: \"/main/particles/SLow_Dust_Particle.particlefx\"\n"
+  "  component: \"/main/enviormental assets/ParticleFX_env/SLow_Dust_Particle.particlefx\"\n"
   "}\n"
   "components {\n"
   "  id: \"Ambient_decor_s\"\n"
@@ -122,4 +126,38 @@ embedded_instances {
     x: 637.0
     y: -34.0
   }
+}
+embedded_instances {
+  id: "Sound_manager"
+  data: "components {\n"
+  "  id: \"break_explode_sound\"\n"
+  "  component: \"/main/enviormental assets/sounds/break_explode_sound.sound\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"bullet_collision_sound\"\n"
+  "  component: \"/main/Player_assets/SFX/bullet_collision_sound.sound\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"sound_manager\"\n"
+  "  component: \"/main/Player_assets/SFX/sound_manager.script\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"Hit_sounds\"\n"
+  "  component: \"/main/Enemy_Assets/Sounds/Hit_sounds.sound\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "DynamicProceduralEnemyController"
+  data: "components {\n"
+  "  id: \"Enemy_Spawner\"\n"
+  "  component: \"/main/Enemy_Assets/Enemy_Spawner.script\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"factory\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/main/Enemy_Assets/Enemy_Node.go\\\"\\n"
+  "\"\n"
+  "}\n"
+  ""
 }

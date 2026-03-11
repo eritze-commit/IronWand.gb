@@ -3,10 +3,6 @@ components {
   component: "/main/enviormental assets/angel_behaviour.script"
 }
 components {
-  id: "break_explode_sound"
-  component: "/main/enviormental assets/sounds/break_explode_sound.sound"
-}
-components {
   id: "explode_triangle_fx"
   component: "/main/enviormental assets/ParticleFX_env/explode_triangle_fx.particlefx"
 }

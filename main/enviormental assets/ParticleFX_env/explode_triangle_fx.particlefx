@@ -10,19 +10,19 @@ emitters {
   properties {
     key: EMITTER_KEY_SPAWN_RATE
     points {
-      y: 100.0
+      y: 70.0
     }
   }
   properties {
     key: EMITTER_KEY_SIZE_X
     points {
-      y: 8.0
+      y: 16.0
     }
   }
   properties {
     key: EMITTER_KEY_SIZE_Y
     points {
-      y: 12.0
+      y: 16.0
     }
   }
   properties {

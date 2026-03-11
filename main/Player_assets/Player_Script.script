@@ -1,3 +1,4 @@
+local Pstate = require "main.Player_assets.Player_state_module"
 local dash_timer = 0.1
 local can_dash = true 
 local dash_cooldown = 2
@@ -60,10 +61,14 @@ local function dash(self)
 	--sound.stop("sounds#Dash")
 	if dash_state == false and can_dash  then 
 		if vmath.length_sqr(self.dir) > 0  then
+			local s_s_max = 6
+			local s_s_min = 3
+			local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
 			sound.stop("sounds#Dash")
-			sound.play("sounds#Dash",{speed = math.random(1.0,6.0),gain=math.random(1,1.5)})
+			sound.play("sounds#Dash",{speed = random_offset ,gain=1})
 		end
 		msg.post("Pl_Sprite#Pl_Sprite_Script","dash",{dash = true})
+		Pstate.dashing = true
 		dash_state = true 
 		can_dash = false
 		dash_init = true 
@@ -85,6 +90,7 @@ local function dash(self)
 		end
 		
 		timer.delay(dash_timer, false, function()
+			Pstate.dashing = false
 			dash_state = false 
 			msg.post("Pl_Sprite#Pl_Sprite_Script","dash_end",{dash = false,  cng_spr = "walking" })
 			particlefx.stop("Particle #Plr_Dash")
@@ -105,6 +111,8 @@ end
 function update(self, dt)
 	input_direction(self) 
 	--print("self.dir :"..self.dir)
+	Pstate.player_dir = self.dir
+	Pstate.player_speed = self.speed
 	if vmath.length_sqr(self.dir) > 0 and  dash_state == false  then 
 		self.pos = go.get_position(".")
 		--local velocity = go.get("#collisionobject", "linear_velocity")
@@ -136,10 +144,15 @@ function update(self, dt)
 		self.pos = go.get_position(".")
 		self.pos = self.pos + dash_dir * dash_speed * dt
 		go.set_position(self.pos, ".")
+		Pstate.player_dir = dash_dir
+		Pstate.player_speed = dash_speed * dt
 	end
 end
 
 function on_message(self, message_id, message, sender)
+	if message_id == hash("ray_cast_caster") then
+		msg.post(sender,"ray_cast_return",{cast = true })
+	end 
 	--[[
 	if message_id ==  hash("contact_point_response") then
 		--print("colided with wall ")

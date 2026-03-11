@@ -1,0 +1,42 @@
+function init(self)
+	self.dir = vmath.vector3()
+	self.speed = 0
+end
+
+function final(self)
+	local s_s_max = 0.9
+	local s_s_min = 0.2
+	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+	sound.stop("/Sound_manager#bullet_collision_sound")
+	sound.play("/Sound_manager#bullet_collision_sound",{speed = random_offset, gain = 0.2})
+	particlefx.play("#enemy_bullet_destroy")
+end
+
+function update(self, dt)
+	go.set_position(go.get_position(".")+self.dir*self.speed * dt, ".")
+end
+
+function fixed_update(self, dt)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("spawn_data") then 
+		self.dir = message.dir 
+		self.speed = message.speed
+	end
+	if message_id == hash("get_type") then 
+		msg.post(sender,"break_wall",{dmg = 0.5})
+	end
+	if message_id == hash("contact_point_response") then
+		go.delete(".")
+		if message.other_group == hash("wall") then 
+			go.delete(".")
+		end
+	end
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

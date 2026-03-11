@@ -1,3 +1,6 @@
+local Pstate = require "main.Player_assets.Player_state_module"
+local env = require("main.Scripts.eviorment_data")
+
 function init(self)
 	self.durab = 5
 	self.can_attack = true
@@ -5,15 +8,24 @@ function init(self)
 	self.shaking = false
 	self.sound_enabled = false 
 	self.objects_normal = vmath.vector3()
+	self.sound_gain = 1.0
+	self.cord_key = nil
 end
 
 function final(self)
 	if self.sound_enabled then 
-		sound.stop("#break_explode_sound")
-		sound.play("#break_explode_sound")
+		local s_s_max = 1.1
+		local s_s_min = 0.7
+		local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+
+		env.statue_pos[self.cord_key] = false
+		
+		
+		sound.stop("/Sound_manager#break_explode_sound")
+		sound.play("/Sound_manager#break_explode_sound",{speed = random_offset, gain = self.sound_gain-0.1 })
+		particlefx.stop("#explode_triangle_fx")
+		particlefx.play("#explode_triangle_fx")
 	end
-	particlefx.stop("#explode_triangle_fx")
-	particlefx.play("#explode_triangle_fx")
 end
 
 function update(self, dt)
@@ -30,16 +42,21 @@ function fixed_update(self, dt)
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
 end
-local messages_got = 0
+
 function on_message(self, message_id, message, sender)
 	if message_id == hash("contact_point_response") then 
 		msg.post(message.other_id,"get_type",{type = 1 })
 		self.objects_normal = message.normal
+		if  Pstate.dashing and vmath.length_sqr(Pstate.player_dir) > 0 and message.other_id == hash("/Player_ROOT/Player") then
+			self.sound_enabled = true
+			self.sound_gain = 1.2
+			msg.post("/Map#Auto_Tiler","clear_object_self",{id = go.get_id()})
+			go.delete(".")
+		end
 	end
 
 	if message_id == hash("break_wall") then
 		self.sound_enabled = true
-		messages_got = messages_got + 1 
 		if self.can_attack == true then
 			self.can_attack = false
 			local nrml = self.objects_normal
@@ -47,13 +64,16 @@ function on_message(self, message_id, message, sender)
 				go.animate(".","position",go.PLAYBACK_ONCE_FORWARD,self.first_pos,go.EASING_LINEAR,0.01,0)
 				self.can_attack = true
 			end)
-			self.durab = self.durab - 1
+			self.durab = self.durab - message.dmg 
 			if self.durab <= 0 then
 				msg.post("/Map#Auto_Tiler","clear_object_self",{id = go.get_id()})
 				go.delete(".")
 			end
-				
 		end
+	end
+	if message_id == hash("cord_key") then 
+		print("GOT MESSAGE CORD INSERT ")
+		self.cord_key = message.cord_key
 	end
 end
 

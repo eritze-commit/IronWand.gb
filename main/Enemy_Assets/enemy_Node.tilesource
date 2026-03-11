@@ -1,0 +1,19 @@
+image: "/main/Enemy_Assets/Enemy_sprites_master_sheet.png"
+tile_width: 18
+tile_height: 18
+collision_groups: "default"
+animations {
+  id: "slime"
+  start_tile: 1
+  end_tile: 8
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "spinin"
+  start_tile: 11
+  end_tile: 13
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 5
+}
+extrude_borders: 2

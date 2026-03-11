@@ -1,0 +1,549 @@
+	local env = require("main.Scripts.eviorment_data")
+	local Pstate = require "main.Player_assets.Player_state_module"
+	
+function init(self)
+	self.pl_p = go.get_position("/Player_ROOT/Player")
+	self.self_pos = go.get_position(".")
+	--msg.post(".", "acquire_input_focus")
+	self.next_point = 1
+	self.dir = vmath.vector3()
+	self.distance = vmath.vector3()
+	self.speed =  40--math.random(40,50)
+	self.target_pos =  vmath.vector3()
+	self.grid_size = 16
+	self.real_end = vmath.vector3()
+	self.cur_pos =  vmath.vector3()
+	self.start_pos = vmath.vector3()
+	self.angle_transform = nil
+	self.path = {}
+	self.smallest = nil 
+	self.best_indexes = nil
+	self.index = nil
+	self.buffer = nil
+	self.last_visited = {}
+	self.directions = nil
+	self.random_delay_time =  20-math.random()
+	self.t = 0
+	self.can_see_player = false
+	self.cur_ray_cast = nil
+	self.shooting_cooldown = 3
+	self.Dx = nil
+	self.is_flipped = false
+	self.should_flip = nil
+	self.smoothed_vel = vmath.vector3()
+
+	self.health = 20
+
+	self.active_timer = {first = false, second = false}
+	
+	self.path_noise = true
+	self.noise_strenght = 0.5
+
+	self.default_speed = 45
+
+	self.knockback_dir = vmath.vector3()
+
+	self.des_dir = vmath.vector3()
+
+	self.bullet_speed = 81
+	self.player_prediction = go.get_position("/Player_ROOT/Player")
+	self.my_pos = go.get_position(".")
+
+	self.dist_to_player = 0
+	self.t = 0
+
+	self.player_prediction =  vmath.vector3()
+	self.shoot_dir = vmath.vector3()
+	
+	
+	self.G_distance = 0
+	self.random_dir = 0
+	self.xy_to_d = nil
+	self.random_number_slot = 0
+
+	self.vector_transform = 0
+
+	self.noise_factor = vmath.vector3()
+
+	self.distance_leeway = 3
+	self.smoothness = 15
+	self.noise_floor = 3
+	
+
+	self.all_directions = {
+		vmath.vector3(0, 0, 0),   
+		vmath.vector3(0, 1, 0),    -- Up
+		vmath.vector3(1, 1, 0),    -- Up-Right
+		vmath.vector3(1, 0, 0),    -- Right
+		vmath.vector3(1, -1, 0),   -- Down-Right
+		vmath.vector3(0, -1, 0),   -- Down
+		vmath.vector3(-1, -1, 0),  -- Down-Left
+		vmath.vector3(-1, 0, 0),   -- Left
+		vmath.vector3(-1, 1, 0),   -- Up-Left
+	}
+
+	self.directions = {
+		vmath.vector3(0, 1, 0),    -- Up
+
+		vmath.vector3(1, 0, 0),    -- Right
+
+		vmath.vector3(0, -1, 0),   -- Down
+
+		vmath.vector3(-1, 0, 0),   -- Left
+
+	}
+	self.modulate = { 
+		fluke = 0 ,
+		rush = 0 ,
+		flee = 0 , 
+		circle = 0 
+		
+	}
+
+	self.kl = {
+		{name="fluke",value = math.random() + self.modulate.fluke, },
+		{name = "rush",value = math.random()+self.modulate.rush},
+		{name = "flee",value = math.random()+self.modulate.flee },
+		{name = "circle", value = math.random()+self.modulate.circle }
+	}
+	self.r_t = {r  = 0, rand = 0 , picked = false, selected = ""}
+
+	self.rush_is_true = false
+	self.direction_slot = {}
+
+end
+
+local grid_size = 16
+
+local function clear_everything()
+	for y = 1, 30 do 
+		for x = 1, 50 do 
+			tilemap.set_tile("/PathFinder#Pathfind_map","layer1",x,y,0)
+		end
+	end
+end
+
+local function draw_Path(self)
+	clear_everything()
+	for i, ofdir in ipairs(self.path) do
+		print("THIS IS THE DRAWING FUNCTION ",ofdir[1],ofdir[2])
+		tilemap.set_tile("/PathFinder#Pathfind_map","layer1",math.floor(ofdir[1]),math.floor(ofdir[2]),math.random(1,4))
+	end
+
+	--path = {}
+	--go.delete()
+end
+
+
+local function path_finder(self,cus_path)
+	self.path = {}
+	local player_pos_buffer = {}
+	self.direction_slot = {}
+	self.rush_is_true = false
+	self.path_noise = true
+	self.noise_strenght = 0.5
+	self.next_point = 1
+	--self.last_visited = {}
+	self.last_visited = {}
+	self.pl_p = go.get_position("/Player_ROOT/Player")
+	self.self_pos = go.get_position(".")
+	if self.path_noise and false then 
+		self.real_end = vmath.vector3(math.floor((self.pl_p.x/self.grid_size)+self.all_directions[math.random(1,8)].x),math.floor((self.pl_p.y/self.grid_size)+self.all_directions[math.random(1,8)].y),0)
+	else
+		self.real_end = vmath.vector3(math.floor(self.pl_p.x/self.grid_size),math.floor(self.pl_p.y/self.grid_size),0)
+	end
+	
+	self.cur_pos = vmath.vector3(math.floor(self.self_pos.x/grid_size),math.floor(self.self_pos.y/grid_size),0)
+	self.start_pos = vmath.vector3(math.floor(self.self_pos.x/grid_size),math.floor(self.self_pos.y/grid_size),0)
+	--print("REAL END ",real_end,"CUR_POS",cur_pos)
+	self.buffer = {}
+
+	--print( " PLAYER POS  =  ",self.real_end)
+	
+	if cus_path then 
+		if not cus_path.noise then 
+			self.path_noise = false
+		else
+			self.path_noise = true
+			self.noise_strenght = cus_path.noise_strenght
+		end
+		
+		if cus_path.path == "circle" then
+			for inside = 1 , #self.all_directions do 
+				player_pos_buffer[self.real_end.x+ self.all_directions[inside].x.."_"..self.real_end.y+ self.all_directions[inside].y] = true
+			end 
+			for i = 1, 10  do 
+				self.random_number_slot = math.random(0,360) 
+				
+				self.vector_transform = vmath.vector3(math.cos(math.rad(self.random_number_slot)),math.sin(math.rad(self.random_number_slot)),0 )
+				self.real_end = vmath.vector3(math.floor( (  self.pl_p.x + self.vector_transform.x  *  cus_path.offset) / 16 ),math.floor( (  self.pl_p.y + self.vector_transform.y  *  cus_path.offset) / 16 ),0)
+				--print("REAL END ",self.real_end)
+				if env.floor_tiles[self.real_end.x.."_"..self.real_end.y] 
+				and not env.statue_pos[self.real_end.x.."_"..self.real_end.y] 
+				and not player_pos_buffer[self.real_end.x.."_"..self.real_end.y] 
+				then
+					self.real_end = self.real_end
+					break
+				end 
+			end
+		elseif cus_path.path == "fluke" then 
+			
+			for i = 1 , #self.all_directions do 
+				self.vector_transform = self.cur_pos + self.all_directions[math.random(1,#self.all_directions)] 
+				if env.floor_tiles[self.vector_transform.x.."_"..self.vector_transform.y] 
+				and not env.statue_pos[self.vector_transform.x.."_"..self.vector_transform.y]  then 
+					self.real_end = self.vector_transform
+					break
+				end
+				
+			end
+		elseif cus_path.path == "rush" then 
+			self.rush_is_true = true
+		
+		elseif cus_path.path == "flee" then 
+			
+			for i = 1, 5  do 
+				self.vector_transform =  vmath.normalize(self.self_pos - self.pl_p)
+				self.angle_transform = math.floor(math.atan2(self.vector_transform.y,self.vector_transform.x) * (180 / math.pi))
+				--print("ANGLE TRANSFORM",self.angle_transform)
+				self.random_number_slot =  self.angle_transform + math.random(-80,80) 
+
+				self.vector_transform = vmath.vector3(math.cos(math.rad(self.random_number_slot)),math.sin(math.rad(self.random_number_slot)),0 )
+				self.real_end = vmath.vector3(math.floor( (  self.pl_p.x + self.vector_transform.x  *  cus_path.offset) / 16 ),math.floor( (  self.pl_p.y + self.vector_transform.y  *  cus_path.offset) / 16 ),0)
+				--print("REAL END ",self.real_end)
+				if env.floor_tiles[self.real_end.x.."_"..self.real_end.y] 
+				and not env.statue_pos[self.real_end.x.."_"..self.real_end.y] 
+				and not player_pos_buffer[self.real_end.x.."_"..self.real_end.y] 
+				then
+					self.real_end = self.real_end
+					break
+				end 
+				--cus_path.offset = math.random(50,100)
+			end
+		end
+		
+		
+		
+	end
+
+	for inside = 1 , 100 do 
+		if self.rush_is_true then 
+			self.direction_slot = self.all_directions 
+		else
+			self.direction_slot = self.directions
+		end
+		for i, ofdir in ipairs(self.direction_slot) do 
+			self.G_distance = vmath.length(self.real_end - (self.cur_pos+ofdir))
+			if env.floor_tiles[self.cur_pos.x+ofdir.x.."_"..self.cur_pos.y+ofdir.y] and not self.last_visited[self.cur_pos.x+ofdir.x.."_"..self.cur_pos.y+ofdir.y] and not env.statue_pos[self.cur_pos.x+ofdir.x.."_"..self.cur_pos.y+ofdir.y] then 
+				table.insert(self.buffer, self.G_distance)
+			else
+				table.insert(self.buffer,99999999999)
+			end
+		end
+		self.smallest = self.buffer[1]
+		self.best_indexes = {1}
+		self.index = 1
+		
+		for i = 2 , #self.buffer do 
+			if self.buffer[i] < self.smallest then
+				self.smallest = self.buffer[i]
+				self.best_indexes = {i}
+			elseif self.buffer[i] == self.smallest then 
+				table.insert(self.best_indexes, i)
+				end
+		
+			end
+			if self.smallest == 99999999999 then
+				break
+			end
+		
+			self.random_dir = math.random(1,8)
+
+			if self.path_noise and  math.random() < self.noise_strenght then 
+				if  env.floor_tiles[self.cur_pos.x+self.all_directions[self.random_dir].x.."_"..self.cur_pos.y+self.all_directions[self.random_dir].y] and not env.statue_pos[self.cur_pos.x+self.all_directions[self.random_dir].x.."_"..self.cur_pos.y+self.all_directions[self.random_dir].y] then 
+					self.xy_to_d = {(self.cur_pos.x+self.all_directions[self.random_dir].x) , (self.cur_pos.y+self.all_directions[self.random_dir].y) } 
+					table.insert(self.path,self.xy_to_d)
+				end
+			end
+		
+			self.index = self.best_indexes[math.random(1,#self.best_indexes)]
+			self.cur_pos = self.cur_pos + self.direction_slot[self.index]
+			self.buffer = {}
+			self.xy_to_d = {self.cur_pos.x, self.cur_pos.y} 
+
+			if self.cur_pos.x == self.real_end.x  and self.cur_pos.y == self.real_end.y then 
+				table.insert(self.path,self.xy_to_d)
+				break 
+			end
+			self.distance = vmath.length(self.cur_pos - self.real_end)
+			if self.distance <= 1 then
+				table.insert(self.path,self.xy_to_d)
+				break
+			end
+
+			table.insert(self.path,self.xy_to_d)
+			if not self.rush_is_true then 
+				self.last_visited[self.cur_pos.x.."_"..self.cur_pos.y] = true
+			end
+	
+		end
+end 
+
+function final(self)
+	particlefx.play("#Enemy_death_explosion")
+
+	local s_s_max = 2
+	local s_s_min = 1.5
+	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+
+	
+	sound.stop("/Sound_manager#break_explode_sound")
+	sound.play("/Sound_manager#break_explode_sound",{speed = random_offset })
+end
+
+
+local function probability_projection(self)
+
+		while true do
+			self.r_t.r = math.random()
+			self.r_t.rand = math.random(1,#self.kl)
+
+			if self.kl[self.r_t.rand].value > self.r_t.r then
+				return self.kl[self.r_t.rand].name
+			end
+			
+		end
+end
+	
+
+local function path_state_calc(self) 
+	if self.can_see_player then 
+		self.r_t.selected = probability_projection(self)
+
+		if self.r_t.selected == "fluke" then 
+			self.speed = self.speed * 2
+			--self.smoothness = 100 --self.smoothness * 10
+			path_finder(self  ,{noise = true , noise_strenght = 0.9, path = "fluke", offset = math.random(1,2) })
+			print("PATH FLUKE ")
+			timer.delay(0.1, false, function() 
+				self.speed = self.default_speed
+			end)	
+		elseif self.r_t.selected == "flee" then 
+			path_finder(self  ,{noise = false , noise_strenght = 0, path = "flee" , offset = math.random(40,100)})
+			--print("PATH FLEEEE  ")
+		elseif self.r_t.selected == "circle" then 
+			path_finder(self  ,{noise = true , noise_strenght = math.random()*0.5, path = "circle", offset = math.random(40,70) })
+			--print("PATH CIRCLE  ")
+		elseif self.r_t.selected == "rush" then 
+			path_finder(self  ,{noise = false , noise_strenght = 0, path = "rush" })
+			self.speed = self.speed * 1.5
+			timer.delay(1, false, function() 
+				self.speed = self.default_speed
+			end)	
+			--print("PATH RUSSH ")
+		else
+			path_finder(self,{noise = true, noise_strenght = math.random()*0.5 })
+			--print("PATH none ")
+		end
+		
+	else
+		path_finder(self,{noise = true, noise_strenght = math.random()*0.5 })
+		print("PATH none ")
+	end
+	self.modulate.rush = 0
+	self.modulate.circle = 0
+	self.modulate.flee = 0
+	self.modulate.fluke = 0
+end
+
+function update(self, dt)
+	--msg.post("@render:", "draw_line", { start_point = go.get_position("."), end_point = go.get_position("/Player_ROOT/Player")+vmath.vector3(0,-5,0), color = vmath.vector4(1, 1, 1, 1) })
+	--print("CAN SSEREE PLAYER ",self.can_see_player)
+	--print("SELF CAN SEE PLAYER",self.can_see_player)
+	self.cur_pos = go.get_position(".")
+	self.pl_p = go.get_position("/Player_ROOT/Player")
+	self.Dx = self.pl_p.x - self.cur_pos.x
+	--print("SELF DX ",self.Dx)
+	if self.Dx ~= 0 then 
+		self.should_flip = self.Dx > 0
+		if self.should_flip ~= self.is_flipped then 
+			sprite.set_hflip("#Main_sprite",self.should_flip)
+			self.is_flipped = self.should_flip
+		end
+	end
+	--sprite.set_hflip("#cow",self.pl_p.x > self.cur_pos.x )
+	if #self.path >= 1 and self.next_point <= #self.path  then 
+		
+		--print("THIS IS HOW MANNY fucking paths this shit generated bruh ",#self.path)
+		self.target_pos = vmath.vector3(
+
+		(self.path[self.next_point][1]*16)+8 + self.noise_factor.x --self.dir.x * noise_factor
+		,(self.path[self.next_point][2]*16)+8 + self.noise_factor.y  -- self.dir.y * noise_factor
+		,0)
+		
+		self.desiered_dir =  vmath.normalize(self.target_pos- self.cur_pos) 
+		self.dir = vmath.normalize(vmath.lerp(dt*self.smoothness,self.dir,self.desiered_dir))
+		self.distance = vmath.length(self.cur_pos - self.target_pos)
+
+
+		if self.distance <= (self.speed * dt) + self.distance_leeway then
+			--go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD ,self.target_pos , go.EASING_LINEAR, 0.01)
+			
+			self.next_point = self.next_point + 1 
+			self.noise_factor =  vmath.vector3(math.random(- self.noise_floor,self.noise_floor) * math.random(),math.random(-self.noise_floor,self.noise_floor) * math.random(),0)
+		else
+			self.cur_pos = self.cur_pos + self.dir * self.speed * dt 
+		end
+		
+		go.set_position(self.cur_pos, ".")
+		
+		if self.next_point > #self.path then 
+			--5clear_everything()5
+			--self.path = {}
+			--clear_everything()
+			path_state_calc(self)
+
+			--self.smoothness = 15
+			--self.speed = 45
+			--draw_Path(self)
+			--path_finder(self)
+		end
+		self.smoothed_vel = vmath.lerp(0.05,self.smoothed_vel,Pstate.player_dir * Pstate.player_speed)
+	end
+	print("SELF> SPEED ",self.speed)
+end
+
+function fixed_update(self, dt)
+	
+end
+
+local function shooting_now(self)
+	self.bullet_speed = 70
+	self.player_prediction = go.get_position("/Player_ROOT/Player")
+	self.my_pos = go.get_position(".")
+	
+
+	if vmath.length(Pstate.player_dir) > 0 then
+		Pstate.player_dir = vmath.normalize(Pstate.player_dir)
+	else
+		Pstate.player_dir = vmath.vector3(0, 0, 0)
+	end
+	
+	for i = 1 , 1 do 
+		self.dist_to_player = vmath.length(self.player_prediction - self.my_pos)
+		self.t = self.dist_to_player / self.bullet_speed
+	
+		self.player_prediction = go.get_position("/Player_ROOT/Player") + self.smoothed_vel * self.t
+	end
+	self.shoot_dir = vmath.normalize(self.player_prediction - go.get_position("."))
+
+	local my_bullet = factory.create("#factory", go.get_position("."))
+	msg.post(my_bullet,"spawn_data",{dir = self.shoot_dir , speed = self.bullet_speed})
+	
+end	
+	
+function on_message(self, message_id, message, sender)
+	if message_id == hash("retrun_of_contact_bullet") then 
+		print("RETURNED CONTACT ")
+		self.knockback_dir = vmath.normalize(message.bullet_dir )
+		self.knockback_dir.z = 0
+
+		self.modulate.rush = -0.5
+		self.modulate.circle = -0.5
+
+		self.modulate.flee = 0.5
+		self.modulate.fluke = 0.5
+		--print("self knowback SELF KNOWBACK",self.knockback_dir,self.cur_pos+ (self.knockback_dir * 0.5))
+		go.set("#Main_sprite","flasher",vmath.vector4(3.5,0,0,0))
+		sound.stop("/Sound_manager#Hit_sounds")
+		sound.play("/Sound_manager#Hit_sounds",{speed =  0.8 + (math.random() * (1.2 -  0.8)) })
+		go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, go.get_position(".")+ (self.knockback_dir * math.random() * 5), go.EASING_INBOUNCE, 0.01, 0, function() 
+			go.set("#Main_sprite","flasher",vmath.vector4(1,0,0,0))
+		end)
+
+		self.health = self.health - message.dmg 
+		if self.health <= 0  then 
+			go.delete()
+		end
+		
+		--self.dir = vmath.normalize(vmath.lerp(0.9,self.dir,(self.knockback_dir/-1) + vmath.vector3(math.random(-50,50),math.random(-50,50),0)))
+		
+	end
+
+	if message_id == hash("start_path") then 
+		
+		self.default_speed = self.speed
+
+		path_finder(self,{noise = false})
+		timer.delay(math.random()+1,true,function() 
+			if self.can_see_player then 
+				shooting_now(self)
+				particlefx.stop("#Ring_Particle")
+				particlefx.play("#Ring_Particle")
+			end
+		end)
+		
+		timer.delay(0.01668, true , function() 
+			physics.raycast_async(go.get_position("."), go.get_position("/Player_ROOT/Player")+vmath.vector3(0,-5,0),{hash("entity"),hash("wall")})
+		end)
+		
+		timer.delay(self.random_delay_time, true , function() 
+			path_state_calc(self) 
+			--path_finder(self)
+			--draw_Path(self)
+		end)	
+	end 
+	if message_id == hash("ray_cast_response") then 
+		--print("RAY CAST GETTER ",message.id)
+		if message.id == hash("/Player_ROOT/Player") then 
+			self.can_see_player = true
+		else 
+			self.can_see_player = false
+		end
+	end
+	-- ss
+	if message_id == hash("trigger_response") then 
+		if message.other_group == hash("entity")  then
+			msg.post(message.other_id, "contact_by_bullet", {megage = true})
+		end
+	end
+	
+	if message_id ==  hash("contact_point_response") then
+		if message.other_group == hash("entity") then
+			msg.post(message.other_id, "contact_by_bullet", {megage = true})
+			--print("YES THIS RAN ")
+		end
+		if message.other_group == hash("wall") then
+				if 	message.distance > 0 then 
+					--go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD ,self.cur_pos+message.normal, go.EASING_INOUTSINE, 0.1)
+					go.set_position(go.get_position(".")+message.normal*message.distance, ".")
+					self.dir = vmath.normalize(vmath.lerp(0.3,self.dir,message.normal))
+				
+				end
+		end
+	end
+
+end
+
+local can_press = true
+
+function on_input(self, action_id, action)
+	if action_id == hash("clear_nodes") then 
+		if can_press then 
+			can_press = false
+			--path_finder(self,{noise = false , noise_strenght = 0.2, path = "circle", offset = math.random(50,65) })
+
+			timer.delay(0.1 ,false,function() 
+				can_press = true
+				draw_Path(self)
+			--self.pl_p = go.get_position("/Player_ROOT/Player")
+			
+			end)
+		end
+	end
+
+end
+
+function on_reload(self)
+
+end

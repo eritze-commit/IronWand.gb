@@ -1,6 +1,6 @@
-image: "/main/assets/Images/one_pixel.png"
-tile_width: 1
-tile_height: 1
+image: "/main/Enemy_Assets/enemy_pathfind_sprtie_nodes.png"
+tile_width: 16
+tile_height: 16
 collision_groups: "default"
 animations {
   id: "anim"

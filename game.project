@@ -36,3 +36,6 @@ debug = 0
 [profiler]
 track_cpu = 0
 
+[sound]
+use_thread = 1
+

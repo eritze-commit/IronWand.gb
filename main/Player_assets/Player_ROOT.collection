@@ -88,7 +88,7 @@ embedded_instances {
   id: "Particle "
   data: "components {\n"
   "  id: \"Plr_Dash\"\n"
-  "  component: \"/main/Player_assets/Plr_Dash.particlefx\"\n"
+  "  component: \"/main/Player_assets/Particle_fx/Plr_Dash.particlefx\"\n"
   "  position {\n"
   "    z: 0.5\n"
   "  }\n"

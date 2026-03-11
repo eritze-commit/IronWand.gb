@@ -6,13 +6,20 @@ function init(self)
 	self.dir = vmath.vector3()
 	self.curpos = vmath.vector3()
 	self.cur_pos = go.get_position(".")
+	self.dmg = 0
+	self.sound_manager = nil
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
 end
 
 function final(self)
+	local s_s_max = 1.5
+	local s_s_min = 0.5
+	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
 	particlefx.play("#bullet_on_contact")
+	sound.stop("/Sound_manager#bullet_collision_sound")
+	sound.play("/Sound_manager#bullet_collision_sound",{speed = random_offset, gain = 0.1})
 end
 
 function update(self, dt)
@@ -25,12 +32,21 @@ function update(self, dt)
 	end
 end
 function on_message(self, message_id, message, sender)
+	if message_id == hash("trigger_response") then 
+		go.delete(".")
+		particlefx.stop("#bullet_trail")
+	end
+	if message_id == hash("contact_by_bullet") then 
+		--print("THIS IS CONTACT BY BULLET ")
+		msg.post(sender,"retrun_of_contact_bullet",{bullet_dir = self.dir,dmg = self.dmg})
+	end
+	
 	if message_id == hash("get_type") then
-		msg.post(sender,"break_wall" ,{type = "ball"}) 
+		msg.post(sender,"break_wall" ,{type = "ball",dmg = self.dmg}) 
 	end
 	
 	if message_id == hash("contact_point_response")  then
-			go.delete(".")
+			 go.delete(".")
 			particlefx.stop("#bullet_trail")
 	
 	end
@@ -45,5 +61,7 @@ function on_message(self, message_id, message, sender)
 		self.speed = message.speed
 		self.dir = message.spawn_dir
 		self.spawned = true
+		self.dmg = message.dmg
+		self.sound_manager = message.sound_manager
 	end
 end
