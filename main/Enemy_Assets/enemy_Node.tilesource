@@ -3,6 +3,27 @@ tile_width: 18
 tile_height: 18
 collision_groups: "default"
 animations {
+  id: "batorb"
+  start_tile: 14
+  end_tile: 19
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "cow"
+  start_tile: 41
+  end_tile: 46
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "skull"
+  start_tile: 31
+  end_tile: 39
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
   id: "slime"
   start_tile: 1
   end_tile: 8
@@ -14,6 +35,6 @@ animations {
   start_tile: 11
   end_tile: 13
   playback: PLAYBACK_LOOP_FORWARD
-  fps: 5
+  fps: 7
 }
 extrude_borders: 2

@@ -1,6 +1,7 @@
 function init(self)
 	self.dir = vmath.vector3()
 	self.speed = 0
+	self.lifetime = 5
 end
 
 function final(self)
@@ -21,11 +22,24 @@ end
 
 function on_message(self, message_id, message, sender)
 	if message_id == hash("spawn_data") then 
+		physics.set_shape("#collisionobject", "bullet", {type = physics.SHAPE_TYPE_SPHERE, diameter  = message.diameter })
+		sprite.play_flipbook("#sprite",message.type)
+		if message.type == "star" then 
+			self.lifetime = 10
+		end
+
 		self.dir = message.dir 
 		self.speed = message.speed
+
+		timer.delay(self.lifetime,false, function() 
+			go.delete(".")
+		end)
 	end
 	if message_id == hash("get_type") then 
 		msg.post(sender,"break_wall",{dmg = 0.5})
+	end
+	if message_id == hash("player_hit") then
+		msg.post(sender,"Hit_response",{data = 6767})
 	end
 	if message_id == hash("contact_point_response") then
 		go.delete(".")

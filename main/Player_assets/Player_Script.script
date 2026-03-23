@@ -72,8 +72,8 @@ local function dash(self)
 		dash_state = true 
 		can_dash = false
 		dash_init = true 
-		last_position = go.get_position(".")
-		msg.post("dsh_trg#dash_trigger","dsh_trg",{dashing = true, lst_pos = last_position, time = dash_timer})
+		--last_position = go.get_position(".")
+		--msg.post("dsh_trg#dash_trigger","dsh_trg",{dashing = true, lst_pos = last_position, time = dash_timer})
 		if vmath.length_sqr(self.dir) > 0  then
 			dash_dir = vmath.normalize(self.dir)
 		else
@@ -153,6 +153,16 @@ function on_message(self, message_id, message, sender)
 	if message_id == hash("ray_cast_caster") then
 		msg.post(sender,"ray_cast_return",{cast = true })
 	end 
+	if message_id == hash("Dsh_response") then 
+		dash_init = false
+		self.dir = message.normal
+		local target_pos  = message.my_pos + -dash_dir  * (message.distance * 2)
+		go.set_position( target_pos, "Player")  
+		go.animate("Player", "position", go.PLAYBACK_ONCE_FORWARD ,target_pos , go.EASING_INOUTSINE, 0.15, 0,function()
+			go.set_position( target_pos, "Player")
+			dash_init = false
+		end)
+	end
 	--[[
 	if message_id ==  hash("contact_point_response") then
 		--print("colided with wall ")

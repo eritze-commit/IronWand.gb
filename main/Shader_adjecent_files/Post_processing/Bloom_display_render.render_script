@@ -326,6 +326,20 @@ function update(self)
 		
 		render.disable_state(graphics.STATE_DEPTH_TEST)
 
+		render.draw_debug3d()
+
+		reset_camera_world(state)
+
+		local camera_gui = state.cameras.camera_gui
+		render.set_view(camera_gui.view)
+		render.set_projection(camera_gui.proj)
+
+		render.enable_state(graphics.STATE_STENCIL_TEST)
+		render.draw(predicates.gui, camera_gui.options)
+		render.draw(predicates.debug_text, camera_gui.options)
+		render.disable_state(graphics.STATE_STENCIL_TEST)
+		render.disable_state(graphics.STATE_BLEND)
+
 	--render.clear({[graphics.BUFFER_TYPE_COLOR0_BIT] = vmath.vector4(0,0,1,1)})
 	render.set_render_target(render.RENDER_TARGET_DEFAULT)
 
@@ -369,21 +383,21 @@ function update(self)
 	end
 	
 	
-	render.draw_debug3d()
-
-	reset_camera_world(state)
+-- 	render.draw_debug3d()
+-- 
+-- 	reset_camera_world(state)
 
 	-- render GUI
 	--
-	local camera_gui = state.cameras.camera_gui
-	render.set_view(camera_gui.view)
-	render.set_projection(camera_gui.proj)
+	-- local camera_gui = state.cameras.camera_gui
+	-- render.set_view(camera_gui.view)
+	-- render.set_projection(camera_gui.proj)
 
-	render.enable_state(graphics.STATE_STENCIL_TEST)
-	render.draw(predicates.gui, camera_gui.options)
-	render.draw(predicates.debug_text, camera_gui.options)
-	render.disable_state(graphics.STATE_STENCIL_TEST)
-	render.disable_state(graphics.STATE_BLEND)
+	-- render.enable_state(graphics.STATE_STENCIL_TEST)
+	-- render.draw(predicates.gui, camera_gui.options)
+	-- render.draw(predicates.debug_text, camera_gui.options)
+	-- render.disable_state(graphics.STATE_STENCIL_TEST)
+	-- render.disable_state(graphics.STATE_BLEND)
 end
 
 function on_message(self, message_id, message)

@@ -3,31 +3,31 @@ tile_width: 16
 tile_height: 16
 collision_groups: "default"
 animations {
-  id: "big_bullet"
+  id: "big"
   start_tile: 1
   end_tile: 4
   playback: PLAYBACK_LOOP_PINGPONG
   fps: 10
 }
 animations {
-  id: "medium_bullet"
+  id: "medium"
   start_tile: 5
   end_tile: 8
   playback: PLAYBACK_LOOP_PINGPONG
   fps: 10
 }
 animations {
-  id: "small_bullet"
-  start_tile: 9
-  end_tile: 12
-  playback: PLAYBACK_LOOP_PINGPONG
-  fps: 10
-}
-animations {
-  id: "special_bullet"
+  id: "star"
   start_tile: 13
   end_tile: 16
   playback: PLAYBACK_LOOP_PINGPONG
   fps: 15
+}
+animations {
+  id: "tiny"
+  start_tile: 9
+  end_tile: 12
+  playback: PLAYBACK_LOOP_PINGPONG
+  fps: 10
 }
 extrude_borders: 2

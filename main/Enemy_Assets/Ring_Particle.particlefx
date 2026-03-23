@@ -1,6 +1,6 @@
 emitters {
   mode: PLAY_MODE_ONCE
-  duration: 0.2
+  duration: 0.1
   space: EMISSION_SPACE_EMITTER
   tile_source: "/main/Enemy_Assets/Ring_particle_sheed.tilesource"
   animation: "ring"
@@ -10,7 +10,7 @@ emitters {
   properties {
     key: EMITTER_KEY_SPAWN_RATE
     points {
-      y: 10.0
+      y: 50.0
     }
   }
   properties {
@@ -28,8 +28,9 @@ emitters {
   properties {
     key: EMITTER_KEY_PARTICLE_LIFE_TIME
     points {
-      y: 0.3
+      y: 0.5
     }
+    spread: 0.1
   }
   properties {
     key: EMITTER_KEY_PARTICLE_SIZE
@@ -71,11 +72,15 @@ emitters {
   particle_properties {
     key: PARTICLE_KEY_SCALE
     points {
-      y: 1.0
+      y: 0.039714
+      t_x: 0.118886165
+      t_y: 0.9929079
     }
     points {
       x: 1.0
-      y: 5.346363
+      y: 6.122952
+      t_x: 0.040696654
+      t_y: 0.99917156
     }
   }
   particle_properties {
@@ -108,8 +113,8 @@ emitters {
     key: PARTICLE_KEY_ROTATION
     points {
       y: 11.713518
-      t_x: 2.2578893E-4
-      t_y: 1.0
+      t_x: 0.0012978715
+      t_y: 0.99999917
     }
     points {
       x: 1.0

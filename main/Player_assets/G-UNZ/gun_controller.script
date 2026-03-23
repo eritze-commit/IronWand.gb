@@ -1,3 +1,5 @@
+local gun_state = require("main.Player_assets.G-UNZ.gun_b")
+
 function init(self)
 	msg.post(".", "acquire_input_focus")
 	self.rot = 0
@@ -11,22 +13,29 @@ function init(self)
 	self.can_shoot =  true
 	self.opo_dir = vmath.vector3(0,0,0)
 	self.focus_on_gun = false
+	self.gun_dir = vmath.vector3(0,0,0)
+	self.prev_state = 0
+	self.cur_state = 0
+	self.defualt_cheat_vl = 9999
+	self.reload_time = 5
+	self.reload_timer = false
+	self.last_rotate = vmath.vector3()
 
 	self.gun_master_list = {
-		["pistol"] = {spread = 10, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 2,dmg = 3},
-		["uzi"] = {spread = 30, bul_speed = 210, delay = 0.06, ammount = 1, recoil = 3.5,dmg = 1},
-		["awp"] = {spread = 1, bul_speed = 300, delay = 1, ammount = 1, recoil = 10,dmg = 10},
-		["ak47"] = {spread = 15, bul_speed = 210, delay = 0.09, ammount = 1, recoil = 2,dmg = 1.5},
-		["shotgun"] = {spread = 40, bul_speed = 200, delay = 1, ammount = 10, recoil = 7,dmg = 5},
-		["mp5"] = {spread = 10, bul_speed = 210, delay = 0.2, ammount = 2, recoil = 1,dmg = 1.5},
+		["pistol"] = {spread = 10, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 2,dmg = 3 ,   max_mag_size = 15, in_mag = 15, total_mags =  self.defualt_cheat_vl },
+		["uzi"] = {spread = 30, bul_speed = 210, delay = 0.06, ammount = 1, recoil = 3.5,dmg = 1,    max_mag_size = 50, in_mag = 50, total_mags = self.defualt_cheat_vl },
+		["awp"] = {spread = 1, bul_speed = 300, delay = 1, ammount = 1, recoil = 10,dmg = 10,  		 max_mag_size = 1, in_mag = 1, total_mags = self.defualt_cheat_vl },
+		["ak47"] = {spread = 15, bul_speed = 210, delay = 0.09, ammount = 1, recoil = 2,dmg = 1.5, max_mag_size = 35, in_mag = 35, total_mags = self.defualt_cheat_vl },
+		["shotgun"] = {spread = 20, bul_speed = 200, delay = 1, ammount = 5, recoil = 7,dmg = 0.5,  max_mag_size = 5, in_mag = 5, total_mags = self.defualt_cheat_vl },
+		["mp5"] = {spread = 10, bul_speed = 210, delay = 0.2, ammount = 2, recoil = 1,dmg = 1.5, max_mag_size = 25, in_mag = 25, total_mags = self.defualt_cheat_vl }, 
 		--["arrow"] = {spread = 0, bul_speed = 0, delay = 0.1, ammount = 0, recoil = 0},
-		["m4"] = {spread = 0, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 1.5,dmg =2},
-		["revolver"] = {spread = 3, bul_speed = 250, delay = 0.7, ammount = 1, recoil = 4,dmg = 5},
-		["p90"] = {spread = 2, bul_speed = 210, delay = 0.05, ammount = 1, recoil = 1,dmg = 0.5},
+		["m4"] = {spread = 0, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 1.5,dmg =2,  max_mag_size = 30, in_mag = 30, total_mags = self.defualt_cheat_vl }, 
+		["revolver"] = {spread = 3, bul_speed = 250, delay = 0.7, ammount = 1, recoil = 4,dmg = 5,  max_mag_size = 6, in_mag = 6, total_mags = self.defualt_cheat_vl }, 
+		["p90"] = {spread = 2, bul_speed = 210, delay = 0.09, ammount = 1, recoil = 1,dmg = 0.5, max_mag_size = 50, in_mag = 50, total_mags = self.defualt_cheat_vl },
 	}
 	
 	self.gun_state = {
-		[0] = {flip = false, z_order = 1.19, slot = "gun_cont#slot" },
+		--[0] = {flip = false, z_order = 1.19, slot = "gun_cont#slot" },
 		[-45] = {flip = false, z_order = 1.21, slot = "gun_cont#slot" },
 		[-90] = {flip = false, z_order = 1.21, slot = "gun_cont#slot" },
 		[-135] = {flip = true, z_order = 1.21, slot = "gun_cont#slot" },
@@ -36,7 +45,7 @@ function init(self)
 		[-315] = {flip = false, z_order = 1.19, slot = "gun_cont#slot" },
 		[-360] = {flip = false, z_order = 1.19, slot = "gun_cont#slot" },
 
-
+		
 		[45] = {flip = false, z_order = 1.19, slot = "gun_cont#slot" },
 		[90] = {flip = false, z_order = 1.19, slot = "gun_cont#slot" },
 		[135] = {flip = true, z_order = 1.19, slot = "gun_cont#slot" },
@@ -48,37 +57,64 @@ function init(self)
 			
 	}	
 	self.cur_z = 1.19
+
+	
 	
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
 end
-local gun_rot_delay = 0.15
+
+
+
+local gun_rot_delay = 0.3
 function update(self, dt)
-	if self.input_polls.right or self.input_polls.left then 
-		if self.input_polls.right then 
-			self.rot = self.rot - 45
-			
-			if  self.rot < -360 then 
-				self.rot = 0
-				self.rot = self.rot - 45
-			end
-			vmath.vector3()
-			
-			--go.set_rotation(vmath.quat_rotation_z(math.rad(self.rot)), ".") 
-			go.animate(".","rotation",go.PLAYBACK_ONCE_FORWARD,vmath.quat_rotation_z(math.rad(self.rot)),go.EASING_OUTBACK,gun_rot_delay )
+	if vmath.length(self.gun_dir) > 0 then 
+		if vmath.length(self.gun_dir) > 0 then 
+			self.gun_dir = vmath.normalize(self.gun_dir)
 		end
-		if self.input_polls.left then 
-			self.rot = self.rot + 45
-			if self.rot > 360 then
-				self.rot = 0
-				self.rot = self.rot + 45
-			end
-			--go.set_rotation(vmath.quat_rotation_z(math.rad(self.rot)), ".") 
-			go.animate(".","rotation",go.PLAYBACK_ONCE_FORWARD,vmath.quat_rotation_z(math.rad(self.rot)),go.EASING_OUTBACK,gun_rot_delay )
+		local deg = ( math.atan2(self.gun_dir.y,self.gun_dir.x)) * (180 / math.pi)
+		if deg < 0 then 
+			deg = deg + 360
+		end 
+		local rounded_deg = math.floor(deg / 45 + 0.5) * 45
+		print("DEGREEES ",math.floor(deg),"CORDINGATES",self.gun_dir) 
+		if self.gun_state[rounded_deg] then 
+			self.cur_state = rounded_deg 
+
 		end
+	end
+	
+	if self.cur_state ~= self.prev_state and not self.reload_timer  then 
+		self.prev_state = self.cur_state
+		-- if self.input_polls.right then 
+		-- 	self.rot = self.rot - 45
+		-- 	
+		-- 	if  self.rot < -360 then 
+		-- 		self.rot = 0
+		-- 		self.rot = self.rot - 45
+		-- 	end
+		-- 	vmath.vector3()
+		-- 	
+		-- 	--go.set_rotation(vmath.quat_rotation_z(math.rad(self.rot)), ".") 
+		-- 	go.animate(".","rotation",go.PLAYBACK_ONCE_FORWARD,vmath.quat_rotation_z(math.rad(self.rot)),go.EASING_OUTBACK,gun_rot_delay )
+		-- end
+		-- if self.input_polls.left then 
+		-- 	self.rot = self.rot + 45
+		-- 	if self.rot > 360 then
+		-- 		self.rot = 0
+		-- 		self.rot = self.rot + 45
+		-- 	end
+		-- 	--go.set_rotation(vmath.quat_rotation_z(math.rad(self.rot)), ".") 
+		-- 	go.animate(".","rotation",go.PLAYBACK_ONCE_FORWARD,vmath.quat_rotation_z(math.rad(self.rot)),go.EASING_OUTBACK,gun_rot_delay )
+		-- end
 		
 		--print("CUR SELF DEGREEES " , self.rot)
+		--vmath.quat_rotation_z(math.rad(self.rot))
+		self.last_rotate = self.rot
+		local current_rot = go.get(".","euler.z")
+		self.rot = self.cur_state
+		go.animate(".","euler.z",go.PLAYBACK_ONCE_FORWARD,current_rot + ((self.rot - current_rot + 180 )%360-180) ,go.EASING_OUTBACK,0.2 )
 		if self.focus_on_gun then
 			local cur_dir_rad = math.rad(self.rot)
 			local focus_dir = vmath.vector3(
@@ -111,6 +147,32 @@ function update(self, dt)
 end
 local gun_relapse = false
 
+local function Gun_reload(self) 
+	
+	if self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag <= math.floor(self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size/3 ) then
+		local In_mag_negative =  self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size - self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag
+		if self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags >= In_mag_negative then 
+			self.reload_timer = true
+			self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag + In_mag_negative
+			self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags  = self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags -  In_mag_negative
+		-- if self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags <= self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size then
+		-- 	self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag =  self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag + self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size
+		-- else
+		-- 	self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag + (self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size - self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag)
+		-- end
+		go.animate(".","euler.z",go.PLAYBACK_ONCE_FORWARD,go.get(".","euler.z")-360,go.EASING_OUTBOUNCE,1.5, 0.1, function()  
+				go.set(go.get_id(),"euler.z", self.rot) 
+				self.reload_timer = false
+			end)
+		end
+	end
+	--print(go.get(go.get_id(),"euler.z"))
+	gun_state.gun_cur_in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag
+	gun_state.gun_max_mag  =  self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags
+
+	
+end
+
 local function Gun_shoot(self)
 	if gun_relapse  ~= true then
 		local s_s_max = 1.1
@@ -138,7 +200,7 @@ local function Gun_shoot(self)
 	local cur_pos = self.cur_pos
 	cur_pos.z = self.cur_z
 	direction = cur_pos + direction * self.gun_master_list[self.gun_swap[self.cur_gun]].recoil
-	go.animate(".","position", go.PLAYBACK_ONCE_FORWARD, direction,go.EASING_OUTBACK , (gun_rot_delay/4) ,0,
+	go.animate(".","position", go.PLAYBACK_ONCE_FORWARD, direction,go.EASING_OUTBACK , (0.01) ,0,
 	function() 
 		timer.delay(self.gun_master_list[self.gun_swap[self.cur_gun]].delay ,false,
 		function()
@@ -164,9 +226,9 @@ local function Gun_shoot(self)
 	
 		local bullet_objct =  factory.create("gun_cont#bullet_spawner",go.get_world_position("target_trig"))
 		msg.post(bullet_objct,"spawn_data",{ spawn_dir = dir, speed = self.gun_master_list[self.gun_swap[self.cur_gun]].bul_speed, dmg = self.gun_master_list[self.gun_swap[self.cur_gun]].dmg})
-		
 	end
 	end
+	
 end
 
 local function gun_focus(self) 
@@ -187,9 +249,13 @@ end
 function on_message(self, message_id, message, sender)
 end
 function on_input(self, action_id, action)
-	if self.can_shoot then
+
+	if self.can_shoot and self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag > 0 and not self.reload_timer  then
 	if action_id == hash("trigger") then 
 		Gun_shoot(self)
+		self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag - 1
+		gun_state.gun_cur_in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag
+		gun_state.gun_max_mag  =  self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags
 	end
 	end
 	if action_id == hash("swap") then 
@@ -205,6 +271,20 @@ function on_input(self, action_id, action)
 				self.cur_gun = 1 
 			end
 			sprite.play_flipbook("gun_cont#slot", self.gun_swap[self.cur_gun])
+			gun_state.gun_name = self.gun_swap[self.cur_gun]
+			gun_state.gun_cur_in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag
+			gun_state.gun_max_mag  =  self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags
+		end
+	end
+	if action_id == hash("reload") then 
+		if self.btn_prst ~= true then
+			self.btn_prst = true
+			
+			timer.delay( 1 ,false,function() 
+				self.btn_prst = false
+			end)
+
+			Gun_reload(self)
 		end
 	end
 	if action_id == hash("focus") then 
@@ -218,6 +298,20 @@ function on_input(self, action_id, action)
 			gun_focus(self) 
 		end
 	end
+	
+	if action_id == hash("R_up") then 
+		self.gun_dir.y = action.value
+	end
+	if action_id == hash("R_down") then 
+		self.gun_dir.y = -action.value
+	end
+	if action_id == hash("R_left")   then 
+		self.gun_dir.x = -action.value
+	end
+	if action_id == hash("R_right") then 
+		self.gun_dir.x = action.value
+	end
+	
 	if action_id == hash("g_right") then 
 		if self.btn_prst ~= true then
 			self.btn_prst = true

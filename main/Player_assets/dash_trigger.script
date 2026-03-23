@@ -1,3 +1,4 @@
+local Pstate = require "main.Player_assets.Player_state_module"
 function init(self)
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
@@ -44,23 +45,24 @@ function on_message(self, message_id, message, sender)
 	if message_id ==  hash("contact_point_response") then
 		
 		if message.other_group == hash("wall") then
-			if dash_init == true then
 				--print("colided with wall ")
 				--local next_pos = vmath.lerp(0.01,last_position,self.pos)
 				--_Ggo.set_position(next_pos, ".")
-				if 	message.distance > 0 then 
-					go.animate("Player", "position", go.PLAYBACK_ONCE_FORWARD ,last_position , go.EASING_INOUTSINE, 0.15, 0,function()
-						dash_init = false
-					end)
+				local self_pos = go.get_position("Player")
+				if 	message.distance >= 0 then
+					local target_pos  = self_pos + -Pstate.player_dir  * (message.distance * 2)
+					go.set_position( target_pos, "Player")  
+					msg.post("Player","Dsh_response",{dsh = false,normal = message.normal, distance = message.distance, my_pos =  self_pos}) 
+					-- local cur_pos = go.get_position("Player")
+					-- --go.set_position( cur_pos , "Player")
+					-- local target_pos  = cur_pos + message.normal * message.distance 
+					--go.animate("Player", "position", go.PLAYBACK_ONCE_FORWARD ,target_pos , go.EASING_INOUTSINE, 0.15, 0,function()
+					--	dash_init = false
+					--end)
 					--self.dir = vmath.vector3(0,0,0)
-					local cur_pos = go.get_position("Player")
-					cur_pos = cur_pos + message.normal * message.distance * 2 
-					go.set_position( cur_pos , "Player")
-					dash_init = false 
 					--go.set_position(resolved, ".")
 					--	end
 					--end
-				end
 			end
 		end
 	end

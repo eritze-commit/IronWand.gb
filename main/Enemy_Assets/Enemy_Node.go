@@ -10,10 +10,17 @@ components {
   id: "Enemy_death_explosion"
   component: "/main/Player_assets/Enemy_death_explosion.particlefx"
 }
+components {
+  id: "enemy_spawn"
+  component: "/main/Enemy_Assets/enemy_spawn.particlefx"
+  position {
+    y: -6.0
+  }
+}
 embedded_components {
   id: "Main_sprite"
   type: "sprite"
-  data: "default_animation: \"slime\"\n"
+  data: "default_animation: \"spinin\"\n"
   "material: \"/main/Enemy_Assets/Enemy_shader_related_files/Enemy_Material_custom.material\"\n"
   "size {\n"
   "  x: 18.0\n"
@@ -41,6 +48,7 @@ embedded_components {
   "}\n"
   ""
   position {
+    y: -1.0
     z: 1.0
   }
   scale {
@@ -95,7 +103,7 @@ embedded_components {
   "    count: 1\n"
   "    id: \"entity\"\n"
   "  }\n"
-  "  data: 0.576439\n"
+  "  data: 3.134015\n"
   "}\n"
   "locked_rotation: true\n"
   "event_trigger: false\n"

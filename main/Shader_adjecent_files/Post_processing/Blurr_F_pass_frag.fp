@@ -75,7 +75,8 @@ void main()
 	
 	// RGB MASK  ____-___--_---_--------___--__--___-__--__-__
 	float thickness = 350.0;
-	float m = var_texcoord0.x * thickness * 2.09439;
+	float stripes = 350;
+	float m = var_texcoord0.x * stripes * 2.09439;
 
 	vec3 mask ;
 		mask.r = 0.5 + 0.5 * sin(m);

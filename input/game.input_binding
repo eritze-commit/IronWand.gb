@@ -96,15 +96,15 @@ gamepad_trigger {
 }
 gamepad_trigger {
   input: GAMEPAD_RPAD_LEFT
-  action: "dash"
+  action: ""
 }
 gamepad_trigger {
   input: GAMEPAD_RSHOULDER
-  action: "g_right"
+  action: "trigger"
 }
 gamepad_trigger {
   input: GAMEPAD_LSHOULDER
-  action: "g_left"
+  action: "dash"
 }
 gamepad_trigger {
   input: GAMEPAD_RPAD_RIGHT
@@ -112,7 +112,7 @@ gamepad_trigger {
 }
 gamepad_trigger {
   input: GAMEPAD_RPAD_DOWN
-  action: "trigger"
+  action: ""
 }
 gamepad_trigger {
   input: GAMEPAD_LSTICK_DOWN
@@ -137,4 +137,24 @@ gamepad_trigger {
 gamepad_trigger {
   input: GAMEPAD_RTRIGGER
   action: "asm"
+}
+gamepad_trigger {
+  input: GAMEPAD_RSTICK_DOWN
+  action: "R_down"
+}
+gamepad_trigger {
+  input: GAMEPAD_RSTICK_LEFT
+  action: "R_left"
+}
+gamepad_trigger {
+  input: GAMEPAD_RSTICK_RIGHT
+  action: "R_right"
+}
+gamepad_trigger {
+  input: GAMEPAD_RSTICK_UP
+  action: "R_up"
+}
+gamepad_trigger {
+  input: GAMEPAD_LTRIGGER
+  action: "reload"
 }

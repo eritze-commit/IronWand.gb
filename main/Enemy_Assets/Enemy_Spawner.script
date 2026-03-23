@@ -1,19 +1,32 @@
 local env = require("main.Scripts.eviorment_data")
 
-local enemy_buffer = {}
+local name_list = {"cow","slime","batorb","skull"}
+
+local enmey_max_buffer = 5
+
+local cur_enemy_buffer = 0
 
 local function Node_Placer()
+	local enemies_spawned = 0 
+	local enemies_spawned = 0
 	for y = 0, 23 do 
 		for x = 0, 37 do 
 			if env.floor_tiles[x.."_"..y]  then
 				if not env.statue_pos[x.."_"..y ] then 
-					if math.random(1,200) < 3 then 
+					if math.random(1,25) == 1  then 
 						local  new_enemy = factory.create("/DynamicProceduralEnemyController#factory", vmath.vector3((x*16)+8,(y*16)+8,1))
-						msg.post(new_enemy, "start_path", {delay_time = 3 })
-						table.insert(enemy_buffer,new_enemy)
+						msg.post(new_enemy, "start_path", {delay_time = 3, name = name_list[math.random(1,#name_list)] , random_module = math.random()})
+						--table.insert(enemy_buffer,new_enemy)
+						enemies_spawned = enemies_spawned + 1 
 						--print("NODE PLACED AT ",vmath.vector3((x*16)+8,(y*16)+8,1))5
 					end 
 				end
+				if enemies_spawned >= enmey_max_buffer then 
+					break
+				end
+			end
+			if enemies_spawned >= enmey_max_buffer then 
+				break
 			end
 		end
 	end

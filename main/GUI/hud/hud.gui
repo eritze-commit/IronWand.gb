@@ -1,0 +1,40 @@
+script: "/main/GUI/hud/hud.gui_script"
+fonts {
+  name: "PixeRlino"
+  font: "/main/GUI/hud/PixeRlino.font"
+}
+nodes {
+  position {
+    x: 492.0
+    y: 86.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "<text>"
+  font: "PixeRlino"
+  id: "Gun_ammo"
+  xanchor: XANCHOR_LEFT
+  yanchor: YANCHOR_BOTTOM
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 314.0
+    y: 430.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "0/5"
+  font: "PixeRlino"
+  id: "enemy_count"
+  yanchor: YANCHOR_TOP
+  inherit_alpha: true
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

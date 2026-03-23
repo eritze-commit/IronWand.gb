@@ -1,3 +1,5 @@
+local Pstate = require "main.Player_assets.Player_state_module"
+
 function init(self)
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
@@ -97,6 +99,17 @@ function on_message(self, message_id, message, sender)
 		end
 		)
 		
+	end
+	if message_id == hash("trigger_response") then 
+		print("TRIG  RESPONSE",sender)
+		msg.post(message.other_id,"player_hit",{data = 6767})
+	end
+	if message_id == hash("Hit_response") then 
+		if  not Pstate.dashing then 
+			particlefx.stop("Pl_Sprite#player_death")
+			particlefx.play("Pl_Sprite#player_death")
+			go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
+		end
 	end
 	
 	-- Add message-handling code here
