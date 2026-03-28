@@ -3,6 +3,10 @@ fonts {
   name: "PixeRlino"
   font: "/main/GUI/hud/PixeRlino.font"
 }
+textures {
+  name: "health_bar_tiles"
+  texture: "/main/GUI/hud/health_bar_tiles.tilesource"
+}
 nodes {
   position {
     x: 492.0
@@ -13,7 +17,7 @@ nodes {
     y: 100.0
   }
   type: TYPE_TEXT
-  text: "<text>"
+  text: "Gunz"
   font: "PixeRlino"
   id: "Gun_ammo"
   xanchor: XANCHOR_LEFT
@@ -36,5 +40,100 @@ nodes {
   yanchor: YANCHOR_TOP
   inherit_alpha: true
 }
+nodes {
+  position {
+    x: 337.0
+    y: -52.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "floor 0 \n"
+  ""
+  font: "PixeRlino"
+  id: "map_info"
+  yanchor: YANCHOR_TOP
+  layer: "behind2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: -654.0
+    y: 240.0
+    z: 1.0
+  }
+  scale {
+    x: 4.799695
+    y: 6.853936
+  }
+  size {
+    x: 205.0
+    y: 100.0
+  }
+  type: TYPE_BOX
+  id: "box"
+  xanchor: XANCHOR_LEFT
+  layer: "back"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  material: "gui_mod"
+}
+nodes {
+  position {
+    x: 241.0
+    y: 85.0
+  }
+  scale {
+    x: 9.743875
+    y: 0.755927
+  }
+  type: TYPE_BOX
+  texture: "health_bar_tiles/bar_slide"
+  id: "heatlh_bar"
+  yanchor: YANCHOR_BOTTOM
+  pivot: PIVOT_W
+  layer: "front"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 319.05652
+    y: 85.0
+  }
+  scale {
+    x: 0.761126
+    y: 0.104682
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  type: TYPE_BOX
+  id: "health_bar_back_drop"
+  inherit_alpha: true
+  alpha: 0.44
+  size_mode: SIZE_MODE_AUTO
+}
+layers {
+  name: "front"
+}
+layers {
+  name: "back"
+}
+layers {
+  name: "behind2"
+}
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT
+materials {
+  name: "gui_mod"
+  material: "/main/Shader_adjecent_files/GUI_shaders/gui_mod.material"
+}

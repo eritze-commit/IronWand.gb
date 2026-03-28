@@ -1,3 +1,8 @@
+script: "/main/GUI/start_menu_script.gui_script"
+fonts {
+  name: "PixeRlino"
+  font: "/main/GUI/hud/PixeRlino.font"
+}
 textures {
   name: "Logo"
   texture: "/main/assets/atlasses/Logo.atlas"
@@ -7,14 +12,96 @@ nodes {
     x: 324.0
     y: 323.0
   }
+  scale {
+    x: 0.8
+    y: 0.8
+  }
   size {
     x: 600.0
     y: 300.0
   }
   type: TYPE_BOX
   texture: "Logo/Iron_Wand_TYpeFont"
-  id: "box"
+  id: "logo"
+  yanchor: YANCHOR_TOP
+  layer: "layer1"
   inherit_alpha: true
+}
+nodes {
+  position {
+    x: 305.0
+    y: 152.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "START\n"
+  ""
+  font: "PixeRlino"
+  id: "start"
+  yanchor: YANCHOR_BOTTOM
+  layer: "layer1"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 323.0
+    y: 235.0
+  }
+  scale {
+    x: 6.448651
+    y: 10.452331
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.102
+    y: 0.102
+    z: 0.102
+  }
+  type: TYPE_BOX
+  id: "backDrop"
+  xanchor: XANCHOR_LEFT
+  yanchor: YANCHOR_BOTTOM
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 723.0
+    y: -105.0
+  }
+  rotation {
+    z: 37.383
+  }
+  scale {
+    x: 2.009785
+    y: 4.261082
+    z: 4.46
+  }
+  type: TYPE_PARTICLEFX
+  id: "Dust"
+  xanchor: XANCHOR_LEFT
+  layer: "layer1"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  particlefx: "GUi_main_menu_particle"
+}
+layers {
+  name: "layer1"
 }
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT
+particlefxs {
+  name: "GUi_main_menu_particle"
+  particlefx: "/main/GUI/GUi_main_menu_particle.particlefx"
+}

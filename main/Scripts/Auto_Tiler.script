@@ -25,6 +25,7 @@ function init(self)
 		[15] = 16,
 	}
 	self.pressed = false 
+	math.randomseed(os.time())
 
 end
 local object_que = {}
@@ -184,13 +185,16 @@ function update(self, dt)
 end
 function on_message(self, message_id, message, sender)
 	if message_id == hash("clear_object_self") then 
-		print("GOT THE FUCKING MESSEGE BRUH YOU FUCKING CLEAR ",message.id)
+		--print("GOT THE FUCKING MESSEGE BRUH YOU FUCKING CLEAR ",message.id)
 		for i = #object_que , 1 , -1 do 
 			if object_que[i] == message.id then
 				table.remove(object_que,i)
 				break
 			end
 		end
+	end
+	if message_id == hash("asm") then 
+		map_assembler(self)
 	end
 end
 

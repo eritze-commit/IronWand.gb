@@ -8,6 +8,12 @@ fragment_constants {
   value {
   }
 }
+fragment_constants {
+  name: "scrn_res"
+  type: CONSTANT_TYPE_USER
+  value {
+  }
+}
 samplers {
   name: "texture_sampler"
   wrap_u: WRAP_MODE_CLAMP_TO_EDGE

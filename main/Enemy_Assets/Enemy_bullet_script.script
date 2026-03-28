@@ -39,6 +39,7 @@ function on_message(self, message_id, message, sender)
 		msg.post(sender,"break_wall",{dmg = 0.5})
 	end
 	if message_id == hash("player_hit") then
+		go.delete(".")
 		msg.post(sender,"Hit_response",{data = 6767})
 	end
 	if message_id == hash("contact_point_response") then

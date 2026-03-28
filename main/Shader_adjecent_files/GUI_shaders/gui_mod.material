@@ -1,0 +1,15 @@
+name: "gui"
+tags: "gui"
+vertex_program: "/main/Shader_adjecent_files/GUI_shaders/gui_mod.vp"
+fragment_program: "/main/Shader_adjecent_files/GUI_shaders/gui_mod.fp"
+vertex_constants {
+  name: "view_proj"
+  type: CONSTANT_TYPE_VIEWPROJ
+}
+fragment_constants {
+  name: "u_time"
+  type: CONSTANT_TYPE_USER
+  value {
+    x: 0.5
+  }
+}

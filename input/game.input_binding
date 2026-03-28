@@ -70,6 +70,10 @@ key_trigger {
   input: KEY_C
   action: "clear_nodes"
 }
+key_trigger {
+  input: KEY_SPACE
+  action: "action_but"
+}
 mouse_trigger {
   input: MOUSE_BUTTON_LEFT
   action: "g_left"
@@ -96,7 +100,7 @@ gamepad_trigger {
 }
 gamepad_trigger {
   input: GAMEPAD_RPAD_LEFT
-  action: ""
+  action: "action_but"
 }
 gamepad_trigger {
   input: GAMEPAD_RSHOULDER
@@ -136,7 +140,7 @@ gamepad_trigger {
 }
 gamepad_trigger {
   input: GAMEPAD_RTRIGGER
-  action: "asm"
+  action: "asm*"
 }
 gamepad_trigger {
   input: GAMEPAD_RSTICK_DOWN

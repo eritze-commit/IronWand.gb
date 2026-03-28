@@ -75,6 +75,16 @@ function on_message(self, message_id, message, sender)
 		end
 		--print(self.dashing)
 	end
+	if message_id == hash("camera_change_zoom") then 
+		camera.set_orthographic_zoom("#Camera",message.zoom  )
+		print("CUR ZOOOM ")
+	end
+	if message_id == hash("screen_shake") then 
+		local sign_x = math.random(0, 1) == 0 and 1 or -1
+		local sign_y = math.random(0, 1) == 0 and 1 or -1
+		local screen_shake = go.get_position(".") + vmath.vector3(math.random()*sign_x,math.random()*sign_y,0) * message.strenght
+		go.animate(".","position",go.PLAYBACK_ONCE_FORWARD,screen_shake,go.EASING_OUTBOUNCE,0.1)
+	end
 	-- Add message-handling code here
 	-- Learn more: https://defold.com/manuals/message-passing/
 	-- Remove this function if not needed

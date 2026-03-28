@@ -1,14 +1,27 @@
+local enemy_state = require("main.Player_assets.G-UNZ.Hud_state")
+
 local env = require("main.Scripts.eviorment_data")
 
 local name_list = {"cow","slime","batorb","skull"}
 
 local enmey_max_buffer = 5
+local enemy_spawn_delay = 3
 
 local cur_enemy_buffer = 0
+local default_spawn_delay = 3
+
+local cur_wave  = 0
+local max_waves = 3
+
+local buffer_of_enemies = {}
 
 local function Node_Placer()
+	cur_wave = cur_wave + 1 
+	enemy_state.enemy_cur_wave = cur_wave
 	local enemies_spawned = 0 
-	local enemies_spawned = 0
+	local enemies_spawned_this_round = 0
+	local enmey_max_buffer =  math.random(3,7)
+	for i = 1, 5 do 
 	for y = 0, 23 do 
 		for x = 0, 37 do 
 			if env.floor_tiles[x.."_"..y]  then
@@ -16,7 +29,7 @@ local function Node_Placer()
 					if math.random(1,25) == 1  then 
 						local  new_enemy = factory.create("/DynamicProceduralEnemyController#factory", vmath.vector3((x*16)+8,(y*16)+8,1))
 						msg.post(new_enemy, "start_path", {delay_time = 3, name = name_list[math.random(1,#name_list)] , random_module = math.random()})
-						--table.insert(enemy_buffer,new_enemy)
+						table.insert(buffer_of_enemies,new_enemy)
 						enemies_spawned = enemies_spawned + 1 
 						--print("NODE PLACED AT ",vmath.vector3((x*16)+8,(y*16)+8,1))5
 					end 
@@ -29,8 +42,16 @@ local function Node_Placer()
 				break
 			end
 		end
+		if enemies_spawned >= enmey_max_buffer then 
+			break
+		end
 	end
-	
+	if enemies_spawned >= enmey_max_buffer then 
+		break
+	end
+	end
+	enemy_state.enemy_max_in_lvl = enemies_spawned
+	enemy_state.enemy_cur_alive = #buffer_of_enemies
 end
 
 local function clear_everything()
@@ -62,6 +83,7 @@ function update(self, dt)
 end
 
 function fixed_update(self, dt)
+	print("BUFFER OF ENEMIES ", #buffer_of_enemies,"")
 	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
 	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
 	-- Physics section of game.project
@@ -71,6 +93,39 @@ function fixed_update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
+	if message_id == hash("enemy_reset") then 
+		Node_Placer()
+	end
+	if message_id == hash("enemy_clear_from_buffer") then 
+		for i = #buffer_of_enemies, 1, -1 do 
+			if buffer_of_enemies[i] == message.id then 
+				table.remove(buffer_of_enemies ,i)
+			end
+		end
+		enemy_state.enemy_cur_alive = #buffer_of_enemies
+		if #buffer_of_enemies <= 0 then 
+			if cur_wave >= max_waves then 
+				cur_wave = 0 
+				enemy_state.enemy_cur_wave = cur_wave
+				enemy_state.map_cur_floor = enemy_state.map_cur_floor + 1 
+				timer.delay(10,false,function() 
+					Node_Placer()
+				end)
+				timer.delay(2,false,function() 
+					msg.post("/GUI_ON_TOP#hud","map_info",{floor = 1 })
+				end)
+
+				timer.delay(3,false,function() 
+					msg.post("/Map#Auto_Tiler","asm",{map = 1})
+				end)
+			else
+				timer.delay(2,false,function() 
+					Node_Placer()
+				end)
+			end
+			
+		end
+	end
 	-- Add message-handling code here
 	-- Learn more: https://defold.com/manuals/message-passing/
 	-- Remove this function if not needed

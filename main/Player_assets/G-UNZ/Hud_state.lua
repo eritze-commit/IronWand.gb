@@ -4,6 +4,10 @@ local hud_state = {
 	gun_reload_mag  = 0,
 	gun_name = "Uzi",
 
-	enemy_max_in_lvl
+	enemy_max_in_lvl = 0,
+	enemy_cur_alive = 0,
+	enemy_cur_wave = 0,
+
+	map_cur_floor = 0,
 }
 return hud_state

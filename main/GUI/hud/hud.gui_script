@@ -1,12 +1,23 @@
-local gun_state = require("main.Player_assets.G-UNZ.Hud_state")
+ local gun_state = require("main.Player_assets.G-UNZ.Hud_state")
+local dtime = require("main.Shader_adjecent_files.Post_processing.dtime")
+
 local  Last_in_mag = 0
 local scale_strenght = 0.05
 
+local last_enemy = 0
+
+local floor_state = ""
+local table_floor_state = { 
+	["not_visible"] = vmath.vector3(314.0,-52.0,0),
+	["visible"] = vmath.vector3(314.0,239.0,0)
+							}
+
 function init(self)
-	-- Add initialization code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
+	self.time = 0
+	self.health_bar_size = gui.get(gui.get_node("heatlh_bar" ),"scale.x")
+	
 end
+
 
 function final(self)
 	-- Add finalization code here
@@ -16,7 +27,9 @@ end
 
 function update(self, dt)
 	
-
+	self.time = self.time * dt
+	dtime.dt = self.time 
+	
 	if gun_state.gun_cur_in_mag ~= Last_in_mag then 
 		Last_in_mag = gun_state.gun_cur_in_mag
 		gui.set_text( gui.get_node("Gun_ammo" ),gun_state.gun_name.."\n"..gun_state.gun_cur_in_mag.."/"..gun_state.gun_max_mag)
@@ -25,12 +38,37 @@ function update(self, dt)
 		end)
 		--gui.animate
 	end
+	if gun_state.enemy_cur_alive ~= last_enemy then
+		last_enemy = gun_state.enemy_cur_alive
+		gui.set_text( gui.get_node("enemy_count" ),"Wave :"..gun_state.enemy_cur_wave.."\n"..gun_state.enemy_cur_alive.."/"..gun_state.enemy_max_in_lvl)
+		gui.animate( gui.get_node("enemy_count" ), "scale",vmath.vector3(1+scale_strenght,1+scale_strenght,1),go.EASING_INBOUNCE,0.05,0, function() 
+			gui.animate( gui.get_node("enemy_count" ), "scale",vmath.vector3(1,1,1),go.EASING_INBOUNCE,0.05,0)
+		end)
+	end
 	-- Add update code here
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
 end
 
 function on_message(self, message_id, message, sender)
+	if message_id == hash("map_info") then 
+		print("GOT iT THE GUI GOT THE THING ")
+		--gui.set( gui.get_node("box" ),"visible",true)
+		--gui.set(gui.get_node("map_info" ),"visible",true)
+		gui.animate( gui.get_node("box" ), "position",vmath.vector3(319.0,240.0,0),go.EASING_INEXPO,1,0, function() 
+			gui.animate( gui.get_node("box" ), "position",vmath.vector3(-654.0,240.0,0),go.EASING_OUTEXPO,1,2)
+			--gui.set( gui.get_node("box" ),"visible",false)
+		end)
+		gui.set_text( gui.get_node("map_info" ),"Floor :"..gun_state.map_cur_floor)
+		gui.animate( gui.get_node("map_info" ), "position",table_floor_state["visible"],go.EASING_INEXPO,2,0, function() 
+			gui.animate( gui.get_node("map_info" ), "position",table_floor_state["not_visible"],go.EASING_OUTEXPO,1,2)
+			--gui.set(gui.get_node("map_info" ),"visible",false)
+		end)
+	end
+	if message_id == hash("health_bar_change") then 
+		local health_bar_factor = message.health / message.max_health
+		gui.animate(gui.get_node("heatlh_bar" ),"scale.x",self.health_bar_size*health_bar_factor,go.EASING_INEXPO,0.1)
+	end
 	-- Add message-handling code here
 	-- Learn more: https://defold.com/manuals/message-passing/
 	-- Remove this function if not needed

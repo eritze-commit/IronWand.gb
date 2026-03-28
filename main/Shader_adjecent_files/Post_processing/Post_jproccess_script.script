@@ -3,6 +3,7 @@ function init(self)
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
 	self.time = 0
+	self.cur_zoom = 0
 end
 
 function final(self)
@@ -10,23 +11,30 @@ function final(self)
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
 end
-
+local last_w = 0 
+local last_h = 0
 function update(self, dt)
-	--[[
-	local w = render.get_window_width()
-	local h = render.get_window_height()
+	
+	local  w, h = window.get_size()
+	
 	--]]
 	
 	local cam_pos =  go.get_position("Player_ROOT/camera")
-	
+	--print( w,h,"WINDOW SIZE ")
 	go.set_position(vmath.vector3(cam_pos.x,cam_pos.y,0), ".")
 	self.time = self.time + dt
 	go.set("#posProc","uTime",vmath.vector4(self.time,0,0,0))
-	--[[
-	if w ~= last_w and h ~= last_h then 
-		go.set_scale(vmath.vector3(w,h,0), ".")
+	if w ~= last_w or h ~= last_h then 
+		go.set("#posProc","scrn_res",vmath.vector4(w,h,0,0))
 		last_h = h
 		last_w = w 
+		
+		local screen_size = math.sqrt(w^2+h^2)
+		local b = 0.0025
+		local d = 3
+		self.cur_zoom = math.floor((b*screen_size+d)+0.5) 
+		msg.post("/Player_ROOT/camera#camera_script","camera_change_zoom",{zoom = self.cur_zoom}) 
+
 	end
 	--]]
 	

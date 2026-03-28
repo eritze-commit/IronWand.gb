@@ -68,22 +68,6 @@ embedded_instances {
   }
 }
 embedded_instances {
-  id: "PathFinder"
-  data: "components {\n"
-  "  id: \"Pathfind_map\"\n"
-  "  component: \"/main/Enemy_Assets/Pathfind_map.tilemap\"\n"
-  "  position {\n"
-  "    x: 16.0\n"
-  "    y: 16.0\n"
-  "  }\n"
-  "}\n"
-  "components {\n"
-  "  id: \"Pathfinding\"\n"
-  "  component: \"/main/Enemy_Assets/Pathfinding.script\"\n"
-  "}\n"
-  ""
-}
-embedded_instances {
   id: "post proccessing "
   data: "components {\n"
   "  id: \"Post_jproccess_script\"\n"
@@ -145,6 +129,10 @@ embedded_instances {
   "  id: \"Hit_sounds\"\n"
   "  component: \"/main/Enemy_Assets/Sounds/Hit_sounds.sound\"\n"
   "}\n"
+  "components {\n"
+  "  id: \"gun_reload\"\n"
+  "  component: \"/main/Player_assets/SFX/gun_reload.sound\"\n"
+  "}\n"
   ""
 }
 embedded_instances {
@@ -159,6 +147,12 @@ embedded_instances {
   "  data: \"prototype: \\\"/main/Enemy_Assets/Enemy_Node.go\\\"\\n"
   "\"\n"
   "}\n"
+  "embedded_components {\n"
+  "  id: \"numerical_facotry\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/main/Enemy_Assets/hit_numerical.go\\\"\\n"
+  "\"\n"
+  "}\n"
   ""
 }
 embedded_instances {
@@ -166,6 +160,10 @@ embedded_instances {
   data: "components {\n"
   "  id: \"hud\"\n"
   "  component: \"/main/GUI/hud/hud.gui\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"Start GUi\"\n"
+  "  component: \"/main/GUI/Start GUi.gui\"\n"
   "}\n"
   ""
 }

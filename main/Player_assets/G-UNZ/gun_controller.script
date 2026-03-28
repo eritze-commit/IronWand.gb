@@ -1,4 +1,4 @@
-local gun_state = require("main.Player_assets.G-UNZ.gun_b")
+local gun_state = require("main.Player_assets.G-UNZ.Hud_state")
 
 function init(self)
 	msg.post(".", "acquire_input_focus")
@@ -26,7 +26,7 @@ function init(self)
 		["uzi"] = {spread = 30, bul_speed = 210, delay = 0.06, ammount = 1, recoil = 3.5,dmg = 1,    max_mag_size = 50, in_mag = 50, total_mags = self.defualt_cheat_vl },
 		["awp"] = {spread = 1, bul_speed = 300, delay = 1, ammount = 1, recoil = 10,dmg = 10,  		 max_mag_size = 1, in_mag = 1, total_mags = self.defualt_cheat_vl },
 		["ak47"] = {spread = 15, bul_speed = 210, delay = 0.09, ammount = 1, recoil = 2,dmg = 1.5, max_mag_size = 35, in_mag = 35, total_mags = self.defualt_cheat_vl },
-		["shotgun"] = {spread = 20, bul_speed = 200, delay = 1, ammount = 5, recoil = 7,dmg = 0.5,  max_mag_size = 5, in_mag = 5, total_mags = self.defualt_cheat_vl },
+		["shotgun"] = {spread = 20, bul_speed = 200, delay = 1, ammount = 5, recoil = 7,dmg = 2,  max_mag_size = 5, in_mag = 5, total_mags = self.defualt_cheat_vl },
 		["mp5"] = {spread = 10, bul_speed = 210, delay = 0.2, ammount = 2, recoil = 1,dmg = 1.5, max_mag_size = 25, in_mag = 25, total_mags = self.defualt_cheat_vl }, 
 		--["arrow"] = {spread = 0, bul_speed = 0, delay = 0.1, ammount = 0, recoil = 0},
 		["m4"] = {spread = 0, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 1.5,dmg =2,  max_mag_size = 30, in_mag = 30, total_mags = self.defualt_cheat_vl }, 
@@ -78,7 +78,7 @@ function update(self, dt)
 			deg = deg + 360
 		end 
 		local rounded_deg = math.floor(deg / 45 + 0.5) * 45
-		print("DEGREEES ",math.floor(deg),"CORDINGATES",self.gun_dir) 
+		--print("DEGREEES ",math.floor(deg),"CORDINGATES",self.gun_dir) 
 		if self.gun_state[rounded_deg] then 
 			self.cur_state = rounded_deg 
 
@@ -152,6 +152,11 @@ local function Gun_reload(self)
 	if self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag <= math.floor(self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size/3 ) then
 		local In_mag_negative =  self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size - self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag
 		if self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags >= In_mag_negative then 
+			local s_s_max = 1.6
+			local s_s_min = 1.1
+			local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+			sound.stop("/Sound_manager#gun_reload")
+			sound.play("/Sound_manager#gun_reload",{speed = random_offset, gain = 0.5})
 			self.reload_timer = true
 			self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag + In_mag_negative
 			self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags  = self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags -  In_mag_negative

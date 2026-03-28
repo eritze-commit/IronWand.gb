@@ -65,7 +65,7 @@ function init(self)
 	self.random_number_slot = 0
 
 	self.vector_transform = 0
-	self.enemy_shooting_speed = 5
+	self.enemy_shooting_speed = 2.5
 
 	self.noise_factor = vmath.vector3()
 
@@ -309,6 +309,8 @@ function final(self)
 	
 	sound.stop("/Sound_manager#break_explode_sound")
 	sound.play("/Sound_manager#break_explode_sound",{speed = random_offset })
+	msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","enemy_clear_from_buffer",{id = go.get_id()})
+	
 end
 
 
@@ -389,7 +391,7 @@ function update(self, dt)
 
 		(self.path[self.next_point][1]*16)+8 + self.noise_factor.x --self.dir.x * noise_factor
 		,(self.path[self.next_point][2]*16)+8 + self.noise_factor.y  -- self.dir.y * noise_factor
-		,0)
+		, self.cur_pos.z)
 		
 		self.desiered_dir =  vmath.normalize(self.target_pos- self.cur_pos) 
 		self.dir = vmath.normalize(vmath.lerp(dt*self.smoothness,self.dir,self.desiered_dir))
@@ -488,6 +490,8 @@ function on_message(self, message_id, message, sender)
 		end)
 
 		self.health = self.health - message.dmg 
+		factory.create("/DynamicProceduralEnemyController#numerical_facotry",go.get_position("."),nil,{value = message.dmg})
+
 		if self.health <= 0  then 
 			go.delete()
 		end
@@ -499,7 +503,7 @@ function on_message(self, message_id, message, sender)
 
 	if message_id == hash("start_path") then 
 
-		timer.delay(5*message.random_module,false, function() 
+		timer.delay(20*message.random_module,false, function() 
 			particlefx.play("#enemy_spawn")
 			self.alive = true
 			self.default_speed = self.speed
