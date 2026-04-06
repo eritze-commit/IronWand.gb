@@ -29,4 +29,4 @@ layers {
   id: "wall_on_top"
   z: 1.1
 }
-material: "/builtins/materials/tile_map.material"
+material: "/main/Enemy_Assets/Enemy_shader_related_files/Enemy_Material_custom.material"

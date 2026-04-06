@@ -9,6 +9,9 @@ embedded_components {
   "  x: 128.0\n"
   "  y: 16.0\n"
   "}\n"
+  "color {\n"
+  "  y: 0.0\n"
+  "}\n"
   "outline {\n"
   "  x: 0.2\n"
   "  z: 0.2\n"
@@ -20,7 +23,7 @@ embedded_components {
   "material: \"/builtins/fonts/label-df.material\"\n"
   ""
   position {
-    z: 10.0
+    z: 16.0
   }
   scale {
     x: 0.2

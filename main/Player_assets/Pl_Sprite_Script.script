@@ -12,7 +12,8 @@ function init(self)
 	self.dashing = false
 	self.max =  Pstate.health 
 	self.immunity = false
-	self.immunity_frame_time = 0.1
+	self.immunity_frame_time = 0.3
+
 end
 
 function final(self)
@@ -21,7 +22,9 @@ function final(self)
 	-- Remove this function if not needed
 end
 
+
 function update(self, dt)
+	if Pstate.alive then 
 	local camera_pos = go.get_position(".")
 
 	local pl_pos =  go.get_position("Player")
@@ -69,6 +72,9 @@ function update(self, dt)
 	end
 	
 	sprite.set_hflip("Pl_Sprite#plr", self.vertical)
+	else
+		sprite.play_flipbook("Pl_Sprite#plr","dead")
+	end
 	
 end
 
@@ -103,26 +109,26 @@ function on_message(self, message_id, message, sender)
 		)
 		
 	end
-	if message_id == hash("trigger_response") and not self.immunity then 
-		print("TRIG  RESPONSE",sender)
-		self.immunity = true
-		timer.delay(self.immunity_frame_time,false,function() 	
-			self.immunity = false
-		end)
-		msg.post(message.other_id,"player_hit",{data = 6767})
-	end
+	if message_id == hash("trigger_response") and not self.immunity and message.other_group == hash("bullet_box") and Pstate.alive  then 
+		if not Pstate.dashing then 
+			self.immunity = true
+			timer.delay(self.immunity_frame_time,false,function() 	
+				self.immunity = false
+			end)
+			msg.post(message.other_id,"player_hit",{data = 6767})
+		end
+		end
 	if message_id == hash("Hit_response") then 
-		if  not Pstate.dashing then 
-			Pstate.health  = Pstate.health - 1
-			if Pstate.health <= 0 then 
-				particlefx.stop("Pl_Sprite#player_death")
-				particlefx.play("Pl_Sprite#player_death")
-				Pstate.health = Pstate.max_health
-				go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
-				msg.post("/GUI_ON_TOP#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})
-			end
+		Pstate.health  = Pstate.health - 1
+		sound.stop("/Sound_manager#Pl_hit_sfx")
+		sound.play("/Sound_manager#Pl_hit_sfx")
 			msg.post("/GUI_ON_TOP#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})
 			msg.post("/Player_ROOT/camera#camera_script","screen_shake",{strenght  = 10})
+			if Pstate.health <= 0 then 
+				sprite.play_flipbook("Pl_Sprite#plr","dead")
+				Pstate.alive = false
+				particlefx.play("Pl_Sprite#player_death")
+				msg.post("/global#Game_state_manager","change_state",{state = "dead"})
 		end
 	end
 	

@@ -74,13 +74,17 @@ key_trigger {
   input: KEY_SPACE
   action: "action_but"
 }
+key_trigger {
+  input: KEY_Q
+  action: "reload"
+}
 mouse_trigger {
   input: MOUSE_BUTTON_LEFT
-  action: "g_left"
+  action: "trigger"
 }
 mouse_trigger {
   input: MOUSE_BUTTON_RIGHT
-  action: "g_right"
+  action: "focus"
 }
 gamepad_trigger {
   input: GAMEPAD_LPAD_DOWN
@@ -161,4 +165,8 @@ gamepad_trigger {
 gamepad_trigger {
   input: GAMEPAD_LTRIGGER
   action: "reload"
+}
+gamepad_trigger {
+  input: GAMEPAD_CONNECTED
+  action: "connected"
 }

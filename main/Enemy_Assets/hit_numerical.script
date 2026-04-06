@@ -1,7 +1,9 @@
 go.property("value", 67)
+go.property("special", vmath.vector4(1,1,1,1))
 
 function init(self)
-	label.set_text("#label",self.value)
+	label.set_text("#label",math.floor(self.value))
+	go.set("#label","color",self.special)
 	local x_modulator = math.random(0,1) == 0 and 1 or -1  
 	go.animate(".","position",go.PLAYBACK_ONCE_FORWARD,go.get_position(".")+vmath.vector3(math.random()*x_modulator * 10 ,math.random(20,30),0),go.EASING_OUTEXPO,0.7,0, function() 
 		go.delete()

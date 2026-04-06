@@ -1,0 +1,129 @@
+local Pstate = require("main.Player_assets.Player_state_module")
+local map_state = require("main.Player_assets.G-UNZ.Hud_state")
+local active = require("main.Enemy_Assets.drops.spawnded_items_data")
+
+
+function init(self)
+	self.curent_state = "menu"
+	self.avalable_states  = {
+		["menu"] = {["paused"]=true},
+		["playing"] = {["menu"]=true},
+		["dead"] = {["playing"]=true},
+		["paused"] = {["playing"]=true},
+		["up_floor"] = {["playing"]=true},
+		["game_over"] = {["dead"]=true},
+		["combo"] = {["playing"]=true}
+	}
+end
+
+local combo_state = 0
+local timer_active = false
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function fixed_update(self, dt)
+	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
+	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
+	-- Physics section of game.project
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("change_state") then
+		if self.avalable_states[message.state][self.curent_state] then 
+			self.curent_state = message.state
+
+			if self.curent_state == "playing" then 
+				print("RIght state",message.state)
+				Pstate.alive = true
+				msg.post("/GUI_ON_TOP#Start GUi","show_gui",{show = false}) 
+				msg.post("/Map#Auto_Tiler","asm",{map = 1})
+				msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","enemy_clear_from_buffer",{chat = 0})
+				active.cur_scene_active = true
+
+			elseif self.curent_state == "up_floor" then
+				active.cur_scene_active = false 
+				self.curent_state = "playing"
+				map_state.map_cur_floor = map_state.map_cur_floor + 1 
+				timer.delay(2,false,function() 
+					msg.post("/GUI_ON_TOP#hud","map_info",{floor = 1 })
+				end)
+
+				timer.delay(3,false,function() 
+					msg.post("/Map#Auto_Tiler","asm",{map = 1})
+					active.cur_scene_active = true 
+				end)
+				timer.delay(10,false,function() 
+					msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","enemy_reset",{chat = 0})
+				end)
+			elseif self.curent_state == "dead" then
+				self.curent_state = "menu"
+				active.cur_scene_active = false 
+				
+				
+				msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","clear_enemies",{clea = true})
+				timer.delay(0.5,false,function()
+					msg.post("/GUI_ON_TOP#hud","map_info",{bar = nil})
+				end)
+				timer.delay(3.5,false,function() 
+					msg.post("/GUI_ON_TOP#Start GUi","show_gui",{show = true}) 
+					Pstate.health = Pstate.max_health
+					go.set_position(vmath.vector3(0,0,0,0), "/Player_ROOT/Player")
+
+					msg.post("/GUI_ON_TOP#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})
+					map_state.map_cur_floor = 1
+				end)
+			elseif self.curent_state == "combo" then
+				self.curent_state = "playing"
+				combo_state = combo_state + 1
+				if not timer_active then
+					timer_active = true
+					timer.delay(10, false, function() 
+						timer_active = false
+						msg.post("/GUI_ON_TOP#hud","update_combo",{visible  = timer_active, combo = combo_state, color = vmath.vector4(1,0,1,1),strenght =0.5+(combo_state/20)*5 })
+						combo_state = 0
+					end)
+				end
+				msg.post("/GUI_ON_TOP#hud","update_combo",{visible  = timer_active, combo = combo_state, color = vmath.vector4(1,1.0-(combo_state/20),1,1), strenght = 0.5+(combo_state/20)*5 })
+				sound.stop("/Sound_manager#combo_sfx")
+				sound.play("/Sound_manager#combo_sfx",{speed = 0.5 + (combo_state/20)* 1.5 , gain = (combo_state/20)* 0.7 })
+				
+			end
+			
+		else
+			print("SENDER OF WRONG STATE ",sender,"sent state",message.state,"CUR STATE ",self.curent_state)
+		end
+		 
+
+	end
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	--    msg.post(".", "acquire_input_focus")
+	--
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

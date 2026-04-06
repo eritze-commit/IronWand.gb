@@ -1,18 +1,17 @@
 emitters {
   mode: PLAY_MODE_LOOP
-  duration: 0.01
+  duration: 10.0
   space: EMISSION_SPACE_EMITTER
   tile_source: "/main/Player_assets/Particle_sheet.tilesource"
   animation: "Flip_throu"
   material: "/builtins/materials/particlefx.material"
-  max_particle_count: 10
+  max_particle_count: 20
   type: EMITTER_TYPE_2DCONE
   properties {
     key: EMITTER_KEY_SPAWN_RATE
     points {
-      y: 200.0
+      y: 1.0
     }
-    spread: 50.0
   }
   properties {
     key: EMITTER_KEY_SIZE_X
@@ -141,9 +140,8 @@ emitters {
   properties {
     key: EMITTER_KEY_SPAWN_RATE
     points {
-      y: 200.0
+      y: 1.0
     }
-    spread: 50.0
   }
   properties {
     key: EMITTER_KEY_SIZE_X
@@ -273,9 +271,8 @@ emitters {
   properties {
     key: EMITTER_KEY_SPAWN_RATE
     points {
-      y: 200.0
+      y: 1.0
     }
-    spread: 50.0
   }
   properties {
     key: EMITTER_KEY_SIZE_X

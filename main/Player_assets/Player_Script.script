@@ -109,6 +109,7 @@ local function dash(self)
 	end
 end
 function update(self, dt)
+	if  Pstate.alive then
 	input_direction(self) 
 	--print("self.dir :"..self.dir)
 	Pstate.player_dir = self.dir
@@ -146,6 +147,7 @@ function update(self, dt)
 		go.set_position(self.pos, ".")
 		Pstate.player_dir = dash_dir
 		Pstate.player_speed = dash_speed * dt
+	end
 	end
 end
 

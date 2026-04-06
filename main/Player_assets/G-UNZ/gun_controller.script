@@ -1,4 +1,5 @@
 local gun_state = require("main.Player_assets.G-UNZ.Hud_state")
+local Pstate = require "main.Player_assets.Player_state_module"
 
 function init(self)
 	msg.post(".", "acquire_input_focus")
@@ -16,16 +17,17 @@ function init(self)
 	self.gun_dir = vmath.vector3(0,0,0)
 	self.prev_state = 0
 	self.cur_state = 0
-	self.defualt_cheat_vl = 9999
+	self.defualt_cheat_vl = 99999
 	self.reload_time = 5
 	self.reload_timer = false
 	self.last_rotate = vmath.vector3()
+	self.clipped = false
 
 	self.gun_master_list = {
-		["pistol"] = {spread = 10, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 2,dmg = 3 ,   max_mag_size = 15, in_mag = 15, total_mags =  self.defualt_cheat_vl },
+		["pistol"] = {spread = 10, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 2,dmg = 3 ,   max_mag_size = 15, in_mag = 15, total_mags = 6767676767 },
 		["uzi"] = {spread = 30, bul_speed = 210, delay = 0.06, ammount = 1, recoil = 3.5,dmg = 1,    max_mag_size = 50, in_mag = 50, total_mags = self.defualt_cheat_vl },
-		["awp"] = {spread = 1, bul_speed = 300, delay = 1, ammount = 1, recoil = 10,dmg = 10,  		 max_mag_size = 1, in_mag = 1, total_mags = self.defualt_cheat_vl },
-		["ak47"] = {spread = 15, bul_speed = 210, delay = 0.09, ammount = 1, recoil = 2,dmg = 1.5, max_mag_size = 35, in_mag = 35, total_mags = self.defualt_cheat_vl },
+		["awp"] = {spread = 1, bul_speed = 300, delay = 1, ammount = 1, recoil = 10,dmg = 100,   max_mag_size = 3, in_mag = 1, total_mags = self.defualt_cheat_vl },
+		["ak47"] = {spread = 15, bul_speed = 210, delay = 0.15, ammount = 1, recoil = 2,dmg = 1.5, max_mag_size = 35, in_mag = 35, total_mags = self.defualt_cheat_vl },
 		["shotgun"] = {spread = 20, bul_speed = 200, delay = 1, ammount = 5, recoil = 7,dmg = 2,  max_mag_size = 5, in_mag = 5, total_mags = self.defualt_cheat_vl },
 		["mp5"] = {spread = 10, bul_speed = 210, delay = 0.2, ammount = 2, recoil = 1,dmg = 1.5, max_mag_size = 25, in_mag = 25, total_mags = self.defualt_cheat_vl }, 
 		--["arrow"] = {spread = 0, bul_speed = 0, delay = 0.1, ammount = 0, recoil = 0},
@@ -69,6 +71,7 @@ end
 
 local gun_rot_delay = 0.3
 function update(self, dt)
+	if Pstate.alive then
 	if vmath.length(self.gun_dir) > 0 then 
 		if vmath.length(self.gun_dir) > 0 then 
 			self.gun_dir = vmath.normalize(self.gun_dir)
@@ -143,7 +146,7 @@ function update(self, dt)
 	go.set_position(new_pos, ".")
 	self.cur_pos = pl_pos
 			
-	
+	end
 end
 local gun_relapse = false
 
@@ -252,10 +255,17 @@ local function gun_focus(self)
 end
 
 function on_message(self, message_id, message, sender)
+	if message_id == hash("trigger_response") then
+		print("TRIGGER TRIGGERREED ")
+		self.clipped = message.enter
+	end
+	if message_id == hash("mag_pickup") then 
+		self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags = self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags + self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size
+	end
 end
 function on_input(self, action_id, action)
 
-	if self.can_shoot and self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag > 0 and not self.reload_timer  then
+	if self.can_shoot and self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag > 0 and not self.reload_timer  and Pstate.alive and not self.clipped then
 	if action_id == hash("trigger") then 
 		Gun_shoot(self)
 		self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag - 1
@@ -315,6 +325,13 @@ function on_input(self, action_id, action)
 	end
 	if action_id == hash("R_right") then 
 		self.gun_dir.x = action.value
+	end
+	
+	if action.x ~= nil and action.y ~= nil then
+		local w,h =  window.get_size()
+		self.gun_dir.x =  action.screen_x - (w/2) 
+		self.gun_dir.y =  action.screen_y  - (h/2) 
+		--print("THIS RAN THE GUN COMPONENT ",self.gun_dir.x,self.gun_dir.y)
 	end
 	
 	if action_id == hash("g_right") then 

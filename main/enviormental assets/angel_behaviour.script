@@ -10,6 +10,12 @@ function init(self)
 	self.objects_normal = vmath.vector3()
 	self.sound_gain = 1.0
 	self.cord_key = nil
+	local s_s_max = 0.15
+	local s_s_min = 0
+	local neg_mod = math.random(0,1) == 0 and 1 or -1  
+	self.default_tint =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+	self.default_tint = self.default_tint * neg_mod
+	go.set("#sprite","color_mod",vmath.vector4(self.default_tint,0,0,0)) 
 end
 
 function final(self)
@@ -25,6 +31,7 @@ function final(self)
 		sound.play("/Sound_manager#break_explode_sound",{speed = random_offset, gain = self.sound_gain-0.1 })
 		particlefx.stop("#explode_triangle_fx")
 		particlefx.play("#explode_triangle_fx")
+		msg.post("/Drop_Spawner#Drop_spawner","spawn_drop",{position = go.get_position("."), max_drop = 1 })
 	end
 end
 
@@ -60,7 +67,9 @@ function on_message(self, message_id, message, sender)
 		if self.can_attack == true then
 			self.can_attack = false
 			local nrml = self.objects_normal
+			go.set("#sprite","flasher",vmath.vector4(1.2,0,0,0))
 			go.animate(".","position",go.PLAYBACK_ONCE_FORWARD,vmath.vector3(self.first_pos.x + nrml.x*(1), self.first_pos.y + nrml.y*(1),nrml.z),go.EASING_LINEAR,0.05,0, function( ) 
+				go.set("#sprite","flasher",vmath.vector4(1,0,0,0))
 				go.animate(".","position",go.PLAYBACK_ONCE_FORWARD,self.first_pos,go.EASING_LINEAR,0.01,0)
 				self.can_attack = true
 			end)

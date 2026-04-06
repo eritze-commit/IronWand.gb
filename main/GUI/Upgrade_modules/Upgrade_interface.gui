@@ -1,0 +1,202 @@
+script: "/main/GUI/Upgrade_modules/Upgrade_gui_behavour.gui_script"
+fonts {
+  name: "PixeRlino"
+  font: "/main/GUI/hud/PixeRlino.font"
+}
+nodes {
+  position {
+    x: 107.0
+    y: 405.0
+  }
+  scale {
+    x: 0.7
+    y: 0.7
+  }
+  size {
+    x: 100.0
+    y: 100.0
+  }
+  type: TYPE_BOX
+  id: "Up_1_image"
+  xanchor: XANCHOR_LEFT
+  layer: "front layer"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 170.0
+    y: 405.0
+  }
+  scale {
+    x: 0.7
+    y: 0.7
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "i write text here and \n"
+  "i write text here and \n"
+  "i write text here and \n"
+  "\n"
+  "\n"
+  "\n"
+  "\n"
+  ""
+  font: "PixeRlino"
+  id: "Up_1_text"
+  xanchor: XANCHOR_LEFT
+  yanchor: YANCHOR_TOP
+  pivot: PIVOT_W
+  layer: "front layer"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 320.0
+    y: 241.0
+  }
+  scale {
+    x: 5.045523
+    y: 7.771638
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.102
+    y: 0.102
+    z: 0.102
+  }
+  type: TYPE_BOX
+  id: "backdrop"
+  xanchor: XANCHOR_LEFT
+  yanchor: YANCHOR_BOTTOM
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 107.0
+    y: 295.0
+  }
+  scale {
+    x: 0.7
+    y: 0.7
+  }
+  size {
+    x: 100.0
+    y: 100.0
+  }
+  type: TYPE_BOX
+  id: "Up_2_image1"
+  xanchor: XANCHOR_LEFT
+  layer: "front layer"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 170.0
+    y: 295.0
+  }
+  scale {
+    x: 0.7
+    y: 0.7
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "i write text here and \n"
+  "i write text here and \n"
+  "i write text here and \n"
+  "\n"
+  "\n"
+  "\n"
+  "\n"
+  ""
+  font: "PixeRlino"
+  id: "Up_2_text"
+  xanchor: XANCHOR_LEFT
+  yanchor: YANCHOR_TOP
+  pivot: PIVOT_W
+  layer: "front layer"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 107.0
+    y: 183.0
+  }
+  scale {
+    x: 0.7
+    y: 0.7
+  }
+  size {
+    x: 100.0
+    y: 100.0
+  }
+  type: TYPE_BOX
+  id: "Up_3_image"
+  xanchor: XANCHOR_LEFT
+  layer: "front layer"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 170.0
+    y: 183.0
+  }
+  scale {
+    x: 0.7
+    y: 0.7
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "i write text here and \n"
+  "i write text here and \n"
+  "i write text here and \n"
+  "\n"
+  "\n"
+  "\n"
+  "\n"
+  ""
+  font: "PixeRlino"
+  id: "Up_3_text"
+  xanchor: XANCHOR_LEFT
+  yanchor: YANCHOR_TOP
+  pivot: PIVOT_W
+  layer: "front layer"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 543.0
+    y: 53.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "MANA \n"
+  ""
+  font: "PixeRlino"
+  id: "mana"
+  layer: "front layer"
+  inherit_alpha: true
+}
+layers {
+  name: "front layer"
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

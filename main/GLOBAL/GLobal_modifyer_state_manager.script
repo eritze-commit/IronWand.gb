@@ -1,0 +1,55 @@
+local global = require("main.GLOBAL.GLOBAL")
+local map_state = require("main.Player_assets.G-UNZ.Hud_state")
+local Pstate = require "main.Player_assets.Player_state_module"
+
+local last_map_state_floor = -1
+local floor_t
+
+function init(self)
+	-- Add initialization code here
+	-- Learn more: https://defold.com/manuals/script/
+
+	-- Remove this function if not needed
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	--print("MAP  SCALAR ",global.floor_linear_scalar)
+	if  map_state.map_cur_floor ~= last_map_state_floor then 
+		last_map_state_floor = map_state.map_cur_floor
+		floor_t = map_state.map_cur_floor / global.max_floor
+		global.floor_linear_scalar = 0.7 + ( floor_t  * 4.3 )
+		global.map_tint = -(floor_t * 0.25)
+		global.enemy_spawn_scale = math.floor(floor_t * 40)
+		global.enemy_spawn_delay_scalar = 10 + (floor_t * 50)
+	end	
+end
+
+function on_message(self, message_id, message, sender)
+	-- Add message-handling code here
+	-- Learn more: https://defold.com/manuals/message-passing/
+	-- Remove this function if not needed
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	--    msg.post(".", "acquire_input_focus")
+	--
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

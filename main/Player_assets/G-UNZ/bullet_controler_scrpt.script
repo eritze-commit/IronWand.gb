@@ -1,5 +1,7 @@
 go.property("type", 1)
 
+
+
 function init(self)
 	self.spawned = false
 	self.speed = 0
@@ -8,6 +10,7 @@ function init(self)
 	self.cur_pos = go.get_position(".")
 	self.dmg = 0
 	self.sound_manager = nil
+	self.bounces = 0
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
@@ -63,5 +66,9 @@ function on_message(self, message_id, message, sender)
 		self.spawned = true
 		self.dmg = message.dmg
 		self.sound_manager = message.sound_manager
+		-- for _, modules in ipairs(bullet_mod.bullet_equiped_modules) do
+		-- 	
+		-- end
+		
 	end
 end

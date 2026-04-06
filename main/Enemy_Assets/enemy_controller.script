@@ -1,4 +1,5 @@
 	local env = require("main.Scripts.eviorment_data")
+	local global = require("main.GLOBAL.GLOBAL")
 	local Pstate = require "main.Player_assets.Player_state_module"
 	
 function init(self)
@@ -8,7 +9,7 @@ function init(self)
 	self.next_point = 1
 	self.dir = vmath.vector3()
 	self.distance = vmath.vector3()
-	self.speed =  40--math.random(40,50)
+	self.speed = 40--math.random(40,50)
 	self.target_pos =  vmath.vector3()
 	self.grid_size = 16
 	self.real_end = vmath.vector3()
@@ -29,13 +30,18 @@ function init(self)
 	self.shooting_cooldown = 3
 	self.Dx = nil
 	self.is_flipped = false
+
+	self.default_tint = 1 
 	self.should_flip = nil
 	self.smoothed_vel = vmath.vector3()
 	self.alive = false
 
+	self.critical_hit_chance = global.crit_chance
+	self.critical_hit_multiplyer = global.crit_multiplyer
+
 	self.cur_bullet_type = nil
 
-	self.health = 20
+	self.health = math.random(10,20)
 
 	self.active_timer = {first = false, second = false}
 	
@@ -57,6 +63,8 @@ function init(self)
 
 	self.player_prediction =  vmath.vector3()
 	self.shoot_dir = vmath.vector3()
+
+	self.special = false
 	
 	
 	self.G_distance = 0
@@ -103,23 +111,46 @@ function init(self)
 		circle = 0 
 		
 	}
+	self.weight_values = { 
+		fluke =  math.random(),
+		rush =  math.random(),
+		flee =  math.random() , 
+		circle =  math.random()
+
+	}
 	self.bullets = {
 		{type = "tiny", speed = 90, diameter = 3 },
 		{type = "medium", speed = 79, diameter = 7 },
 		{type = "big", speed = 50, diameter = 13 },
-		{type = "star", speed = 0, diameter = 6 }
+		{type = "star", speed = 0.01, diameter = 6 }
+	}
+	self.attacks = {
+		
+		
 	}
 
 	self.kl = {
-		{name="fluke",value = math.random() + self.modulate.fluke, },
-		{name = "rush",value = math.random()+self.modulate.rush},
-		{name = "flee",value = math.random()+self.modulate.flee },
-		{name = "circle", value = math.random()+self.modulate.circle }
+		{name="fluke",value = self.weight_values.fluke + self.modulate.fluke, },
+		{name = "rush",value = self.weight_values.rush + self.modulate.rush},
+		{name = "flee",value = self.weight_values.flee + self.modulate.flee },
+		{name = "circle", value = self.weight_values.circle + self.modulate.circle }
 	}
 	self.r_t = {r  = 0, rand = 0 , picked = false, selected = ""}
 
 	self.rush_is_true = false
 	self.direction_slot = {}
+
+	self.last_pos =  go.get_position("/Player_ROOT/Player")
+	self.default_flash = go.set("#Main_sprite","flasher",vmath.vector4(1,0,0,0))
+	self.real_vel = nil
+
+	self.distance_to_p = nil
+	self.t_blend = nil
+	self.blend = nil
+	self.bullet_ammount = 1 
+	self.per_shot_cooldown = 0 
+	self.smart_aim = true
+	
 
 end
 
@@ -128,7 +159,7 @@ local grid_size = 16
 local function clear_everything()
 	for y = 1, 30 do 
 		for x = 1, 50 do 
-			tilemap.set_tile("/PathFinder#Pathfind_map","layer1",x,y,0)
+			tilemap.set_tile("/Debug_map#Pathfind_map","layer1",x,y,0)
 		end
 	end
 end
@@ -137,7 +168,7 @@ local function draw_Path(self)
 	clear_everything()
 	for i, ofdir in ipairs(self.path) do
 		print("THIS IS THE DRAWING FUNCTION ",ofdir[1],ofdir[2])
-		tilemap.set_tile("/PathFinder#Pathfind_map","layer1",math.floor(ofdir[1]),math.floor(ofdir[2]),math.random(1,4))
+		tilemap.set_tile("/Debug_map#Pathfind_map","layer1",math.floor(ofdir[1]),math.floor(ofdir[2]),math.random(1,4))
 	end
 
 	--path = {}
@@ -310,6 +341,15 @@ function final(self)
 	sound.stop("/Sound_manager#break_explode_sound")
 	sound.play("/Sound_manager#break_explode_sound",{speed = random_offset })
 	msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","enemy_clear_from_buffer",{id = go.get_id()})
+	msg.post("/global#Game_state_manager","change_state",{state = "combo"})
+
+	-- if math.random(0,1) == 1 then 
+	-- 	for i =1,   math.random(1,3) do 
+	-- 		local x_modulatro = math.random(0,1) == 1 and -1 or 1 
+	-- 		local y_modulatro = math.random(0,1) == 1 and -1 or 1 
+	-- 		factory.create("/DynamicProceduralEnemyController#drop_spawn",go.get_position(".")+vmath.vector3(math.random()*x_modulatro,math.random()*y_modulatro,0)*(math.random(1,10)))
+	-- 	end
+	-- end
 	
 end
 
@@ -336,7 +376,7 @@ local function path_state_calc(self)
 			self.speed = self.speed * 1.3
 			--self.smoothness = 100 --self.smoothness * 10
 			path_finder(self  ,{noise = true , noise_strenght = 0.9, path = "fluke", offset = math.random(1,2) })
-			print("PATH FLUKE ")
+			--print("PATH FLUKE ")
 			timer.delay(0.1, false, function() 
 				self.speed = self.default_speed
 			end)	
@@ -373,7 +413,9 @@ function update(self, dt)
 	--print("CAN SSEREE PLAYER ",self.can_see_player)
 	--print("SELF CAN SEE PLAYER",self.can_see_player)
 	self.cur_pos = go.get_position(".")
+	self.last_pos = self.pl_p
 	self.pl_p = go.get_position("/Player_ROOT/Player")
+	
 	self.Dx = self.pl_p.x - self.cur_pos.x
 	--print("SELF DX ",self.Dx)
 	if self.Dx ~= 0 then 
@@ -420,9 +462,23 @@ function update(self, dt)
 			--draw_Path(self)
 			--path_finder(self)
 		end
-		self.smoothed_vel = vmath.lerp(0.05,self.smoothed_vel,Pstate.player_dir * Pstate.player_speed)
+		
 	end
-	print("SELF> SPEED ",self.speed)
+	if self.smart_aim then
+		self.real_vel = (self.pl_p - self.last_pos )/dt
+	
+		self.distance_to_p = vmath.length(self.cur_pos - self.pl_p)
+
+		self.t_blend = (self.distance_to_p - 1 ) / (500 - 10)
+		self.t_blend =  math.min(math.max(self.t_blend, 0), 1)
+		--print(self.t_blend,"SELF T BLEND")
+		--print("PLAYER DISTACNE ",self.distance_to_p)
+		self.blend = vmath.lerp(self.t_blend, 0.05, 0.001)
+		--print("BLEND ",self.blend)
+		self.smoothed_vel = vmath.lerp(self.blend,self.smoothed_vel,self.real_vel)
+	end
+	
+	--print("SELF> SPEED ",self.speed)
 end
 
 function fixed_update(self, dt)
@@ -430,41 +486,52 @@ function fixed_update(self, dt)
 end
 
 local function shooting_now(self)
-	self.cur_bullet_type = self.bullets[math.random(1,#self.bullets)]
-	print("BULLETS ",self.bullets)
-	
-	self.player_prediction = go.get_position("/Player_ROOT/Player")
-	self.my_pos = go.get_position(".")
-	
+		self.cur_bullet_type = self.bullets[math.random(1,#self.bullets)]
+		--print("BULLETS ",self.bullets)
+		
+		self.player_prediction = go.get_position("/Player_ROOT/Player")
+		self.my_pos = go.get_position(".")
+		if self.cur_bullet_type.type ~= "star" then 
+			--for index = 0 , self.bullet_ammount do 
+			--	timer.delay(index*self.per_shot_cooldown, false , function() 
+				
+			if self.smart_aim then 
+				for i = 1 , 4 do 
+					self.dist_to_player =  vmath.length(self.player_prediction - self.my_pos)
+					--print("ENEMEY TO PLAYER DISTACNE ", vmath.length(self.player_prediction - self.my_pos),self.dist_to_player)
+					self.t = self.dist_to_player / self.cur_bullet_type.speed
+					--print("self smootherd value and self t ",self.smoothed_vel, self.t,self.cur_bullet_type.speed,go.get_position("/Player_ROOT/Player"))
+					self.player_prediction = go.get_position("/Player_ROOT/Player") + self.smoothed_vel * self.t
+				end
+			else
+				self.player_prediction = go.get_position("/Player_ROOT/Player")	
+			end
 
-	if vmath.length(Pstate.player_dir) > 0 then
-		Pstate.player_dir = vmath.normalize(Pstate.player_dir)
-	else
-		Pstate.player_dir = vmath.vector3(0, 0, 0)
-	end
-	
-	for i = 1 , 1 do 
-		self.dist_to_player = vmath.length(self.player_prediction - self.my_pos)
-		self.t = self.dist_to_player / self.bullet_speed
-	
-		self.player_prediction = go.get_position("/Player_ROOT/Player") + self.smoothed_vel * self.t
+		for index = 0 , self.bullet_ammount do 
+				timer.delay(index*self.per_shot_cooldown, false , function() 
+					self.shoot_dir = vmath.normalize(self.player_prediction - self.my_pos)
+
+					local my_bullet = factory.create("#factory", go.get_position("."),nil,{color_shift = vmath.vector4(self.default_tint,0,0,0)})
+					msg.post(my_bullet,"spawn_data",{dir = self.shoot_dir , speed = self.cur_bullet_type.speed ,diameter =  self.cur_bullet_type.diameter , type = self.cur_bullet_type.type  })
+				end)
+			end
+
+	--end)
+	--end
+
 	end
 
 	if self.cur_bullet_type.type == "star" then 
 		for i = 1, math.random(1,3)  do 
-			timer.delay(0.9,false,function() 
-				self.shoot_dir = vmath.normalize(self.player_prediction - go.get_position("."))
-
-				local my_bullet = factory.create("#factory", go.get_position("."))
-				msg.post(my_bullet,"spawn_data",{dir = self.shoot_dir , speed = self.cur_bullet_type.speed ,diameter =  self.cur_bullet_type.diameter , type = self.cur_bullet_type.type  })
+		timer.delay(0.9,false,function() 
+			self.shoot_dir = vmath.normalize(self.player_prediction - go.get_position("."))
+			local my_bullet = factory.create("#factory", go.get_position("."))
+			msg.post(my_bullet,"spawn_data",{dir = self.shoot_dir , speed = 0 ,diameter =  self.cur_bullet_type.diameter , type = self.cur_bullet_type.type  })
 			end)
 		end
-		
-	end
-	self.shoot_dir = vmath.normalize(self.player_prediction - go.get_position("."))
 
-	local my_bullet = factory.create("#factory", go.get_position("."))
-	msg.post(my_bullet,"spawn_data",{dir = self.shoot_dir , speed = self.cur_bullet_type.speed ,diameter =  self.cur_bullet_type.diameter , type = self.cur_bullet_type.type  })
+end
+	
 	
 end	
 	
@@ -485,14 +552,31 @@ function on_message(self, message_id, message, sender)
 		go.set("#Main_sprite","flasher",vmath.vector4(10,0,0,0))
 		sound.stop("/Sound_manager#Hit_sounds")
 		sound.play("/Sound_manager#Hit_sounds",{speed =  0.8 + (math.random() * (1.2 -  0.8)) })
-		go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, go.get_position(".")+ (self.knockback_dir * math.random() * 5), go.EASING_INBOUNCE, 0.01, 0, function() 
+		go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, go.get_position(".")+ (self.knockback_dir * math.random() * 5), go.EASING_INBOUNCE, 0.02, 0, function() 
 			go.set("#Main_sprite","flasher",vmath.vector4(1,0,0,0))
 		end)
-
-		self.health = self.health - message.dmg 
-		factory.create("/DynamicProceduralEnemyController#numerical_facotry",go.get_position("."),nil,{value = message.dmg})
+		if math.random(0,100) < self.critical_hit_chance then
+			self.health = self.health - message.dmg * self.critical_hit_multiplyer 
+			factory.create("/DynamicProceduralEnemyController#numerical_facotry",go.get_position("."),nil,{value = message.dmg * self.critical_hit_multiplyer, special = vmath.vector4(1,0,1,1)})
+		else
+			self.health = self.health - message.dmg
+			factory.create("/DynamicProceduralEnemyController#numerical_facotry",go.get_position("."),nil,{value = message.dmg , special = vmath.vector4(1,1,1,1)})
+		end
 
 		if self.health <= 0  then 
+			-- if math.random(0,1) == 1 then 
+			-- 	for i =1,   math.random(1,3) do 
+			-- 		local x_modulatro = math.random(0,1) == 1 and -1 or 1 
+			-- 		local y_modulatro = math.random(0,1) == 1 and -1 or 1 
+			-- 		factory.create("/DynamicProceduralEnemyController#drop_spawn",go.get_position(".")+vmath.normalize(vmath.vector3(math.random()*x_modulatro,math.random()*y_modulatro,0))*(math.random(10,30)))
+			-- 	end
+			-- 	local s_s_max = 0.5
+			-- 	local s_s_min = 0.1
+			-- 	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+			-- 	sound.stop("/Sound_manager#pickup_sfx")
+			-- 	sound.play("/Sound_manager#pickup_sfx",{speed =  random_offset, gain  = 0.5})
+			-- end
+			msg.post("/Drop_Spawner#Drop_spawner","spawn_drop",{position = go.get_position("."), max_drop = 3 })
 			go.delete()
 		end
 		
@@ -502,14 +586,43 @@ function on_message(self, message_id, message, sender)
 	end
 
 	if message_id == hash("start_path") then 
+		self.default_speed = message.speed 
+		self.speed = message.speed 
+		self.health = message.health
+		self.bullets = message.bullets 
+		self.weight_values = message.weight_values
+		self.special = message.special
+		self.enemy_shooting_speed = message.shooting_speed
+		self.bullet_ammount = message.bullet_ammount
+		self.per_shot_cooldown = message.per_shot_cooldown 
+		self.smart_aim = message.smart_aim
 
-		timer.delay(20*message.random_module,false, function() 
+		timer.delay(global.enemy_spawn_delay_scalar*message.random_module,false, function() 
+			if not self.special then 
+				local s_s_max = 0.1
+				local s_s_min = 0
+				local neg_mod = math.random(0,1) == 0 and 1 or -1  
+				self.default_tint =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+				self.default_tint =	self.default_tint  * neg_mod
+				go.set("#Main_sprite","color_mod",vmath.vector4(self.default_tint,0,0,0))
+			else
+				local s_s_max = 0.2
+				local s_s_min = 0.19
+				local neg_mod = math.random(0,1) == 0 and 1 or -1  
+				self.default_tint =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+				self.default_tint =	self.default_tint  * neg_mod
+				go.set("#Main_sprite","color_mod",vmath.vector4(self.default_tint,0,0,0))
+				--self.default_flash = vmath.vector4( 1 + self.default_tint ,0,0,0 )
+				--go.set("#Main_sprite","flasher",self.default_flash)
+				self.health = self.health + 50
+				self.bullet_ammount = self.bullet_ammount + math.random(1,3)
+			end
 			particlefx.play("#enemy_spawn")
 			self.alive = true
-			self.default_speed = self.speed
 		sprite.play_flipbook("#Main_sprite",message.name)
 		path_finder(self,{noise = false})
-		timer.delay(  math.random()+self.enemy_shooting_speed,true,function() 
+
+		timer.delay(  math.random() + self.enemy_shooting_speed,true,function() 
 			if self.can_see_player then 
 				shooting_now(self)
 				particlefx.stop("#Ring_Particle")
@@ -517,12 +630,14 @@ function on_message(self, message_id, message, sender)
 			end
 		end)
 		
-		timer.delay(0.01668, true , function() 
+		timer.delay(0.2, true , function() 
 			physics.raycast_async(go.get_position("."), go.get_position("/Player_ROOT/Player")+vmath.vector3(0,-5,0),{hash("entity"),hash("wall")})
 		end)
 		
 		timer.delay(self.random_delay_time, true , function() 
-			path_state_calc(self) 
+			if not  self.can_see_player  then 
+				path_state_calc(self) 
+			end
 			--path_finder(self)
 			--draw_Path(self)
 		end)	
@@ -537,22 +652,24 @@ function on_message(self, message_id, message, sender)
 		end
 	end
 	-- ss
-	if message_id == hash("trigger_response") then 
+	if message_id == hash("trigger_response") and self.alive then 
 		if message.other_group == hash("entity")  then
 			msg.post(message.other_id, "contact_by_bullet", {megage = true})
 		end
 	end
 	
-	if message_id ==  hash("contact_point_response") then
+	if message_id ==  hash("contact_point_response") and self.alive then
 		if message.other_group == hash("entity") then
 			msg.post(message.other_id, "contact_by_bullet", {megage = true})
 			--print("YES THIS RAN ")
 		end
 		if message.other_group == hash("wall") then
-				if 	message.distance > 0 then 
-					--go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD ,self.cur_pos+message.normal, go.EASING_INOUTSINE, 0.1)
-					go.set_position(go.get_position(".")+message.normal*message.distance, ".")
-					self.dir = vmath.normalize(vmath.lerp(0.3,self.dir,message.normal))
+			if 	message.distance > 0 then 
+				--go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD ,self.cur_pos+message.normal, go.EASING_INOUTSINE, 0.1)
+				self.into_wall = vmath.dot(self.dir,message.normal) * message.normal
+				self.dir = self.dir - self.into_wall	
+				go.set_position(go.get_position(".")+self.dir * 1 , ".")
+				
 				
 				end
 		end

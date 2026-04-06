@@ -1,6 +1,7 @@
 local env = require("main.Scripts.eviorment_data")
+local global = require("main.GLOBAL.GLOBAL")
 
-local floor_tile_size = 500
+local floor_tile_size = 500 * global.floor_linear_scalar
 local floor_repeat = 1
 
 function init(self)
@@ -167,6 +168,9 @@ local function auto_tiler(self)
 end
 
 local function map_assembler(self) 
+	floor_tile_size = 500 * global.floor_linear_scalar
+	print("floor_tile_size",floor_tile_size)
+	go.set("/Map#Standard","color_mod",vmath.vector4(global.map_tint,0,0,0))
 	clr_screen()
 	go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
 	for i = 1 , floor_repeat do 

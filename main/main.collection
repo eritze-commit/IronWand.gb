@@ -2,14 +2,11 @@ name: "main"
 collection_instances {
   id: "Player_ROOT"
   collection: "/main/Player_assets/Player_ROOT.collection"
-  position {
-    x: 372.0
-    y: 108.0
-  }
 }
 scale_along_z: 0
 embedded_instances {
   id: "world"
+  children: "Drop_Spawner"
   children: "Map"
   children: "Shadow_Map"
   data: ""
@@ -133,6 +130,18 @@ embedded_instances {
   "  id: \"gun_reload\"\n"
   "  component: \"/main/Player_assets/SFX/gun_reload.sound\"\n"
   "}\n"
+  "components {\n"
+  "  id: \"combo_sfx\"\n"
+  "  component: \"/main/Player_assets/SFX/combo_sfx.sound\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"pickup_sfx\"\n"
+  "  component: \"/main/Player_assets/SFX/pickup_sfx.sound\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"Pl_hit_sfx\"\n"
+  "  component: \"/main/Player_assets/SFX/Pl_hit_sfx.sound\"\n"
+  "}\n"
   ""
 }
 embedded_instances {
@@ -164,6 +173,32 @@ embedded_instances {
   "components {\n"
   "  id: \"Start GUi\"\n"
   "  component: \"/main/GUI/Start GUi.gui\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "global"
+  data: "components {\n"
+  "  id: \"GLobal_modifyer_state_manager\"\n"
+  "  component: \"/main/GLOBAL/GLobal_modifyer_state_manager.script\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"Game_state_manager\"\n"
+  "  component: \"/main/GLOBAL/Game_state_manager.script\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "Drop_Spawner"
+  data: "components {\n"
+  "  id: \"Drop_spawner\"\n"
+  "  component: \"/main/Enemy_Assets/drops/Drop_spawner.script\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"drop_spawn\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/main/Enemy_Assets/drops/enemy_drop_controller.go\\\"\\n"
+  "\"\n"
   "}\n"
   ""
 }

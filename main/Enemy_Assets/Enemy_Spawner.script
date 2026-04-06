@@ -1,34 +1,178 @@
 local enemy_state = require("main.Player_assets.G-UNZ.Hud_state")
-
 local env = require("main.Scripts.eviorment_data")
+local Pstate = require "main.Player_assets.Player_state_module"
+local global = require  "main.GLOBAL.GLOBAL"
 
-local name_list = {"cow","slime","batorb","skull"}
+local enemie_names = {"skull","batorb","slime","cow"}
+local random_bullets  = {
+	{type = "tiny", speed = math.random(70,120), diameter = 3 },
+	{type = "medium", speed = math.random(70,120), diameter = 7 },
+	{type = "big", speed =  math.random(50,80), diameter = 13 },
+{type = "star", speed = 0.01, diameter = 6 } 
+}
 
-local enmey_max_buffer = 5
-local enemy_spawn_delay = 3
-
-local cur_enemy_buffer = 0
-local default_spawn_delay = 3
+local function random_picked_bullets()
+	local temp_buffer = {}
+	for i = 1, math.random(1,#random_bullets) do 
+		table.insert(temp_buffer,random_bullets[ math.random(1,#random_bullets) ])
+	end
+	return temp_buffer
+end
 
 local cur_wave  = 0
 local max_waves = 3
 
 local buffer_of_enemies = {}
 
+local enemies  = {
+	{
+		name = enemie_names[math.random(1,#enemie_names)],
+		speed = math.random(20,60), 
+		health = math.random(30,50),
+		shooting_speed = math.random(3,10) ,
+		bullet_ammount = math.random(0,1),
+		per_shot_cooldown = 0.1,
+		smart_aim =  math.random() < 0.5,
+
+		weight_values = { 
+			fluke =  math.random(),
+			rush = math.random() ,
+			flee =  math.random() , 
+			circle =  math.random()
+		},
+		special = math.random() < 0.05  ,
+
+		bullets = random_picked_bullets()
+	},
+	{
+		name = "cow",
+	speed = 40, 
+	health = math.random(30,50),
+	shooting_speed = 2.5 ,
+	bullet_ammount = 0,
+	per_shot_cooldown = 0.05,
+	smart_aim = true,
+	
+	weight_values = { 
+		fluke =  math.random(),
+		rush =  math.random(),
+		flee =  math.random() , 
+		circle =  math.random()
+	},
+	special = math.random() < 0.01  ,
+	
+	bullets = {	
+		{type = "tiny", speed = 90, diameter = 3 },
+		{type = "medium", speed = 79, diameter = 7 },
+		{type = "big", speed = 50, diameter = 13 },
+		{type = "star", speed = 0.01, diameter = 6 } 
+		}
+	},
+	{
+		name = "slime",
+		speed = 40, 
+		health = math.random(30,50),
+		shooting_speed = 1.5 ,
+		bullet_ammount = 0,
+		per_shot_cooldown = 0.05,
+		smart_aim = false,
+
+		weight_values = { 
+			fluke = 0.7,
+			rush =  0,
+			flee = 0.9 , 
+			circle = 0.9
+		},
+		special = math.random() < 0.01  ,
+
+		bullets = {	
+			--{type = "tiny", speed = 90, diameter = 3 },
+			--{type = "medium", speed = 79, diameter = 7 },
+			--{type = "big", speed = 50, diameter = 13 },
+			{type = "star", speed = 0.01, diameter = 6 } 
+		}
+	},
+	{
+		name = "batorb",
+		speed = 50, 
+		health = math.random(30,50),
+		shooting_speed = 2.5 ,
+		bullet_ammount = 1,
+		per_shot_cooldown = 0.3,
+		smart_aim = false,
+
+		weight_values = { 
+			fluke = 0,
+			rush = 1 ,
+			flee = 0 , 
+			circle = 0
+		},
+		special = math.random() < 0.01  ,
+
+		bullets = {	
+			--{type = "tiny", speed = 90, diameter = 3 },
+			--{type = "medium", speed = 79, diameter = 7 },
+			{type = "big", speed = 50, diameter = 13 },
+			--{type = "star", speed = 0.01, diameter = 6 } 
+		}
+	},
+	{
+		name = "skull",
+		speed = 30, 
+		health = math.random(30,50),
+		shooting_speed = 3 ,
+		bullet_ammount = 0,
+		per_shot_cooldown = 0.05,
+		smart_aim =  math.random() < 0.5,
+
+		weight_values = { 
+			fluke = 0.5,
+			rush = 0.5 ,
+			flee = 0.5 , 
+			circle = 0.5
+		},
+		special = math.random() < 0.01  ,
+
+		bullets = {	
+			{type = "tiny", speed = 90, diameter = 3 },
+			{type = "medium", speed = 79, diameter = 7 },
+			--{type = "big", speed = 50, diameter = 13 },
+			--{type = "star", speed = 0.01, diameter = 6 } 
+		}
+	},
+	
+}
+
+
+
+--		"slime","batorb","skull"}
 local function Node_Placer()
 	cur_wave = cur_wave + 1 
 	enemy_state.enemy_cur_wave = cur_wave
 	local enemies_spawned = 0 
 	local enemies_spawned_this_round = 0
-	local enmey_max_buffer =  math.random(3,7)
+	local enmey_max_buffer =  math.random( math.floor((3+ cur_wave+global.enemy_spawn_scale)/1.5) , (cur_wave + 3) + global.enemy_spawn_scale )
 	for i = 1, 5 do 
 	for y = 0, 23 do 
 		for x = 0, 37 do 
 			if env.floor_tiles[x.."_"..y]  then
 				if not env.statue_pos[x.."_"..y ] then 
 					if math.random(1,25) == 1  then 
+						local random_enemie = math.random(1,#enemies) 
 						local  new_enemy = factory.create("/DynamicProceduralEnemyController#factory", vmath.vector3((x*16)+8,(y*16)+8,1))
-						msg.post(new_enemy, "start_path", {delay_time = 3, name = name_list[math.random(1,#name_list)] , random_module = math.random()})
+						msg.post(new_enemy, "start_path", {
+							name = enemies[random_enemie].name ,
+							speed = enemies[random_enemie].speed ,
+							health = enemies[random_enemie].health,
+							shooting_speed = enemies[random_enemie].shooting_speed,
+							weight_values = enemies[random_enemie].weight_values,
+							special = enemies[random_enemie].special,
+							bullets = enemies[random_enemie].bullets,
+							bullet_ammount = enemies[random_enemie].bullet_ammount,
+							per_shot_cooldown = enemies[random_enemie].per_shot_cooldown,
+							smart_aim = enemies[random_enemie].smart_aim
+							
+						, random_module = math.random()})
 						table.insert(buffer_of_enemies,new_enemy)
 						enemies_spawned = enemies_spawned + 1 
 						--print("NODE PLACED AT ",vmath.vector3((x*16)+8,(y*16)+8,1))5
@@ -61,63 +205,42 @@ local function clear_everything()
 		end
 	end
 end
-
 function init(self)
-	msg.post(".", "acquire_input_focus")
+	--msg.post(".", "acquire_input_focus")
 	self.pl_p = go.get_position("/Player_ROOT/Player")
-	-- Add initialization code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
 end
-
-function final(self)
-	-- Add finalization code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
-end
-
-function update(self, dt)
-	-- Add update code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
-end
-
-function fixed_update(self, dt)
-	print("BUFFER OF ENEMIES ", #buffer_of_enemies,"")
-	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
-	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
-	-- Physics section of game.project
-	-- Add update code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
-end
-
+-- 
+-- function final(self)
+-- end
+-- function update(self, dt)
+-- end
 function on_message(self, message_id, message, sender)
 	if message_id == hash("enemy_reset") then 
 		Node_Placer()
 	end
-	if message_id == hash("enemy_clear_from_buffer") then 
+	if message_id == hash("clear_enemies") then 
+		for i = #buffer_of_enemies, 1, -1 do
+			go.delete(buffer_of_enemies[i])
+			table.remove(buffer_of_enemies, i)
+		end
+		--print("BUFFER OF ENEIEMES",#buffer_of_enemies)
+		cur_wave = 0 
+		enemy_state.enemy_max_in_lvl = 0
+		enemy_state.enemy_cur_alive = 0
+		enemy_state.enemy_cur_wave = 0 
+	end
+	if message_id == hash("enemy_clear_from_buffer") and Pstate.alive  then 
 		for i = #buffer_of_enemies, 1, -1 do 
 			if buffer_of_enemies[i] == message.id then 
 				table.remove(buffer_of_enemies ,i)
 			end
 		end
 		enemy_state.enemy_cur_alive = #buffer_of_enemies
-		if #buffer_of_enemies <= 0 then 
+		if #buffer_of_enemies <= 0 and Pstate.alive then 
 			if cur_wave >= max_waves then 
 				cur_wave = 0 
+				msg.post("/global#Game_state_manager","change_state",{state = "up_floor"})
 				enemy_state.enemy_cur_wave = cur_wave
-				enemy_state.map_cur_floor = enemy_state.map_cur_floor + 1 
-				timer.delay(10,false,function() 
-					Node_Placer()
-				end)
-				timer.delay(2,false,function() 
-					msg.post("/GUI_ON_TOP#hud","map_info",{floor = 1 })
-				end)
-
-				timer.delay(3,false,function() 
-					msg.post("/Map#Auto_Tiler","asm",{map = 1})
-				end)
 			else
 				timer.delay(2,false,function() 
 					Node_Placer()
@@ -126,9 +249,6 @@ function on_message(self, message_id, message, sender)
 			
 		end
 	end
-	-- Add message-handling code here
-	-- Learn more: https://defold.com/manuals/message-passing/
-	-- Remove this function if not needed
 end
 
 local can_press = true 
@@ -156,23 +276,7 @@ function on_input(self, action_id, action)
 				can_press = true
 			end)
 			--clear_everything()
-			print("CLEARNER")
+			--print("CLEARNER")
 		end	
 	end
-	
-	-- Add input-handling code here. The game object this script is attached to
-	-- must have acquired input focus:
-	--
-	--    msg.post(".", "acquire_input_focus")
-	--
-	-- All mapped input bindings will be received. Mouse and touch input will
-	-- be received regardless of where on the screen it happened.
-	-- Learn more: https://defold.com/manuals/input/
-	-- Remove this function if not needed
-end
-
-function on_reload(self)
-	-- Add reload-handling code here
-	-- Learn more: https://defold.com/manuals/hot-reload/
-	-- Remove this function if not needed
 end

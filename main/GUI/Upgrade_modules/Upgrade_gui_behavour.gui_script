@@ -1,0 +1,52 @@
+local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
+function init(self)
+	self.all_nodes = {"Up_1_image","Up_1_text","Up_2_image","Up_2_text","Up_3_image","Up_3_text","backdrop","mana"}
+	self.all_upgrade_text_nodes = {"Up_1_text","Up_2_text"}
+	self.move_up_amount = 100
+	upgrades:generate_shop_slots()
+
+	timer.delay(0.1,true, function() 
+		upgrades:generate_shop_slots()
+		gui.set_text(gui.get_node("Up_1_text"),upgrades.shop_slots[1].description)
+		gui.set_text(gui.get_node("Up_2_text"),upgrades.shop_slots[2].description)
+		gui.set_text(gui.get_node("Up_3_text"),upgrades.shop_slots[3].description)
+	end)
+	
+	pprint(upgrades.upgrade_master_list[1].description())
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	-- Add message-handling code here
+	-- Learn more: https://defold.com/manuals/message-passing/
+	-- Remove this function if not needed
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	--    msg.post(".", "acquire_input_focus")
+	--
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

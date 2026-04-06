@@ -10,6 +10,12 @@ animations {
   fps: 10
 }
 animations {
+  id: "dead"
+  start_tile: 22
+  end_tile: 22
+  playback: PLAYBACK_LOOP_FORWARD
+}
+animations {
   id: "idle"
   start_tile: 1
   end_tile: 6

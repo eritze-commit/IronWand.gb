@@ -1,7 +1,13 @@
+go.property("color_shift",vmath.vector4())
+local active = require("main.Enemy_Assets.drops.spawnded_items_data")
+
 function init(self)
 	self.dir = vmath.vector3()
 	self.speed = 0
 	self.lifetime = 5
+	self.position = go.get_position(".")
+	self.z  = self.position.z
+	go.set("#sprite","color_mod",self.color_shift) 
 end
 
 function final(self)
@@ -14,7 +20,13 @@ function final(self)
 end
 
 function update(self, dt)
-	go.set_position(go.get_position(".")+self.dir*self.speed * dt, ".")
+	if active.cur_scene_active then 
+		self.position = go.get_position(".")
+		self.position.z = self.z 
+		go.set_position(self.position+self.dir*self.speed * dt, ".")
+	else
+		go.delete()
+	end
 end
 
 function fixed_update(self, dt)
@@ -23,6 +35,7 @@ end
 function on_message(self, message_id, message, sender)
 	if message_id == hash("spawn_data") then 
 		physics.set_shape("#collisionobject", "bullet", {type = physics.SHAPE_TYPE_SPHERE, diameter  = message.diameter })
+		physics.set_shape("#collisionobject1", "bullet", {type = physics.SHAPE_TYPE_SPHERE, diameter  = message.diameter })
 		sprite.play_flipbook("#sprite",message.type)
 		if message.type == "star" then 
 			self.lifetime = 10
@@ -36,17 +49,17 @@ function on_message(self, message_id, message, sender)
 		end)
 	end
 	if message_id == hash("get_type") then 
-		msg.post(sender,"break_wall",{dmg = 0.5})
+		msg.post(sender,"break_wall",{dmg = 5})
 	end
 	if message_id == hash("player_hit") then
+		go.set("#sprite","flasher",vmath.vector4(10,0,0,0))
 		go.delete(".")
 		msg.post(sender,"Hit_response",{data = 6767})
 	end
 	if message_id == hash("contact_point_response") then
+		go.set("#sprite","flasher",vmath.vector4(10,0,0,0))
 		go.delete(".")
-		if message.other_group == hash("wall") then 
-			go.delete(".")
-		end
+		
 	end
 end
 

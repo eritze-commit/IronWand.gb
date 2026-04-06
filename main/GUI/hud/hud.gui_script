@@ -5,6 +5,7 @@ local  Last_in_mag = 0
 local scale_strenght = 0.05
 
 local last_enemy = 0
+local last_name = ""
 
 local floor_state = ""
 local table_floor_state = { 
@@ -15,6 +16,7 @@ local table_floor_state = {
 function init(self)
 	self.time = 0
 	self.health_bar_size = gui.get(gui.get_node("heatlh_bar" ),"scale.x")
+	self.combo_normal_euler = gui.get(gui.get_node("combo"),"euler.z")
 	
 end
 
@@ -22,7 +24,7 @@ end
 function final(self)
 	-- Add finalization code here
 	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
+	-- Remove this function if not needed  		
 end
 
 function update(self, dt)
@@ -30,8 +32,9 @@ function update(self, dt)
 	self.time = self.time * dt
 	dtime.dt = self.time 
 	
-	if gun_state.gun_cur_in_mag ~= Last_in_mag then 
+	if gun_state.gun_cur_in_mag ~= Last_in_mag or gun_state.gun_name ~= last_name  then 
 		Last_in_mag = gun_state.gun_cur_in_mag
+		last_name = gun_state.gun_name
 		gui.set_text( gui.get_node("Gun_ammo" ),gun_state.gun_name.."\n"..gun_state.gun_cur_in_mag.."/"..gun_state.gun_max_mag)
 		gui.animate( gui.get_node("Gun_ammo" ), "scale",vmath.vector3(1+scale_strenght,1+scale_strenght,1),go.EASING_INBOUNCE,0.05,0, function() 
 			gui.animate( gui.get_node("Gun_ammo" ), "scale",vmath.vector3(1,1,1),go.EASING_INBOUNCE,0.05,0)
@@ -52,7 +55,7 @@ end
 
 function on_message(self, message_id, message, sender)
 	if message_id == hash("map_info") then 
-		print("GOT iT THE GUI GOT THE THING ")
+		--print("GOT iT THE GUI GOT THE THING ")
 		--gui.set( gui.get_node("box" ),"visible",true)
 		--gui.set(gui.get_node("map_info" ),"visible",true)
 		gui.animate( gui.get_node("box" ), "position",vmath.vector3(319.0,240.0,0),go.EASING_INEXPO,1,0, function() 
@@ -68,6 +71,20 @@ function on_message(self, message_id, message, sender)
 	if message_id == hash("health_bar_change") then 
 		local health_bar_factor = message.health / message.max_health
 		gui.animate(gui.get_node("heatlh_bar" ),"scale.x",self.health_bar_size*health_bar_factor,go.EASING_INEXPO,0.1)
+	end
+	if message_id == hash("update_combo") then 
+		gui.set_visible(gui.get_node("combo"), message.visible)
+		gui.set(gui.get_node("combo"),"color",message.color)
+		gui.set_text(gui.get_node("combo"),"x"..message.combo)
+
+		gui.animate( gui.get_node("combo" ), "scale",vmath.vector3(1+message.strenght,1+message.strenght,1),go.EASING_INBOUNCE,0.1,0, function() 
+			gui.animate( gui.get_node("combo" ), "scale",vmath.vector3(1,1,1),go.EASING_INBOUNCE,0.1,0)
+		end)
+		local random_offset = math.random(0,1) < 1 and 1 or -1 
+		gui.animate( gui.get_node("combo" ), "euler.z",(self.combo_normal_euler + math.random(5+(message.strenght*3),10+(message.strenght*4)))*random_offset,go.EASING_INBOUNCE,0.1,0, function() 
+			gui.animate( gui.get_node("combo" ), "euler.z",self.combo_normal_euler ,go.EASING_INBOUNCE,0.1,0)
+		end)
+		
 	end
 	-- Add message-handling code here
 	-- Learn more: https://defold.com/manuals/message-passing/

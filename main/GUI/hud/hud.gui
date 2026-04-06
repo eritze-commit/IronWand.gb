@@ -122,6 +122,23 @@ nodes {
   alpha: 0.44
   size_mode: SIZE_MODE_AUTO
 }
+nodes {
+  position {
+    x: 314.0
+    y: 330.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "x1"
+  font: "PixeRlino"
+  id: "combo"
+  yanchor: YANCHOR_TOP
+  inherit_alpha: true
+  visible: false
+}
 layers {
   name: "front"
 }

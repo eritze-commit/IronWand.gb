@@ -1,0 +1,12 @@
+image: "/main/Enemy_Assets/drops/Item_glow_aura.png"
+tile_width: 8
+tile_height: 8
+collision_groups: "default"
+animations {
+  id: "glow"
+  start_tile: 1
+  end_tile: 10
+  playback: PLAYBACK_LOOP_PINGPONG
+  fps: 15
+}
+extrude_borders: 2

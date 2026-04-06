@@ -1,0 +1,18 @@
+image: "/main/Player_assets/Particle_fx/white_small_particle_sheet.png"
+tile_width: 8
+tile_height: 8
+collision_groups: "default"
+animations {
+  id: "spinnin"
+  start_tile: 1
+  end_tile: 10
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 5
+}
+animations {
+  id: "static"
+  start_tile: 1
+  end_tile: 1
+  playback: PLAYBACK_LOOP_PINGPONG
+}
+extrude_borders: 2

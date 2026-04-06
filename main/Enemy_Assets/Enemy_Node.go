@@ -103,7 +103,7 @@ embedded_components {
   "    count: 1\n"
   "    id: \"entity\"\n"
   "  }\n"
-  "  data: 3.134015\n"
+  "  data: 1.972269\n"
   "}\n"
   "locked_rotation: true\n"
   "event_trigger: false\n"
