@@ -1,5 +1,6 @@
 go.property("color_shift",vmath.vector4())
 local active = require("main.Enemy_Assets.drops.spawnded_items_data")
+local game_state = require("main.GLOBAL.in_game")
 
 function init(self)
 	self.dir = vmath.vector3()
@@ -21,9 +22,11 @@ end
 
 function update(self, dt)
 	if active.cur_scene_active then 
+		if not game_state.paused then 
 		self.position = go.get_position(".")
 		self.position.z = self.z 
 		go.set_position(self.position+self.dir*self.speed * dt, ".")
+		end
 	else
 		go.delete()
 	end

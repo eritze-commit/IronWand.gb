@@ -1,18 +1,22 @@
 local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
+local cur_slot = 1
+
 function init(self)
+	msg.post(".", "acquire_input_focus")
 	self.all_nodes = {"Up_1_image","Up_1_text","Up_2_image","Up_2_text","Up_3_image","Up_3_text","backdrop","mana"}
 	self.all_upgrade_text_nodes = {"Up_1_text","Up_2_text"}
 	self.move_up_amount = 100
 	upgrades:generate_shop_slots()
 
-	timer.delay(0.1,true, function() 
+	timer.delay(1,true, function() 
 		upgrades:generate_shop_slots()
-		gui.set_text(gui.get_node("Up_1_text"),upgrades.shop_slots[1].description)
-		gui.set_text(gui.get_node("Up_2_text"),upgrades.shop_slots[2].description)
-		gui.set_text(gui.get_node("Up_3_text"),upgrades.shop_slots[3].description)
+		for i = 1 , 3 do 
+			gui.set_text(gui.get_node("Up_"..i.."_text"),upgrades.shop_slots[i].description)
+			gui.play_flipbook(gui.get_node("Up_"..i.."_image"),upgrades.shop_slots[i].name)
+		end
 	end)
 	
-	pprint(upgrades.upgrade_master_list[1].description())
+	pprint(upgrades.upgrade_master_list[1].description)
 end
 
 function final(self)
@@ -34,15 +38,57 @@ function on_message(self, message_id, message, sender)
 end
 
 function on_input(self, action_id, action)
-	-- Add input-handling code here. The game object this script is attached to
-	-- must have acquired input focus:
-	--
-	--    msg.post(".", "acquire_input_focus")
-	--
-	-- All mapped input bindings will be received. Mouse and touch input will
-	-- be received regardless of where on the screen it happened.
-	-- Learn more: https://defold.com/manuals/input/
-	-- Remove this function if not needed
+	if not self.button_selected then 
+		if action_id == hash("down") or action_id == hash("up") then 
+
+			self.button_selected = true
+			timer.delay(0.2,false,function() 
+				self.button_selected = false
+			end)
+			if action_id == hash("down") then 
+				cur_slot = cur_slot + 1
+
+				if cur_slot > 3 then
+					cur_slot =  1 
+				end
+			else
+				cur_slot = cur_slot - 1
+				if cur_slot <= 0  then
+					cur_slot =  3 
+				end
+			end 
+			
+			
+			gui.animate(gui.get_node("selector"), "position", gui.get_position(gui.get_node("Up_"..cur_slot.."_text"))-vmath.vector3(45,0,0), go.EASING_INEXPO, 0.2)
+			--gui.animate(gui.get_node("Up_"..cur_slot.."_text"), "position", gui.get_position(gui.get_node("Up_"..cur_slot.."_text")), go.EASING_INEXPO, 0.2)
+
+			gui.set_text(gui.get_node("price"),"Price : "..upgrades.shop_slots[cur_slot].price)
+
+			local s_s_max = 1.5
+			local s_s_min = 0.5
+			local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+			
+			sound.play("/Sound_manager#select_sound",{speed = random_offset ,gain=1})
+			
+			-- if self.button_states[self.cur_button_state] ~= "none" then
+			-- 	self.last_node_selected = self.button_states[self.button_state]
+			-- 	gui.set(gui.get_node("start"),"color",self.node_highlight_color)
+			-- 	--gui.set_color()
+			-- else
+			-- 	gui.set(gui.get_node("start"),"color",self.button_default_color)
+			-- end
+
+		end
+		if action_id == hash("action_but") and not self.button_selected  then 
+			if self.button_states[self.cur_button_state] ~= "none" then
+				self.button_selected = true
+				timer.delay(0.2,false,function() 
+					self.button_selected = false
+				end)
+				msg.post("/global#Game_state_manager","change_state",{state = "playing"})
+			end
+		end
+	end
 end
 
 function on_reload(self)

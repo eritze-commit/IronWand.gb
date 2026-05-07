@@ -1,6 +1,7 @@
 local Pstate = require("main.Player_assets.Player_state_module")
 local map_state = require("main.Player_assets.G-UNZ.Hud_state")
 local active = require("main.Enemy_Assets.drops.spawnded_items_data")
+local game_state = require("main.GLOBAL.in_game")
 
 
 function init(self)
@@ -8,8 +9,8 @@ function init(self)
 	self.avalable_states  = {
 		["menu"] = {["paused"]=true},
 		["playing"] = {["menu"]=true},
-		["dead"] = {["playing"]=true},
-		["paused"] = {["playing"]=true},
+		["dead"] = {["playing"]=true,["paused"]=true},
+		["paused"] = {["playing"]=true,["paused"]=true},
 		["up_floor"] = {["playing"]=true},
 		["game_over"] = {["dead"]=true},
 		["combo"] = {["playing"]=true}
@@ -18,6 +19,7 @@ end
 
 local combo_state = 0
 local timer_active = false
+local paused = false
 
 function final(self)
 	-- Add finalization code here
@@ -46,7 +48,9 @@ function on_message(self, message_id, message, sender)
 			self.curent_state = message.state
 
 			if self.curent_state == "playing" then 
-				print("RIght state",message.state)
+				window.set_mouse_lock(true)
+				--print("RIght state",message.state)
+				self.curent_state = "playing"
 				Pstate.alive = true
 				msg.post("/GUI_ON_TOP#Start GUi","show_gui",{show = false}) 
 				msg.post("/Map#Auto_Tiler","asm",{map = 1})
@@ -69,9 +73,10 @@ function on_message(self, message_id, message, sender)
 					msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","enemy_reset",{chat = 0})
 				end)
 			elseif self.curent_state == "dead" then
-				self.curent_state = "menu"
-				active.cur_scene_active = false 
 				
+				active.cur_scene_active = false 
+				Pstate.alive = false
+				window.set_mouse_lock(false)
 				
 				msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","clear_enemies",{clea = true})
 				timer.delay(0.5,false,function()
@@ -84,7 +89,16 @@ function on_message(self, message_id, message, sender)
 
 					msg.post("/GUI_ON_TOP#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})
 					map_state.map_cur_floor = 1
+					self.curent_state = "menu"
 				end)
+			elseif self.curent_state == "paused"then
+				
+				game_state.paused = message.extra
+				window.set_mouse_lock(not message.extra)
+				if not game_state.paused then 
+					self.curent_state = "playing"
+				end
+				
 			elseif self.curent_state == "combo" then
 				self.curent_state = "playing"
 				combo_state = combo_state + 1

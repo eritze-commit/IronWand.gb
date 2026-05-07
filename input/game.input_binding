@@ -78,6 +78,18 @@ key_trigger {
   input: KEY_Q
   action: "reload"
 }
+key_trigger {
+  input: KEY_LSHIFT
+  action: "dash"
+}
+key_trigger {
+  input: KEY_SPACE
+  action: "reload"
+}
+key_trigger {
+  input: KEY_ESC
+  action: "escape"
+}
 mouse_trigger {
   input: MOUSE_BUTTON_LEFT
   action: "trigger"

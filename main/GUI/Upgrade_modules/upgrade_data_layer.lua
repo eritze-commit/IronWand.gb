@@ -10,10 +10,11 @@ local upgrade = {
 		{
 		type = "bullet", 
 		name = "bounce", 
-		bounce = function() return  math.floor((1 + (map_state.map_cur_floor/ global.max_floor) * 10 ) + (math.random() < 0.2 and math.random(0,2) or 0) ) end,
-		bounce_chance = function() return  math.floor((map_state.map_cur_floor/ global.max_floor) * 100 ) end,
+		bounces = function() return  math.floor((1 + (map_state.map_cur_floor/ global.max_floor) * 10 ) + (math.random() < 0.2 and math.random(0,2) or 0) ) end,
+		bounce_chance = function() return  math.floor((map_state.map_cur_floor/ global.max_floor) * 100 + (math.random() < 0.5 and math.random(5,20) or 0) )   end,
+		price = function() return 5 + math.random(1,10) +  math.floor(1 + (map_state.map_cur_floor/ global.max_floor) * 100)  end,
 		description = function(self)
-			return  self.type..": "..self.name.."\n bounces - "..self.bounce.."\n chance to bounce "..self.bounce_chance.."%"
+			return  self.type..": "..self.name.."\n bounces - "..self.bounces.."\n chance to bounce "..self.bounce_chance.."%"
 		end
 		
 		},
@@ -24,7 +25,8 @@ local upgrade = {
 	upgrade_slots = { { },{ },{ },{ },{ },{ } },
 	
 	data_layer = {
-		["bounce"] = {bullet_bounce = 0 ,bullet_bounce_chance  = 0 },
+		["bounce"] = {bounces = 2 ,bounce_chance  = 100 },
+		["pierce"] = {pierce = 5 ,pierce_chance  = 100},
 
 	},
 

@@ -1,4 +1,6 @@
 go.property("type", 1)
+local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
+local game_state = require("main.GLOBAL.in_game")
 
 
 
@@ -9,8 +11,22 @@ function init(self)
 	self.curpos = vmath.vector3()
 	self.cur_pos = go.get_position(".")
 	self.dmg = 0
+	self.dmg_loss = 0.5
 	self.sound_manager = nil
-	self.bounces = 0
+	self.bounces = upgrades.data_layer["bounce"].bounces
+	self.bounces_chance = upgrades.data_layer["bounce"].bounce_chance
+
+	self.pierce = upgrades.data_layer["pierce"].pierce
+	self.pierce_chance = upgrades.data_layer["pierce"].pierce_chance
+
+	self.enemies_pierced = {}
+
+	self.hit_position  = nil
+	self.wall_normal = nil 
+	self.moving = false
+
+
+	
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
@@ -23,40 +39,123 @@ function final(self)
 	particlefx.play("#bullet_on_contact")
 	sound.stop("/Sound_manager#bullet_collision_sound")
 	sound.play("/Sound_manager#bullet_collision_sound",{speed = random_offset, gain = 0.1})
+
+	
 end
 
+
+
 function update(self, dt)
-	if self.spawned == true then 
+	if self.spawned == true or not game_state.paused then 
 		self.cur_pos = go.get_position(".")
 		self.cur_pos = self.cur_pos + self.dir * self.speed * dt
 		go.set_position(self.cur_pos, ".")
 
-		
+		--msg.post("@render:", "draw_line", { start_point = go.get_position(".") ,  end_point = self.hit_position, color = vmath.vector4(1,1,1,1) })
 	end
 end
+
+function fixed_update(self, dt)
+	
+end	
+
 function on_message(self, message_id, message, sender)
-	if message_id == hash("trigger_response") then 
-		go.delete(".")
-		particlefx.stop("#bullet_trail")
-	end
+	-- if message_id == hash("trigger_response") then 
+	-- 	go.delete(".")
+	-- 	particlefx.stop("#bullet_trail")
+	-- end
 	if message_id == hash("contact_by_bullet") then 
 		--print("THIS IS CONTACT BY BULLET ")
-		msg.post(sender,"retrun_of_contact_bullet",{bullet_dir = self.dir,dmg = self.dmg})
+		
+		if not self.enemies_pierced[tostring(sender)] then 
+			msg.post(sender,"retrun_of_contact_bullet",{bullet_dir = self.dir,dmg = self.dmg})
+
+			if self.pierce <= 0 or math.random(1,100) >= self.pierce_chance then 
+				go.delete(".")
+				particlefx.stop("#bullet_trail")
+			end
+			
+			self.pierce = self.pierce - 1 
+			self.dmg = self.dmg * self.dmg_loss
+			self.enemies_pierced[tostring(sender)] = true 
+			
+		end
+
 	end
 	
 	if message_id == hash("get_type") then
 		msg.post(sender,"break_wall" ,{type = "ball",dmg = self.dmg}) 
 	end
+
+	if message_id  == hash("ray_cast_response") then 
+		self.hit_position = message.position 
+		self.wall_normal = message.normal 
+
+		print("THIS RAN  RAY CASR RESPONESE ")
+	end
 	
-	if message_id == hash("contact_point_response")  then
+	if message_id == hash("contact_point_response") and  message.other_group == hash("wall")  then  
+		if self.bounces <= 0 or math.random(1,100) >= self.bounces_chance then 
 			 go.delete(".")
 			particlefx.stop("#bullet_trail")
+		else
+			-- if not self.bounces_colldown then 
+			-- 	self.bounces_colldown = true 
+			-- 	timer.delay(0.01,false,function() 
+			-- 		self.bounces_colldown = false 
+			-- 	end)
+			-- 	
+			if self.moving  then 
+				go.set_position(self.hit_position + self.wall_normal * 3   , ".")
+
+				self.dir = self.dir - 2 * vmath.dot(self.dir, self.wall_normal) * self.wall_normal
+
+				local raycast = physics.raycast(go.get_position("."), go.get_position(".") + (self.dir * 300 ), {hash("wall")})
+				self.hit_position = raycast.position 
+				self.wall_normal = raycast.normal 
+
+				self.bounces =  self.bounces - 1 
+
+				self.dmg = self.dmg * self.dmg_loss
+				self.enemies_pierced = {}
+
+				
+
+
+			end
+			self.moving = false
+			timer.delay(0.01, false, function()
+				self.moving  = true
+			end) 
+			
+			-- if self.dot > 0 then 
+			-- 	message.normal = -message.normal
+			-- 	self.dot = vmath.dot(self.dir, message.normal)
+			-- 	
+			-- 	self.dir = self.dir - 2 * vmath.dot(self.dir, -self.dir) * -self.dir
+			-- 	self.dir = vmath.normalize(self.dir)
+			-- else
+			-- 	self.dir = vmath.normalize(self.dir)
+			-- 	self.oppo_dir  = -self.dir
+			-- 	self.dir = self.dir - 2 * vmath.dot(self.dir, message.normal) * message.normal
+			-- 	
+			-- end
+			
+		
+			
+
+
+	
+				
+				end
+		
 	
 	end
 	if message_id == hash("spawn_data") then
-		timer.delay(3, false, function() 
+		timer.delay(5, false, function() 
 			go.delete(".")
 		end)	
+		
 		particlefx.play("#bullet_trail")
 		--print("GOT DATA WHY YOU PIECE OF SHIT NOT APPEARING ")
 		
@@ -66,6 +165,17 @@ function on_message(self, message_id, message, sender)
 		self.spawned = true
 		self.dmg = message.dmg
 		self.sound_manager = message.sound_manager
+
+		if self.bounces > 0 then 
+			local raycast = physics.raycast(go.get_position("."), go.get_position(".") + (self.dir * 300 ), {hash("wall")})
+			
+			self.hit_position = raycast.position 
+			self.wall_normal = raycast.normal 
+			self.moving = true
+
+		end
+
+		--go.set("#collisionobject", "linear_velocity",  self.dir * (self.speed / 1.15 ) )
 		-- for _, modules in ipairs(bullet_mod.bullet_equiped_modules) do
 		-- 	
 		-- end

@@ -1,6 +1,8 @@
 local Pstate = require "main.Player_assets.Player_state_module"
+local game_state = require("main.GLOBAL.in_game")
 
 function init(self)
+	--msg.post(".", "acquire_input_focus")
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
@@ -24,7 +26,7 @@ end
 
 
 function update(self, dt)
-	if Pstate.alive then 
+	if Pstate.alive  or not game_state then 
 	local camera_pos = go.get_position(".")
 
 	local pl_pos =  go.get_position("Player")
@@ -138,6 +140,10 @@ function on_message(self, message_id, message, sender)
 end
 
 function on_input(self, action_id, action)
+	if action_id == hash("raw") then 
+		pprint(action.gamepad_axis)
+	end
+	
 	-- Add input-handling code here. The game object this script is attached to
 	-- must have acquired input focus:
 	--

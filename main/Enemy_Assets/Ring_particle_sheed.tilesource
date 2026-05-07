@@ -8,4 +8,11 @@ animations {
   end_tile: 4
   fps: 10
 }
+animations {
+  id: "ring back "
+  start_tile: 1
+  end_tile: 4
+  playback: PLAYBACK_ONCE_BACKWARD
+  fps: 10
+}
 extrude_borders: 2

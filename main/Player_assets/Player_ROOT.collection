@@ -260,3 +260,11 @@ embedded_instances {
     y: 1.0
   }
 }
+embedded_instances {
+  id: "go"
+  data: "components {\n"
+  "  id: \"cross_hair\"\n"
+  "  component: \"/main/GUI/cross_hair.gui\"\n"
+  "}\n"
+  ""
+}

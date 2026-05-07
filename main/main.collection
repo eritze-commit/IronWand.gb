@@ -142,6 +142,10 @@ embedded_instances {
   "  id: \"Pl_hit_sfx\"\n"
   "  component: \"/main/Player_assets/SFX/Pl_hit_sfx.sound\"\n"
   "}\n"
+  "components {\n"
+  "  id: \"select_sound\"\n"
+  "  component: \"/main/GUI/Upgrade_modules/select_sound.sound\"\n"
+  "}\n"
   ""
 }
 embedded_instances {

@@ -3,20 +3,21 @@ fonts {
   name: "PixeRlino"
   font: "/main/GUI/hud/PixeRlino.font"
 }
+textures {
+  name: "sprite_icons"
+  texture: "/main/GUI/Upgrade_modules/sprite_icons.tilesource"
+}
 nodes {
   position {
-    x: 107.0
+    x: 126.0
     y: 405.0
   }
   scale {
-    x: 0.7
-    y: 0.7
-  }
-  size {
-    x: 100.0
-    y: 100.0
+    x: 4.5
+    y: 4.5
   }
   type: TYPE_BOX
+  texture: "sprite_icons/empty"
   id: "Up_1_image"
   xanchor: XANCHOR_LEFT
   layer: "front layer"
@@ -80,19 +81,16 @@ nodes {
 }
 nodes {
   position {
-    x: 107.0
+    x: 126.0
     y: 295.0
   }
   scale {
-    x: 0.7
-    y: 0.7
-  }
-  size {
-    x: 100.0
-    y: 100.0
+    x: 4.5
+    y: 4.5
   }
   type: TYPE_BOX
-  id: "Up_2_image1"
+  texture: "sprite_icons/empty"
+  id: "Up_2_image"
   xanchor: XANCHOR_LEFT
   layer: "front layer"
   inherit_alpha: true
@@ -130,18 +128,15 @@ nodes {
 }
 nodes {
   position {
-    x: 107.0
+    x: 126.0
     y: 183.0
   }
   scale {
-    x: 0.7
-    y: 0.7
-  }
-  size {
-    x: 100.0
-    y: 100.0
+    x: 4.5
+    y: 4.5
   }
   type: TYPE_BOX
+  texture: "sprite_icons/empty"
   id: "Up_3_image"
   xanchor: XANCHOR_LEFT
   layer: "front layer"
@@ -194,6 +189,44 @@ nodes {
   id: "mana"
   layer: "front layer"
   inherit_alpha: true
+}
+nodes {
+  position {
+    x: 168.0
+    y: 53.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "price : "
+  font: "PixeRlino"
+  id: "price"
+  layer: "front layer"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 126.0
+    y: 405.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  size {
+    x: 16.0
+    y: 16.0
+  }
+  type: TYPE_BOX
+  blend_mode: BLEND_MODE_ADD
+  texture: "sprite_icons/selector"
+  id: "selector"
+  xanchor: XANCHOR_LEFT
+  layer: "front layer"
+  inherit_alpha: true
+  alpha: 0.84
 }
 layers {
   name: "front layer"

@@ -9,6 +9,6 @@ local hud_state = {
 	enemy_cur_alive = 0,
 	enemy_cur_wave = 0,
 
-	map_cur_floor = 1,
+	map_cur_floor = 10,
 }
 return hud_state

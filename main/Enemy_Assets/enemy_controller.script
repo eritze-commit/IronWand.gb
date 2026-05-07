@@ -1,6 +1,7 @@
 	local env = require("main.Scripts.eviorment_data")
 	local global = require("main.GLOBAL.GLOBAL")
 	local Pstate = require "main.Player_assets.Player_state_module"
+	local game_state = require("main.GLOBAL.in_game")
 	
 function init(self)
 	self.pl_p = go.get_position("/Player_ROOT/Player")
@@ -412,6 +413,7 @@ function update(self, dt)
 	--msg.post("@render:", "draw_line", { start_point = go.get_position("."), end_point = go.get_position("/Player_ROOT/Player")+vmath.vector3(0,-5,0), color = vmath.vector4(1, 1, 1, 1) })
 	--print("CAN SSEREE PLAYER ",self.can_see_player)
 	--print("SELF CAN SEE PLAYER",self.can_see_player)
+	if not game_state.paused then 
 	self.cur_pos = go.get_position(".")
 	self.last_pos = self.pl_p
 	self.pl_p = go.get_position("/Player_ROOT/Player")
@@ -476,6 +478,7 @@ function update(self, dt)
 		self.blend = vmath.lerp(self.t_blend, 0.05, 0.001)
 		--print("BLEND ",self.blend)
 		self.smoothed_vel = vmath.lerp(self.blend,self.smoothed_vel,self.real_vel)
+	end
 	end
 	
 	--print("SELF> SPEED ",self.speed)
@@ -576,7 +579,7 @@ function on_message(self, message_id, message, sender)
 			-- 	sound.stop("/Sound_manager#pickup_sfx")
 			-- 	sound.play("/Sound_manager#pickup_sfx",{speed =  random_offset, gain  = 0.5})
 			-- end
-			msg.post("/Drop_Spawner#Drop_spawner","spawn_drop",{position = go.get_position("."), max_drop = 3 })
+			msg.post("/Drop_Spawner#Drop_spawner","spawn_drop",{position = go.get_position("."), max_drop = 1 })
 			go.delete()
 		end
 		
@@ -624,9 +627,15 @@ function on_message(self, message_id, message, sender)
 
 		timer.delay(  math.random() + self.enemy_shooting_speed,true,function() 
 			if self.can_see_player then 
-				shooting_now(self)
+				if not game_state.paused then 
 				particlefx.stop("#Ring_Particle")
 				particlefx.play("#Ring_Particle")
+				timer.delay(0.3, false, function() 
+						shooting_now(self)
+					end)	
+				end
+			
+				
 			end
 		end)
 		

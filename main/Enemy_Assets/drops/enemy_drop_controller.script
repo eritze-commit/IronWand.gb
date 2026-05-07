@@ -1,4 +1,6 @@
 local active = require("main.Enemy_Assets.drops.spawnded_items_data")
+local hud_drop_data = require("main.Player_assets.G-UNZ.Hud_state")
+local game_state = require("main.GLOBAL.in_game")
 
 function init(self)
 	timer.delay(20, false, function() 
@@ -15,7 +17,7 @@ end
 local action_table = {
 
 	["gun_mag"] = function()  msg.post("/Player_ROOT/gun_cont#gun_controller","mag_pickup")          end,
-	["mana_orb"] = function() end, 
+	["mana_orb"] = function() hud_drop_data.mana = hud_drop_data.mana + 1   end, 
 }
 
 function final(self)
@@ -32,10 +34,13 @@ end
 
 function update(self, dt)
 	if active.cur_scene_active then
+		if not game_state.paused then  
 		go.set_position(vmath.lerp(0.01*math.random(0,5),go.get_position("."),go.get_position("/Player_ROOT/Player"), "."))
 		if vmath.length(go.get_position("/Player_ROOT/Player") - go.get_position(".") ) < 10 then 
 			--msg.post("")
+			action_table[self.cur_item]()
 			go.delete(".")
+		end
 		end
 	else
 		go.delete()
