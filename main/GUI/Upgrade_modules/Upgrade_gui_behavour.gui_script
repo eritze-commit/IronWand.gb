@@ -1,22 +1,53 @@
 local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
+local hud_state = require("main.Player_assets.G-UNZ.Hud_state")
 local cur_slot = 1
+local enabled = false
+local state_of_screen = "up"
+local button_cooldown = 0.2
+local cur_slot_down = 1 
+local buying_state = false
+local bought = false
+local shop_reset_selector = false
+
+local lockdown = false
 
 function init(self)
-	msg.post(".", "acquire_input_focus")
-	self.all_nodes = {"Up_1_image","Up_1_text","Up_2_image","Up_2_text","Up_3_image","Up_3_text","backdrop","mana"}
-	self.all_upgrade_text_nodes = {"Up_1_text","Up_2_text"}
+	self.button_selected = false 
+	self.button_selected_2 = false 
+	if  enabled then
+		msg.post(".", "acquire_input_focus")
+	end
+	self.all_nodes = {"Up_1_image","Up_1_text","Up_2_image","Up_2_text","Up_3_image","Up_3_text","backdrop","mana","selector","price","mana_icon",
+	"down_1_image","down_2_image","down_3_image","down_4_image","down_5_image","down_6_image","down_1_text","selector_onionskin","down_text_error","selector_particle",
+	"selector_particle_2"}
+	
 	self.move_up_amount = 100
 	upgrades:generate_shop_slots()
 
-	timer.delay(1,true, function() 
-		upgrades:generate_shop_slots()
+	--upgrades:add_to_upgrade_slot(1 , 1 )
+	--FIRST INDEX IS THE UPGRADE PlAYER SLOT YOURE ADDING TOO SECOND IS THE SHOP SLOT YOURE GETTING DATA FROM 
+	--upgrades:add_to_upgrade_slot(4 , 2 )
+	
+	upgrades:modify_data_layer()
+	print(upgrades.data_layer["bounce"].bounce_chance)
+
+	pprint(upgrades.data_layer)
+	pprint(upgrades.shop_slots)
+	pprint(upgrades.upgrade_slots)
+
+	timer.delay(0.1,false, function() 
+		upgrades:generate_shop_slots()  
 		for i = 1 , 3 do 
 			gui.set_text(gui.get_node("Up_"..i.."_text"),upgrades.shop_slots[i].description)
-			gui.play_flipbook(gui.get_node("Up_"..i.."_image"),upgrades.shop_slots[i].name)
+			gui.play_flipbook(gui.get_node("Up_"..i.."_image"),upgrades.shop_slots[i].name) 
 		end
 	end)
 	
-	pprint(upgrades.upgrade_master_list[1].description)
+	--pprint(upgrades.upgrade_master_list[1].description)
+	for i in ipairs(self.all_nodes) do 
+		
+		gui.set_enabled(gui.get_node(self.all_nodes[i]),enabled)
+	end
 end
 
 function final(self)
@@ -26,9 +57,92 @@ function final(self)
 end
 
 function update(self, dt)
-	
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
+	if buying_state then 
+		gui.set_position(gui.get_node("selector_onionskin"), gui.get_position(gui.get_node("selector")))
+		gui.set_position(gui.get_node("selector_particle"), gui.get_position(gui.get_node("selector")) )
+	end
+	gui.set_text(gui.get_node("mana")," : "..hud_state.mana)
+end
+-- 
+-- change_state_position(self,"pos")
+-- state_of_screen = "up"
+-- button_cooldown = 0.2
+-- timer.delay(button_cooldown,false,function() 
+-- 	gui.animate(gui.get_node("selector"), "position", gui.get_position(gui.get_node("Up_"..cur_slot.."_image")), go.EASING_INEXPO, 0.2) 
+-- end)
+local function play_sfx(sfx,options)
+	local s_s_max = 1.5
+	local s_s_min = 0.5
+	if options == nil then 
+		 s_s_max = 1.5
+		 s_s_min = 0.5
+	else
+		s_s_max = options[2]
+		s_s_min = options[1]
+	end
+	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+
+	sound.play(sfx,{speed = random_offset ,gain=1})
+end
+
+local function render_bottom_row()
+	for i = 1 , 6 do
+		local temp_image_name = upgrades.upgrade_slots[i].name
+		if temp_image_name ~= nil then
+			gui.play_flipbook(gui.get_node("down_"..i.."_image"), temp_image_name)
+		end
+	end
+end 
+
+local function shake_selector(options)
+	play_sfx("/Sound_manager#IR_shop_errir",{0.5,1})
+		local starting_pos = vmath.vector3()
+		if options == nil then
+			starting_pos = gui.get_position(gui.get_node("down_"..cur_slot_down.."_image"))
+		else
+			starting_pos = gui.get_position(gui.get_node("Up_"..cur_slot.."_image"))
+		end
+		local negatizer_x = math.random(0,1) == 1 and 1 or -1
+		local negatizer_y = math.random(0,1) == 1 and 1 or -1
+		local strenght = 10
+		gui.animate(gui.get_node("selector"), "position", gui.get_position(gui.get_node("selector"))+vmath.vector3(math.random()*strenght*negatizer_x,math.random()*strenght*negatizer_y,0), gui.EASING_INEXPO, 0.01, 0, function() 
+			negatizer_x = math.random(0,1) == 1 and 1 or -1
+			negatizer_y = math.random(0,1) == 1 and 1 or -1
+			strenght = 10
+			gui.animate(gui.get_node("selector"), "position", gui.get_position(gui.get_node("selector"))+vmath.vector3(math.random()*strenght*negatizer_x,math.random()*strenght*negatizer_y,0), gui.EASING_INEXPO, 0.01, 0, function() 
+				gui.animate(gui.get_node("selector"), "position",starting_pos, gui.EASING_INEXPO, 0.05)
+			end)				
+		end)
+end
+
+local function change_state_position(self, position)
+	lockdown = true
+	play_sfx("/Sound_manager#IR_shop_swoosh",{0.95,1.05}) 
+	local dir = position == "neg" and 1 or -1  
+	if dir == 1 then 
+		render_bottom_row()
+	end
+	for i = 1 , #self.all_nodes do 
+		gui.animate(gui.get_node(self.all_nodes[i]), "position", gui.get_position(gui.get_node(self.all_nodes[i]))+vmath.vector3(0,500*dir,0) , gui.EASING_INEXPO, 0.3, 0, function() lockdown  = false  end)
+	end
+end
+
+local function upgrade_compare(input) 
+	for i = 1 , #upgrades.upgrade_slots do 
+		if input == upgrades.upgrade_slots[i].name then 
+			return true 
+		end
+	end
+	return false
+end
+
+local function generate_shop()
+	upgrades:generate_shop_slots()  
+	for i = 1 , 3 do 
+		gui.set_text(gui.get_node("Up_"..i.."_text"),upgrades.shop_slots[i].description)
+		gui.play_flipbook(gui.get_node("Up_"..i.."_image"),upgrades.shop_slots[i].name) 
+	end
+
 end
 
 function on_message(self, message_id, message, sender)
@@ -37,59 +151,193 @@ function on_message(self, message_id, message, sender)
 	-- Remove this function if not needed
 end
 
-function on_input(self, action_id, action)
-	if not self.button_selected then 
-		if action_id == hash("down") or action_id == hash("up") then 
+-- play_sfx("/Sound_manager#IR_shop_select")
+-- play_sfx("/Sound_manager#IR_shop_buy")
+-- play_sfx("/Sound_manager#IR_shop_errir")
 
+function on_input(self, action_id, action)
+	if not lockdown  then 
+		if action_id == hash("reset") and  not self.button_selected_2  then
+			self.button_selected_2 = true
+			timer.delay(0.2,false,function() 
+				self.button_selected_2 = false
+			end)
+			print("TS RAN BRUH 2")
+			generate_shop()
+		end
+
+		if action_id == hash("action_but") and  not self.button_selected_2 then 
+			self.button_selected_2 = true
+			timer.delay(0.2,false,function() 
+				self.button_selected_2 = false
+			end)
+			print("TS RAN BRUH ")
+			if state_of_screen == "down" then   
+				if buying_state then 
+					if upgrades.shop_slots[cur_slot].price > hud_state.mana then 
+						shake_selector()
+						gui.set_text(gui.get_node("down_text_error"), ": Not enouught currency")
+					elseif  upgrade_compare(upgrades.shop_slots[cur_slot].name) and upgrades.shop_slots[cur_slot].name ~= upgrades.upgrade_slots[cur_slot_down].name  then
+						shake_selector()
+						gui.set_text(gui.get_node("down_text_error"), ": Cant have multiple smae type")
+					elseif not buying_state then 
+						shake_selector()
+						gui.set_text(gui.get_node("down_text_error"), ": no Upgrade selected")
+					else
+						upgrades:add_to_upgrade_slot(cur_slot_down , cur_slot )
+						gui.play_flipbook(gui.get_node("selector_onionskin"),"nothing")
+						render_bottom_row()
+						hud_state.mana = hud_state.mana - upgrades.shop_slots[cur_slot].price
+						gui.set_text(gui.get_node("down_text_error"), ": Purchace -"..upgrades.shop_slots[cur_slot].price.." mana")
+						local item_text =  upgrades.upgrade_slots[cur_slot_down].description
+						gui.set_text(gui.get_node("down_1_text"),item_text)
+						play_sfx("/Sound_manager#IR_shop_buy")
+						gui.set_position(gui.get_node("selector_particle_2"),gui.get_position(gui.get_node("down_"..cur_slot_down.."_image")))
+						gui.play_particlefx(gui.get_node("selector_particle_2"))
+						bought = true
+						buying_state = false
+					end
+				end
+			end
+			if state_of_screen == "up" then 
+				if not buying_state and next(upgrades.shop_slots[cur_slot]) ~= nil then --and upgrades.shop_slots[cur_slot].price <= hud_state.mana  then 
+					play_sfx("/Sound_manager#IR_shop_select")
+					gui.play_particlefx(gui.get_node("selector_particle"))
+					buying_state = true
+					--gui.set_position(gui.get_node("selector_onionskin"), gui.get_position(gui.get_node("selector")))
+					gui.play_flipbook(gui.get_node("selector_onionskin"), upgrades.shop_slots[cur_slot].name)
+					state_of_screen = "down"
+					change_state_position(self,"neg")
+					--hud_state.mana = hud_state.mana - upgrades.shop_slots[cur_slot].price
+					gui.play_flipbook(gui.get_node("Up_"..cur_slot.."_image"),"empty")
+					gui.animate(gui.get_node("selector"), "position", gui.get_position(gui.get_node("down_"..cur_slot_down.."_image"))+vmath.vector3(0,500,0), go.EASING_INEXPO, 0.2, 0 , function() 
+						--state_of_screen = "down"
+					end)
+				else
+					shake_selector("Up")
+				end
+			end
+		end
+		
+		if not self.button_selected then 
+			
 			self.button_selected = true
 			timer.delay(0.2,false,function() 
 				self.button_selected = false
 			end)
-			if action_id == hash("down") then 
-				cur_slot = cur_slot + 1
 
-				if cur_slot > 3 then
-					cur_slot =  1 
+			if action_id == hash("left") or action_id == hash("right") then 
+				gui.set_text(gui.get_node("down_text_error"), ": ")
+				if state_of_screen == "down" then 
+					if action_id == hash("right") then 
+						cur_slot_down = cur_slot_down + 1
+
+						if cur_slot_down > 6  then
+							cur_slot_down =  1 
+						end
+
+					else
+						cur_slot_down = cur_slot_down - 1
+						if cur_slot_down <= 0  then
+							cur_slot_down =  6
+						end
+					end 
 				end
-			else
-				cur_slot = cur_slot - 1
-				if cur_slot <= 0  then
-					cur_slot =  3 
+				local item_text =  upgrades.upgrade_slots[cur_slot_down].description
+				if item_text == nil then
+					item_text = "Empty slot"
 				end
-			end 
-			
-			
-			gui.animate(gui.get_node("selector"), "position", gui.get_position(gui.get_node("Up_"..cur_slot.."_text"))-vmath.vector3(45,0,0), go.EASING_INEXPO, 0.2)
-			--gui.animate(gui.get_node("Up_"..cur_slot.."_text"), "position", gui.get_position(gui.get_node("Up_"..cur_slot.."_text")), go.EASING_INEXPO, 0.2)
+				gui.animate(gui.get_node("selector"), "position", gui.get_position(gui.get_node("down_"..cur_slot_down.."_image")), go.EASING_INEXPO, 0.2, 0, function() 
+					gui.set_text(gui.get_node("down_1_text"),item_text)
+				end) 
+				
+				play_sfx("/Sound_manager#select_sound")
 
-			gui.set_text(gui.get_node("price"),"Price : "..upgrades.shop_slots[cur_slot].price)
+			elseif action_id == hash("up")  or action_id == hash("down") then
+				if state_of_screen == "up" then 
+					if action_id == hash("down") then 
+						cur_slot = cur_slot + 1
 
-			local s_s_max = 1.5
-			local s_s_min = 0.5
-			local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
-			
-			sound.play("/Sound_manager#select_sound",{speed = random_offset ,gain=1})
-			
-			-- if self.button_states[self.cur_button_state] ~= "none" then
-			-- 	self.last_node_selected = self.button_states[self.button_state]
-			-- 	gui.set(gui.get_node("start"),"color",self.node_highlight_color)
-			-- 	--gui.set_color()
-			-- else
-			-- 	gui.set(gui.get_node("start"),"color",self.button_default_color)
-			-- end
+							if cur_slot > 4  then
+								cur_slot =  1 
+							end
+				
+					else
+							cur_slot = cur_slot - 1
+							if cur_slot <= 0  then
+								cur_slot =  3 
+							end
+						end 
+						play_sfx("/Sound_manager#select_sound")
+					end
+					
+				end
 
-		end
-		if action_id == hash("action_but") and not self.button_selected  then 
-			if self.button_states[self.cur_button_state] ~= "none" then
-				self.button_selected = true
-				timer.delay(0.2,false,function() 
-					self.button_selected = false
-				end)
-				msg.post("/global#Game_state_manager","change_state",{state = "playing"})
+			if not buying_state then 
+				if cur_slot <= 3 and state_of_screen == "up"  then 
+					gui.animate(gui.get_node("selector"), "position", gui.get_position(gui.get_node("Up_"..cur_slot.."_image")), go.EASING_INEXPO, 0.2) 	
+				elseif cur_slot == 4  then 
+					cur_slot = 3 
+
+					change_state_position(self,"neg")
+					state_of_screen = "down"				
+					gui.animate(gui.get_node("selector"), "position", gui.get_position(gui.get_node("down_"..cur_slot_down.."_image"))+vmath.vector3(0,500,0), go.EASING_INEXPO, 0.2) 
+			
+				end
 			end
+			
+			--gui.animate(gui.get_node("Up_"..cur_slot.."_text"), "position", gui.get_position(gui.get_node("Up_"..cur_slot.."_text")), go.EASING_INEXPO, 0.2)
+			if  next(upgrades.shop_slots[cur_slot])     ~= nil then 
+				gui.set_text(gui.get_node("price"),"Price : "..upgrades.shop_slots[cur_slot].price)
+				gui.play_flipbook(gui.get_node("Up_"..cur_slot.."_image"), upgrades.shop_slots[cur_slot].name)
+			else
+				gui.set_text(gui.get_node("price"),"Price : ".."none")
+				gui.play_flipbook(gui.get_node("Up_"..cur_slot.."_image"), "empty")
+			end
+
+			if action_id == hash("up") and  state_of_screen  == "down"  then
+				if buying_state then
+	
+						gui.play_flipbook(gui.get_node("selector_onionskin"),"nothing")
+						
+						buying_state = false
+					end 
+					if bought then 
+						bought = false
+						gui.set_text(gui.get_node("Up_"..cur_slot.."_text"),"SOLD!")	
+						upgrades.shop_slots[cur_slot] = {}
+					else
+						if  next(upgrades.shop_slots[cur_slot]) ~= nil then 
+							gui.play_flipbook(gui.get_node("Up_"..cur_slot.."_image"),upgrades.shop_slots[cur_slot].name)
+						end
+					end
+				change_state_position(self,"pos")
+				gui.animate(gui.get_node("selector"), "position", gui.get_position(gui.get_node("Up_"..cur_slot.."_image"))-vmath.vector3(0,500,0), go.EASING_INEXPO, 0.2) 	
+				state_of_screen = "up"
+				gui.set_text(gui.get_node("down_text_error"), ": ")
+				if  next(upgrades.shop_slots[cur_slot])     ~= nil then 
+					gui.set_text(gui.get_node("price"),"Price : "..upgrades.shop_slots[cur_slot].price)
+					gui.play_flipbook(gui.get_node("Up_"..cur_slot.."_image"), upgrades.shop_slots[cur_slot].name)
+				else
+					gui.set_text(gui.get_node("price"),"Price : ".."none")
+					gui.play_flipbook(gui.get_node("Up_"..cur_slot.."_image"), "empty")
+				end
+			end
+			
+			
+
+
 		end
+		
+		
 	end
+
 end
+	
+
+
+	
+
 
 function on_reload(self)
 	-- Add reload-handling code here

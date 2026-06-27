@@ -1,0 +1,245 @@
+emitters {
+  id: "emitter1"
+  mode: PLAY_MODE_LOOP
+  duration: 0.1
+  space: EMISSION_SPACE_WORLD
+  rotation {
+    z: -0.70710677
+    w: -0.70710677
+  }
+  tile_source: "/main/Player_assets/Particle_fx/white_small_particle_sheet.tilesource"
+  animation: "static"
+  material: "/builtins/materials/particlefx.material"
+  blend_mode: BLEND_MODE_SCREEN
+  max_particle_count: 30
+  type: EMITTER_TYPE_BOX
+  properties {
+    key: EMITTER_KEY_SPAWN_RATE
+    points {
+      y: 60.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_SIZE_X
+    points {
+      y: 1.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_PARTICLE_LIFE_TIME
+    points {
+      y: 0.3
+    }
+  }
+  properties {
+    key: EMITTER_KEY_PARTICLE_SPEED
+    points {
+      y: 1.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_PARTICLE_SIZE
+    points {
+      y: 25.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_PARTICLE_RED
+    points {
+      y: 1.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_PARTICLE_GREEN
+    points {
+      y: 1.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_PARTICLE_BLUE
+    points {
+      y: 1.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_PARTICLE_ALPHA
+    points {
+      y: 1.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_PARTICLE_ROTATION
+    points {
+      y: 0.0
+    }
+    spread: 360.0
+  }
+  particle_properties {
+    key: PARTICLE_KEY_SCALE
+    points {
+      y: 0.138696
+      t_x: 0.97823066
+      t_y: -0.2075207
+    }
+    points {
+      x: 1.0
+      y: 9.42E-4
+      t_x: 0.9721436
+      t_y: -0.23438607
+    }
+  }
+  particle_properties {
+    key: PARTICLE_KEY_RED
+    points {
+      y: 1.0
+    }
+  }
+  particle_properties {
+    key: PARTICLE_KEY_GREEN
+    points {
+      y: 1.0
+    }
+  }
+  particle_properties {
+    key: PARTICLE_KEY_BLUE
+    points {
+      y: 1.0
+    }
+  }
+  particle_properties {
+    key: PARTICLE_KEY_ALPHA
+    points {
+      y: 1.070746
+      t_x: 0.23308544
+      t_y: -0.9724563
+    }
+    points {
+      x: 1.0
+      y: 0.007309
+      t_x: 0.95964825
+      t_y: -0.28120315
+    }
+  }
+  particle_properties {
+    key: PARTICLE_KEY_ROTATION
+    points {
+      y: 2.9E-4
+      t_x: 0.9999998
+      t_y: 6.014883E-4
+    }
+    points {
+      x: 1.0
+      y: 1.39E-4
+      t_x: 0.99999994
+      t_y: -3.149884E-4
+    }
+  }
+  particle_properties {
+    key: PARTICLE_KEY_ANGULAR_VELOCITY
+    points {
+      y: 1.0
+    }
+  }
+}
+emitters {
+  mode: PLAY_MODE_LOOP
+  duration: 1.0
+  space: EMISSION_SPACE_WORLD
+  rotation {
+    z: -0.70710677
+    w: -0.70710677
+  }
+  tile_source: "/main/Player_assets/G-UNZ/particle_sheet_basic_trail_shapes.tilesource"
+  animation: "cricle_small"
+  material: "/builtins/materials/particlefx.material"
+  max_particle_count: 51
+  type: EMITTER_TYPE_BOX
+  properties {
+    key: EMITTER_KEY_SPAWN_RATE
+    points {
+      y: 100.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_PARTICLE_LIFE_TIME
+    points {
+      y: 1.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_PARTICLE_SIZE
+    points {
+      y: 25.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_PARTICLE_RED
+    points {
+      y: 1.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_PARTICLE_GREEN
+    points {
+      y: 1.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_PARTICLE_BLUE
+    points {
+      y: 1.0
+    }
+  }
+  properties {
+    key: EMITTER_KEY_PARTICLE_ALPHA
+    points {
+      y: 1.0
+    }
+  }
+  particle_properties {
+    key: PARTICLE_KEY_SCALE
+    points {
+      y: 0.169698
+      t_x: 0.9999947
+      t_y: -0.003248426
+    }
+  }
+  particle_properties {
+    key: PARTICLE_KEY_RED
+    points {
+      y: 1.0
+    }
+  }
+  particle_properties {
+    key: PARTICLE_KEY_GREEN
+    points {
+      y: 1.0
+    }
+  }
+  particle_properties {
+    key: PARTICLE_KEY_BLUE
+    points {
+      y: 1.0
+    }
+  }
+  particle_properties {
+    key: PARTICLE_KEY_ALPHA
+    points {
+      y: 1.0
+    }
+  }
+  particle_properties {
+    key: PARTICLE_KEY_ROTATION
+    points {
+      y: 2.9E-4
+      t_x: 0.9999998
+      t_y: 6.014883E-4
+    }
+  }
+  particle_properties {
+    key: PARTICLE_KEY_ANGULAR_VELOCITY
+    points {
+      y: 1.0
+    }
+  }
+}

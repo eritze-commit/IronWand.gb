@@ -17,7 +17,18 @@ local upgrade = {
 			return  self.type..": "..self.name.."\n bounces - "..self.bounces.."\n chance to bounce "..self.bounce_chance.."%"
 		end
 		
-		},
+	},
+	{
+		type = "bullet", 
+		name = "pierce", 
+		pierces = function() return  math.floor((1 + (map_state.map_cur_floor/ global.max_floor) * 10 ) + (math.random() < 0.2 and math.random(0,2) or 0) ) end,
+		pierce_chance = function() return  math.floor((map_state.map_cur_floor/ global.max_floor) * 100 + (math.random() < 0.5 and math.random(5,20) or 0) )   end,
+		price = function() return 5 + math.random(1,10) +  math.floor(1 + (map_state.map_cur_floor/ global.max_floor) * 100)  end,
+		description = function(self)
+			return  self.type..": "..self.name.."\n pierces - "..self.pierces.."\n chance to pierce "..self.pierce_chance.."%"
+		end
+
+	},
 		
 	},
 
@@ -26,11 +37,41 @@ local upgrade = {
 	
 	data_layer = {
 		["bounce"] = {bounces = 2 ,bounce_chance  = 100 },
-		["pierce"] = {pierce = 5 ,pierce_chance  = 100},
+		["pierce"] = {pierces = 5 ,pierce_chance  = 100},
 
 	},
 
 	shop_slots = {{},{},{}},
+
+	modify_data_layer = function(self) 
+		for key, value  in pairs(self.data_layer) do 
+			for key1 , value1 in pairs(self.data_layer[key]) do 
+				self.data_layer[key][key1] = 0
+				
+			end
+		end
+		for index , item  in ipairs(self.upgrade_slots) do 
+			if self.upgrade_slots[index] ~= nil then 
+				for key, value in pairs(self.upgrade_slots[index]) do 
+					for key1 ,value1 in pairs(self.data_layer[self.upgrade_slots[index].name]) do 
+						if key == key1 then 
+							self.data_layer[self.upgrade_slots[index].name][key1] = value
+						end 
+					end
+				end
+			end
+		end
+	end,
+	--FIRST INDEX IS THE UPGRADE PlAYER SLOT YOURE ADDING TOO SECOND IS THE SHOP SLOT YOURE GETTING DATA FROM 
+
+	add_to_upgrade_slot =  function(self, index , select_index ) 
+		self.upgrade_slots[index] = {}
+		for key, value in pairs(self.shop_slots[select_index]) do 
+			self.upgrade_slots[index][key] = value
+			
+		end
+			
+	end,
 
 	generate_shop_slots = function(self) 
 		self.shop_slots = {{},{},{}}

@@ -7,6 +7,10 @@ textures {
   name: "sprite_icons"
   texture: "/main/GUI/Upgrade_modules/sprite_icons.tilesource"
 }
+textures {
+  name: "enemy_drops"
+  texture: "/main/Enemy_Assets/drops/enemy_drops.tilesource"
+}
 nodes {
   position {
     x: 126.0
@@ -57,11 +61,11 @@ nodes {
 nodes {
   position {
     x: 320.0
-    y: 241.0
+    y: 125.0
   }
   scale {
-    x: 5.045523
-    y: 7.771638
+    x: 6.013484
+    y: 19.211685
   }
   size {
     x: 200.0
@@ -175,7 +179,7 @@ nodes {
 }
 nodes {
   position {
-    x: 543.0
+    x: 503.0
     y: 53.0
   }
   size {
@@ -183,16 +187,17 @@ nodes {
     y: 100.0
   }
   type: TYPE_TEXT
-  text: "MANA \n"
+  text: " :  \n"
   ""
   font: "PixeRlino"
   id: "mana"
+  xanchor: XANCHOR_LEFT
   layer: "front layer"
   inherit_alpha: true
 }
 nodes {
   position {
-    x: 168.0
+    x: 136.0
     y: 53.0
   }
   size {
@@ -224,12 +229,261 @@ nodes {
   texture: "sprite_icons/selector"
   id: "selector"
   xanchor: XANCHOR_LEFT
-  layer: "front layer"
+  layer: "front_of_front"
   inherit_alpha: true
   alpha: 0.84
+}
+nodes {
+  position {
+    x: 458.0
+    y: 53.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "enemy_drops/mana_orb"
+  id: "mana_icon"
+  xanchor: XANCHOR_LEFT
+  layer: "front layer"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 114.0
+    y: -193.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_1_image"
+  xanchor: XANCHOR_LEFT
+  layer: "front layer"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 194.0
+    y: -193.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_2_image"
+  xanchor: XANCHOR_LEFT
+  layer: "front layer"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 274.0
+    y: -193.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_3_image"
+  xanchor: XANCHOR_LEFT
+  layer: "front layer"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 354.0
+    y: -193.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_4_image"
+  xanchor: XANCHOR_LEFT
+  layer: "front layer"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 434.0
+    y: -193.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_5_image"
+  xanchor: XANCHOR_LEFT
+  layer: "front layer"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 514.0
+    y: -193.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_6_image"
+  xanchor: XANCHOR_LEFT
+  layer: "front layer"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 160.0
+    y: -351.0
+  }
+  scale {
+    x: 0.7
+    y: 0.7
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "i write text here and \n"
+  "i write text here and \n"
+  "i write text here and \n"
+  "\n"
+  "\n"
+  "\n"
+  "\n"
+  ""
+  font: "PixeRlino"
+  id: "down_1_text"
+  xanchor: XANCHOR_LEFT
+  yanchor: YANCHOR_TOP
+  pivot: PIVOT_W
+  layer: "front layer"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 532.0
+    y: 287.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  blend_mode: BLEND_MODE_SCREEN
+  texture: "sprite_icons/nothing"
+  id: "selector_onionskin"
+  xanchor: XANCHOR_LEFT
+  layer: "front layer"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 81.0
+    y: -113.0
+  }
+  scale {
+    x: 0.7
+    y: 0.7
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: ": \n"
+  "\n"
+  ""
+  font: "PixeRlino"
+  id: "down_text_error"
+  xanchor: XANCHOR_LEFT
+  yanchor: YANCHOR_TOP
+  pivot: PIVOT_W
+  layer: "front layer"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 331.0
+    y: 259.0
+  }
+  type: TYPE_PARTICLEFX
+  id: "selector_particle"
+  xanchor: XANCHOR_LEFT
+  layer: "front_front_front"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  particlefx: "select_particole"
+}
+nodes {
+  position {
+    x: 331.0
+    y: 259.0
+  }
+  type: TYPE_PARTICLEFX
+  id: "selector_particle_2"
+  xanchor: XANCHOR_LEFT
+  layer: "front_front_front"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  particlefx: "buy_particle"
+}
+nodes {
+  position {
+    x: 688.0
+    y: 402.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "Up_Left_exit"
+  xanchor: XANCHOR_LEFT
+  layer: "front layer"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
 }
 layers {
   name: "front layer"
 }
+layers {
+  name: "front_of_front"
+}
+layers {
+  name: "front_front_front"
+}
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT
+particlefxs {
+  name: "select_particole"
+  particlefx: "/main/GUI/Upgrade_modules/select_particole.particlefx"
+}
+particlefxs {
+  name: "buy_particle"
+  particlefx: "/main/GUI/Upgrade_modules/buy_particle.particlefx"
+}

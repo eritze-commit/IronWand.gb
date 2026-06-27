@@ -124,7 +124,7 @@ function on_message(self, message_id, message, sender)
 		Pstate.health  = Pstate.health - 1
 		sound.stop("/Sound_manager#Pl_hit_sfx")
 		sound.play("/Sound_manager#Pl_hit_sfx")
-			msg.post("/GUI_ON_TOP#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})
+		msg.post("/Gui_collection/hud#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})
 			msg.post("/Player_ROOT/camera#camera_script","screen_shake",{strenght  = 10})
 			if Pstate.health <= 0 then 
 				sprite.play_flipbook("Pl_Sprite#plr","dead")

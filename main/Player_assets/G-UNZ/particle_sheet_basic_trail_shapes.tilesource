@@ -1,0 +1,23 @@
+image: "/main/Player_assets/G-UNZ/particle_sheet_trail_shapes.png"
+tile_width: 8
+tile_height: 8
+collision_groups: "default"
+animations {
+  id: "cricle_small"
+  start_tile: 2
+  end_tile: 2
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "loop"
+  start_tile: 1
+  end_tile: 10
+  fps: 5
+}
+animations {
+  id: "small_square"
+  start_tile: 1
+  end_tile: 1
+  playback: PLAYBACK_NONE
+}
+extrude_borders: 2

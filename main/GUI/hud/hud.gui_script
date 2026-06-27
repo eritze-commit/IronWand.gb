@@ -1,6 +1,8 @@
  local gun_state = require("main.Player_assets.G-UNZ.Hud_state")
 local dtime = require("main.Shader_adjecent_files.Post_processing.dtime")
 
+local all_nodes = {"Gun_ammo","enemy_count","map_info","box","heatlh_bar","health_bar_back_drop","combo","mana","mana_icon","pause_box","paused"}
+
 local  Last_in_mag = 0 
 local scale_strenght = 0.05
 
@@ -19,11 +21,21 @@ local table_floor_state = {
 
 							
 function init(self)
-	msg.post(".", "acquire_input_focus")
+	--msg.post(".", "acquire_input_focus")
 	self.time = 0
 	self.health_bar_size = gui.get(gui.get_node("heatlh_bar" ),"scale.x")
 	self.combo_normal_euler = gui.get(gui.get_node("combo"),"euler.z")
+
+	for i = 1 , #all_nodes do 
+		gui.set_enabled(gui.get_node(all_nodes[i]),false)
+	end
 	
+end
+
+local function Show_all(show)
+	for i = 1 , #all_nodes do 
+		gui.set_enabled(gui.get_node(all_nodes[i]),show)
+	end
 end
 
 
@@ -67,6 +79,9 @@ function update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
+	if message_id == hash("show_gui") then 
+		Show_all(message.show)
+	end
 	if message_id == hash("map_info") then 
 		--print("GOT iT THE GUI GOT THE THING ")
 		--gui.set( gui.get_node("box" ),"visible",true)

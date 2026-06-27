@@ -67,7 +67,10 @@ end
 function on_message(self, message_id, message, sender)
 	if message_id == hash("show_gui") then
 		--self.button_selected = false
+		print("GOT MESSAGE SHOW GUI ")
 		Flip_gui_state(self,message.show) 
+
+		
 		
 	end
 end

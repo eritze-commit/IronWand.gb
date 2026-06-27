@@ -90,6 +90,10 @@ key_trigger {
   input: KEY_ESC
   action: "escape"
 }
+key_trigger {
+  input: KEY_R
+  action: "reset"
+}
 mouse_trigger {
   input: MOUSE_BUTTON_LEFT
   action: "trigger"

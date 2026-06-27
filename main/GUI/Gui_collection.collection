@@ -1,0 +1,26 @@
+name: "Gui_collection"
+scale_along_z: 0
+embedded_instances {
+  id: "StartMenu"
+  data: "components {\n"
+  "  id: \"Start GUi\"\n"
+  "  component: \"/main/GUI/Start GUi.gui\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "hud"
+  data: "components {\n"
+  "  id: \"hud\"\n"
+  "  component: \"/main/GUI/hud/hud.gui\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "upgrade"
+  data: "components {\n"
+  "  id: \"Upgrade_interface\"\n"
+  "  component: \"/main/GUI/Upgrade_modules/Upgrade_interface.gui\"\n"
+  "}\n"
+  ""
+}

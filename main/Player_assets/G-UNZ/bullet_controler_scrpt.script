@@ -16,7 +16,7 @@ function init(self)
 	self.bounces = upgrades.data_layer["bounce"].bounces
 	self.bounces_chance = upgrades.data_layer["bounce"].bounce_chance
 
-	self.pierce = upgrades.data_layer["pierce"].pierce
+	self.pierce = upgrades.data_layer["pierce"].pierces
 	self.pierce_chance = upgrades.data_layer["pierce"].pierce_chance
 
 	self.enemies_pierced = {}
@@ -37,6 +37,7 @@ function final(self)
 	local s_s_min = 0.5
 	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
 	particlefx.play("#bullet_on_contact")
+	particlefx.stop("#bullet_trail")
 	sound.stop("/Sound_manager#bullet_collision_sound")
 	sound.play("/Sound_manager#bullet_collision_sound",{speed = random_offset, gain = 0.1})
 
@@ -46,10 +47,12 @@ end
 
 
 function update(self, dt)
-	if self.spawned == true or not game_state.paused then 
-		self.cur_pos = go.get_position(".")
-		self.cur_pos = self.cur_pos + self.dir * self.speed * dt
-		go.set_position(self.cur_pos, ".")
+	if self.spawned == true  then 
+		if  not game_state.paused then 
+			self.cur_pos = go.get_position(".")
+			self.cur_pos = self.cur_pos + self.dir * self.speed * dt
+			go.set_position(self.cur_pos, ".")
+		end
 
 		--msg.post("@render:", "draw_line", { start_point = go.get_position(".") ,  end_point = self.hit_position, color = vmath.vector4(1,1,1,1) })
 	end
@@ -72,7 +75,7 @@ function on_message(self, message_id, message, sender)
 
 			if self.pierce <= 0 or math.random(1,100) >= self.pierce_chance then 
 				go.delete(".")
-				particlefx.stop("#bullet_trail")
+				
 			end
 			
 			self.pierce = self.pierce - 1 

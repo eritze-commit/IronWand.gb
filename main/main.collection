@@ -3,6 +3,10 @@ collection_instances {
   id: "Player_ROOT"
   collection: "/main/Player_assets/Player_ROOT.collection"
 }
+collection_instances {
+  id: "Gui_collection"
+  collection: "/main/GUI/Gui_collection.collection"
+}
 scale_along_z: 0
 embedded_instances {
   id: "world"
@@ -146,6 +150,22 @@ embedded_instances {
   "  id: \"select_sound\"\n"
   "  component: \"/main/GUI/Upgrade_modules/select_sound.sound\"\n"
   "}\n"
+  "components {\n"
+  "  id: \"IR_shop_buy\"\n"
+  "  component: \"/main/assets/sounds/IR_shop_buy.sound\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"IR_shop_errir\"\n"
+  "  component: \"/main/assets/sounds/IR_shop_errir.sound\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"IR_shop_select\"\n"
+  "  component: \"/main/assets/sounds/IR_shop_select.sound\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"IR_shop_swoosh\"\n"
+  "  component: \"/main/assets/sounds/IR_shop_swoosh.sound\"\n"
+  "}\n"
   ""
 }
 embedded_instances {
@@ -165,18 +185,6 @@ embedded_instances {
   "  type: \"factory\"\n"
   "  data: \"prototype: \\\"/main/Enemy_Assets/hit_numerical.go\\\"\\n"
   "\"\n"
-  "}\n"
-  ""
-}
-embedded_instances {
-  id: "GUI_ON_TOP"
-  data: "components {\n"
-  "  id: \"hud\"\n"
-  "  component: \"/main/GUI/hud/hud.gui\"\n"
-  "}\n"
-  "components {\n"
-  "  id: \"Start GUi\"\n"
-  "  component: \"/main/GUI/Start GUi.gui\"\n"
   "}\n"
   ""
 }

@@ -1,4 +1,5 @@
 emitters {
+  id: "emitter1"
   mode: PLAY_MODE_LOOP
   duration: 0.1
   space: EMISSION_SPACE_WORLD

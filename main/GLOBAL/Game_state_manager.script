@@ -52,17 +52,20 @@ function on_message(self, message_id, message, sender)
 				--print("RIght state",message.state)
 				self.curent_state = "playing"
 				Pstate.alive = true
-				msg.post("/GUI_ON_TOP#Start GUi","show_gui",{show = false}) 
+				msg.post("/Gui_collection/StartMenu#Start GUi","show_gui",{show = false}) 
 				msg.post("/Map#Auto_Tiler","asm",{map = 1})
 				msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","enemy_clear_from_buffer",{chat = 0})
 				active.cur_scene_active = true
+				msg.post("/Gui_collection/hud#hud","show_gui",{show = true})
+				msg.post("/Gui_collection/hud#hud","acquire_input_focus")
+				msg.post("/Gui_collection/StartMenu#Start GUi","release_input_focus")
 
 			elseif self.curent_state == "up_floor" then
 				active.cur_scene_active = false 
 				self.curent_state = "playing"
 				map_state.map_cur_floor = map_state.map_cur_floor + 1 
 				timer.delay(2,false,function() 
-					msg.post("/GUI_ON_TOP#hud","map_info",{floor = 1 })
+					msg.post("/Gui_collection/hud#hud","map_info",{floor = 1 })
 				end)
 
 				timer.delay(3,false,function() 
@@ -80,15 +83,22 @@ function on_message(self, message_id, message, sender)
 				
 				msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","clear_enemies",{clea = true})
 				timer.delay(0.5,false,function()
-					msg.post("/GUI_ON_TOP#hud","map_info",{bar = nil})
+					msg.post("/Gui_collection/hud#hud","map_info",{bar = nil})
 				end)
 				timer.delay(3.5,false,function() 
-					msg.post("/GUI_ON_TOP#Start GUi","show_gui",{show = true}) 
+					msg.post("/Gui_collection/StartMenu#Start GUi","show_gui",{show = true}) 
 					Pstate.health = Pstate.max_health
 					go.set_position(vmath.vector3(0,0,0,0), "/Player_ROOT/Player")
 
-					msg.post("/GUI_ON_TOP#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})
+					msg.post("/Gui_collection/hud#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})
 					map_state.map_cur_floor = 1
+					
+					msg.post("/Gui_collection/hud#hud","show_gui",{show = false})
+					msg.post("/Gui_collection/hud#hud","release_input_focus")
+					msg.post("/Gui_collection/StartMenu#Start GUi","acquire_input_focus")
+
+					
+					
 					self.curent_state = "menu"
 				end)
 			elseif self.curent_state == "paused"then
@@ -106,11 +116,11 @@ function on_message(self, message_id, message, sender)
 					timer_active = true
 					timer.delay(10, false, function() 
 						timer_active = false
-						msg.post("/GUI_ON_TOP#hud","update_combo",{visible  = timer_active, combo = combo_state, color = vmath.vector4(1,0,1,1),strenght =0.5+(combo_state/20)*5 })
+						msg.post("/Gui_collection/hud#hud","update_combo",{visible  = timer_active, combo = combo_state, color = vmath.vector4(1,0,1,1),strenght =0.5+(combo_state/20)*5 })
 						combo_state = 0
 					end)
 				end
-				msg.post("/GUI_ON_TOP#hud","update_combo",{visible  = timer_active, combo = combo_state, color = vmath.vector4(1,1.0-(combo_state/20),1,1), strenght = 0.5+(combo_state/20)*5 })
+				msg.post("/Gui_collection/hud#hud","update_combo",{visible  = timer_active, combo = combo_state, color = vmath.vector4(1,1.0-(combo_state/20),1,1), strenght = 0.5+(combo_state/20)*5 })
 				sound.stop("/Sound_manager#combo_sfx")
 				sound.play("/Sound_manager#combo_sfx",{speed = 0.5 + (combo_state/20)* 1.5 , gain = (combo_state/20)* 0.7 })
 				
