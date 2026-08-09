@@ -1,4 +1,4 @@
-image: "/main/Player_assets/G-UNZ/particle_sheet_trail_shapes.png"
+image: "/main/GUI/Player_assets/G-UNZ/particle_sheet_trail_shapes.png"
 tile_width: 8
 tile_height: 8
 collision_groups: "default"

@@ -7,7 +7,7 @@ emitters {
     z: -0.70710677
     w: -0.70710677
   }
-  tile_source: "/main/Player_assets/Particle_fx/white_small_particle_sheet.tilesource"
+  tile_source: "/main/GUI/Player_assets/Particle_fx/white_small_particle_sheet.tilesource"
   animation: "static"
   material: "/builtins/materials/particlefx.material"
   blend_mode: BLEND_MODE_SCREEN
@@ -149,7 +149,7 @@ emitters {
     z: -0.70710677
     w: -0.70710677
   }
-  tile_source: "/main/Player_assets/G-UNZ/particle_sheet_basic_trail_shapes.tilesource"
+  tile_source: "/main/GUI/Player_assets/G-UNZ/particle_sheet_basic_trail_shapes.tilesource"
   animation: "cricle_small"
   material: "/builtins/materials/particlefx.material"
   max_particle_count: 51

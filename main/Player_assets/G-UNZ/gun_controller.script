@@ -9,7 +9,7 @@ function init(self)
 	self.btn_prst = false
 	self.input_polls = {left = false, right = false}
 	self.csp =  go.get("gun_cont#slot","position")
-	self.gun_swap = {"pistol","uzi","awp","ak47","shotgun","mp5","m4","revolver","p90"}
+	self.gun_swap = {"god","pistol","uzi","awp","ak47","shotgun","mp5","m4","revolver","p90"}
 	self.recoil_offset = vmath.vector3(0,0,0)
 	self.cur_gun = 1
 	self.cur_pos = vmath.vector3()
@@ -27,8 +27,8 @@ function init(self)
 	
 
 	self.gun_master_list = {
-		["pistol"] = {spread = 10, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 2,dmg = 3 ,reload_speed = 0.5 ,    max_mag_size = 15, in_mag = 15, total_mags = 6767676767 },
-		["uzi"] = {spread = 30, bul_speed = 210, delay = 0.06, ammount = 1, recoil = 3.5,dmg = 1, reload_speed = 0.5,   max_mag_size = 50, in_mag = 50, total_mags = self.defualt_cheat_vl },
+		["pistol"] = {spread = 10, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 2,dmg = 100 --[[ original value 3 ]]  ,reload_speed = 0.5 ,    max_mag_size = 15, in_mag = 15, total_mags = 6767676767 },
+		["uzi"] = {spread = 30, bul_speed = 210, delay = 0.001 --[[ original value 0.06 ]] , ammount = 1, recoil = 3.5,dmg = 1  , reload_speed = 0.5,   max_mag_size = 50, in_mag = 50, total_mags = self.defualt_cheat_vl },
 		["awp"] = {spread = 1, bul_speed = 260, delay = 1, ammount = 1, recoil = 10,dmg = 20, reload_speed = 1 , max_mag_size = 1, in_mag = 1, total_mags = self.defualt_cheat_vl },
 		["ak47"] = {spread = 15, bul_speed = 210, delay = 0.15, ammount = 1, recoil = 2,dmg = 1.5, reload_speed = 1 ,max_mag_size = 35, in_mag = 35, total_mags = self.defualt_cheat_vl },
 		["shotgun"] = {spread = 20, bul_speed = 200, delay = 2, ammount = 10, recoil = 7,dmg = 1,reload_speed = 2  ,   max_mag_size = 5, in_mag = 5, total_mags = self.defualt_cheat_vl },
@@ -37,6 +37,7 @@ function init(self)
 		["m4"] = {spread = 0, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 1.5,dmg = 3 , reload_speed = 0.7, max_mag_size = 30, in_mag = 30, total_mags = self.defualt_cheat_vl }, 
 		["revolver"] = {spread = 3, bul_speed = 250, delay = 0.1, ammount = 1, recoil = 4,dmg = 4, reload_speed = 3 ,  max_mag_size = 6, in_mag = 6, total_mags = self.defualt_cheat_vl }, 
 		["p90"] = {spread = 2, bul_speed = 230, delay = 0.05, ammount = 1, recoil = 1,dmg = 0.5,reload_speed = 0.5 , max_mag_size = 50, in_mag = 50, total_mags = self.defualt_cheat_vl },
+		["god"] = {spread = 0, bul_speed = 260, delay = 0.1, ammount = 1, recoil = 7,dmg = 100   ,reload_speed = 0.1 , max_mag_size = 99, in_mag = 99, total_mags = 6767676767 },
 	}
 	
 	self.gun_state = {
@@ -68,6 +69,10 @@ function init(self)
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
+	sprite.play_flipbook("gun_cont#slot", self.gun_swap[self.cur_gun])
+	gun_state.gun_name = self.gun_swap[self.cur_gun]
+	gun_state.gun_cur_in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag
+	gun_state.gun_max_mag  =  self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags
 end
 
 local mouse_cords = vmath.vector3()

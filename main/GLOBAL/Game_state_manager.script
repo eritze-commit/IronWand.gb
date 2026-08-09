@@ -2,6 +2,8 @@ local Pstate = require("main.Player_assets.Player_state_module")
 local map_state = require("main.Player_assets.G-UNZ.Hud_state")
 local active = require("main.Enemy_Assets.drops.spawnded_items_data")
 local game_state = require("main.GLOBAL.in_game")
+local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
+
 
 
 function init(self)
@@ -10,16 +12,19 @@ function init(self)
 		["menu"] = {["paused"]=true},
 		["playing"] = {["menu"]=true},
 		["dead"] = {["playing"]=true,["paused"]=true},
-		["paused"] = {["playing"]=true,["paused"]=true},
-		["up_floor"] = {["playing"]=true},
+		["paused"] = {["playing"]=true,["paused"]=true,["shop"]=true},
+		["up_floor"] = {["playing"]=true,["shop"]=true,["paused"]=true},
 		["game_over"] = {["dead"]=true},
-		["combo"] = {["playing"]=true}
+		["combo"] = {["playing"]=true},
+		["shop"] = {["up_floor"]=true}
 	}
 end
 
 local combo_state = 0
 local timer_active = false
 local paused = false
+local shop_floor = 1
+local shop_floor_incriment = 1 
 
 function final(self)
 	-- Add finalization code here
@@ -63,23 +68,40 @@ function on_message(self, message_id, message, sender)
 			elseif self.curent_state == "up_floor" then
 				active.cur_scene_active = false 
 				self.curent_state = "playing"
-				map_state.map_cur_floor = map_state.map_cur_floor + 1 
-				timer.delay(2,false,function() 
-					msg.post("/Gui_collection/hud#hud","map_info",{floor = 1 })
-				end)
+				map_state.map_cur_floor = map_state.map_cur_floor + 1
+				if map_state.map_cur_floor == shop_floor then
+						
+						timer.delay(1,false,function() 
+							msg.post("/Map#Auto_Tiler","cls")
+						end)
+						timer.delay(2,false,function()
+							self.curent_state = "up_floor"
+							msg.post("/global#Game_state_manager","change_state",{state = "shop"})
 
-				timer.delay(3,false,function() 
-					msg.post("/Map#Auto_Tiler","asm",{map = 1})
-					active.cur_scene_active = true 
-				end)
-				timer.delay(10,false,function() 
-					msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","enemy_reset",{chat = 0})
-				end)
+						end)
+				else
+					timer.delay(2,false,function() 
+						msg.post("/Gui_collection/hud#hud","map_info",{floor = 1 })
+					end)
+	
+					timer.delay(3,false,function() 
+						msg.post("/Map#Auto_Tiler","asm",{map = 1})
+						active.cur_scene_active = true 
+					end)
+					timer.delay(10,false,function() 
+						msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","enemy_reset",{chat = 0})
+					end)
+				end
+			elseif self.curent_state == "shop" then 
+				shop_floor = shop_floor + shop_floor_incriment
+				msg.post("/Gui_collection/upgrade#Upgrade_interface","toggle_screen",{enabled = true })
+				msg.post("/Gui_collection/upgrade#Upgrade_interface","generate_shop_slots")
 			elseif self.curent_state == "dead" then
 				
 				active.cur_scene_active = false 
 				Pstate.alive = false
 				window.set_mouse_lock(false)
+				
 				
 				msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","clear_enemies",{clea = true})
 				timer.delay(0.5,false,function()
@@ -87,11 +109,17 @@ function on_message(self, message_id, message, sender)
 				end)
 				timer.delay(3.5,false,function() 
 					msg.post("/Gui_collection/StartMenu#Start GUi","show_gui",{show = true}) 
+					map_state.map_cur_floor = 0
+					for slot in upgrades.upgrade_slots do 
+						upgrades.upgrade_slots[slot] = {}
+					end 
+					upgrades:modify_data_layer()
+					pprint(upgrades.upgrade_slots            )
 					Pstate.health = Pstate.max_health
 					go.set_position(vmath.vector3(0,0,0,0), "/Player_ROOT/Player")
-
+					
 					msg.post("/Gui_collection/hud#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})
-					map_state.map_cur_floor = 1
+					
 					
 					msg.post("/Gui_collection/hud#hud","show_gui",{show = false})
 					msg.post("/Gui_collection/hud#hud","release_input_focus")

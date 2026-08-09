@@ -166,7 +166,7 @@ local function Node_Placer()
 							health = enemies[random_enemie].health/ 1.3,
 							shooting_speed = enemies[random_enemie].shooting_speed,
 							weight_values = enemies[random_enemie].weight_values,
-							special = enemies[random_enemie].special,
+							special =  math.random() < 0.05  ,
 							bullets = enemies[random_enemie].bullets,
 							bullet_ammount = enemies[random_enemie].bullet_ammount,
 							per_shot_cooldown = enemies[random_enemie].per_shot_cooldown,

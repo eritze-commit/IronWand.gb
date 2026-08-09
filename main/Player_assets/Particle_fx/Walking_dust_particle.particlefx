@@ -2,7 +2,7 @@ emitters {
   mode: PLAY_MODE_ONCE
   duration: 0.1
   space: EMISSION_SPACE_WORLD
-  tile_source: "/main/Player_assets/Particle_fx/Particle_sheet_2_cube.tilesource"
+  tile_source: "/main/GUI/Player_assets/Particle_fx/Particle_sheet_2_cube.tilesource"
   animation: "loop_top"
   material: "/builtins/materials/particlefx.material"
   max_particle_count: 10

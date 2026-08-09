@@ -20,6 +20,12 @@ animations {
   playback: PLAYBACK_NONE
 }
 animations {
+  id: "exit"
+  start_tile: 8
+  end_tile: 8
+  playback: PLAYBACK_NONE
+}
+animations {
   id: "nothing"
   start_tile: 6
   end_tile: 6
@@ -30,6 +36,11 @@ animations {
   start_tile: 3
   end_tile: 3
   playback: PLAYBACK_NONE
+}
+animations {
+  id: "reroll"
+  start_tile: 7
+  end_tile: 7
 }
 animations {
   id: "selector"

@@ -13,7 +13,7 @@ textures {
 }
 nodes {
   position {
-    x: 126.0
+    x: 188.0
     y: 405.0
   }
   scale {
@@ -30,7 +30,7 @@ nodes {
 }
 nodes {
   position {
-    x: 170.0
+    x: 232.0
     y: 405.0
   }
   scale {
@@ -85,7 +85,7 @@ nodes {
 }
 nodes {
   position {
-    x: 126.0
+    x: 188.0
     y: 295.0
   }
   scale {
@@ -102,7 +102,7 @@ nodes {
 }
 nodes {
   position {
-    x: 170.0
+    x: 232.0
     y: 295.0
   }
   scale {
@@ -132,7 +132,7 @@ nodes {
 }
 nodes {
   position {
-    x: 126.0
+    x: 188.0
     y: 183.0
   }
   scale {
@@ -149,7 +149,7 @@ nodes {
 }
 nodes {
   position {
-    x: 170.0
+    x: 232.0
     y: 183.0
   }
   scale {
@@ -213,7 +213,7 @@ nodes {
 }
 nodes {
   position {
-    x: 126.0
+    x: 188.0
     y: 405.0
   }
   scale {
@@ -453,16 +453,33 @@ nodes {
 }
 nodes {
   position {
-    x: 688.0
-    y: 402.0
+    x: 108.0
+    y: 404.0
   }
   scale {
-    x: 4.5
-    y: 4.5
+    x: 3.5
+    y: 3.5
   }
   type: TYPE_BOX
-  texture: "sprite_icons/empty"
-  id: "Up_Left_exit"
+  texture: "sprite_icons/exit"
+  id: "Up_1_left"
+  xanchor: XANCHOR_LEFT
+  layer: "front layer"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 108.0
+    y: 186.0
+  }
+  scale {
+    x: 3.5
+    y: 3.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/reroll"
+  id: "Up_2_left"
   xanchor: XANCHOR_LEFT
   layer: "front layer"
   inherit_alpha: true

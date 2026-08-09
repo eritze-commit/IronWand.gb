@@ -9,7 +9,7 @@ emitters {
     z: 0.70710677
     w: 0.70710677
   }
-  tile_source: "/main/Player_assets/Particle_sheet.tilesource"
+  tile_source: "/main/GUI/Player_assets/Particle_sheet.tilesource"
   animation: "Triangle_dark"
   material: "/builtins/materials/particlefx.material"
   blend_mode: BLEND_MODE_MULT

@@ -2,7 +2,7 @@ emitters {
   mode: PLAY_MODE_LOOP
   duration: 1.0
   space: EMISSION_SPACE_WORLD
-  tile_source: "/main/Player_assets/Particle_sheet.tilesource"
+  tile_source: "/main/GUI/Player_assets/Particle_sheet.tilesource"
   animation: "Flip_throu"
   material: "/builtins/materials/particlefx.material"
   max_particle_count: 20

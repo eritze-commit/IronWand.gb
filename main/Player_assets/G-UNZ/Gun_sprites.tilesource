@@ -21,6 +21,12 @@ animations {
   playback: PLAYBACK_NONE
 }
 animations {
+  id: "god"
+  start_tile: 11
+  end_tile: 11
+  playback: PLAYBACK_NONE
+}
+animations {
   id: "m4"
   start_tile: 10
   end_tile: 10

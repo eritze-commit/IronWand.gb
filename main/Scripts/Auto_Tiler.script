@@ -200,6 +200,9 @@ function on_message(self, message_id, message, sender)
 	if message_id == hash("asm") then 
 		map_assembler(self)
 	end
+	if message_id == hash("cls") then
+		clr_screen()
+	end
 end
 
 function on_input(self, action_id, action)
