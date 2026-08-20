@@ -37,4 +37,11 @@ animations {
   playback: PLAYBACK_LOOP_FORWARD
   fps: 7
 }
+animations {
+  id: "steye"
+  start_tile: 21
+  end_tile: 28
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
 extrude_borders: 2

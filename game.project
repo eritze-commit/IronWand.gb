@@ -10,6 +10,9 @@ width = 620
 height = 480
 dynamic_orientation = 0
 fullscreen = 0
+vsync = 1
+display_device_info = 0
+update_frequency = 100
 
 [android]
 input_method = HiddenInputField
@@ -47,4 +50,10 @@ max_emitter_count = 128
 
 [sprite]
 max_count = 256
+
+[engine]
+fixed_update_frequency = 100
+
+[input]
+use_accelerometer = 0
 

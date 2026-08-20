@@ -94,8 +94,8 @@ local function play_sfx(sfx,options)
 end
 
 local function reset_shop_button_price()
-	local price =  math.random(1,5) +  math.floor(1 + (hud_state.map_cur_floor/ global.max_floor) * 100)
-	reset_shop_price = reset_shop_pricse + price 
+	local price =  math.random(4,10) +  math.floor(1 + (hud_state.map_cur_floor/ global.max_floor) * 100)
+	reset_shop_price = reset_shop_price + price 
 end
 
 reset_shop_button_price()

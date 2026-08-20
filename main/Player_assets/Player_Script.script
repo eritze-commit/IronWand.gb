@@ -168,6 +168,15 @@ function on_message(self, message_id, message, sender)
 			dash_init = false
 		end)
 	end
+	if message_id == hash("release_input") then 
+		msg.post(".","release_input_focus")
+		self.dir = vmath.vector3(0, 0, 0)
+		self.correction = vmath.vector3()
+		self.input={left= false, right = false ,up = false, down = false ,roll = false}
+	end
+	if message_id == hash("give_input") then 
+		msg.post(".","acquire_input_focus")
+	end
 	--[[
 	if message_id ==  hash("contact_point_response") then
 		--print("colided with wall ")

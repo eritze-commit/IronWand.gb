@@ -603,7 +603,13 @@ function on_message(self, message_id, message, sender)
 		self.per_shot_cooldown = message.per_shot_cooldown 
 		self.smart_aim = message.smart_aim
 
-		timer.delay(global.enemy_spawn_delay_scalar*message.random_module,false, function() 
+		msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "enemy_spawn" , time = global.enemy_spawn_delay_scalar*message.random_module, optional = message.name }})
+		
+			
+		
+	end 
+	if message_id == hash("timer_end") then
+		if message.type == "enemy_spawn" then
 			if not self.special then 
 				local s_s_max = 0.1
 				local s_s_min = 0
@@ -627,7 +633,7 @@ function on_message(self, message_id, message, sender)
 			end
 			particlefx.play("#enemy_spawn")
 			self.alive = true
-		sprite.play_flipbook("#Main_sprite",message.name)
+		sprite.play_flipbook("#Main_sprite",message.optional)
 		path_finder(self,{noise = false})
 
 		timer.delay(  math.random() + self.enemy_shooting_speed,true,function() 
@@ -642,7 +648,7 @@ function on_message(self, message_id, message, sender)
 			
 				
 			end
-		end)
+	end)
 		
 		timer.delay(0.2, true , function() 
 			physics.raycast_async(go.get_position("."), go.get_position("/Player_ROOT/Player")+vmath.vector3(0,-5,0),{hash("entity"),hash("wall")})
@@ -655,8 +661,9 @@ function on_message(self, message_id, message, sender)
 			--path_finder(self)
 			--draw_Path(self)
 		end)	
-		end)
-	end 
+		
+		end
+	end
 	if message_id == hash("ray_cast_response") then 
 		--print("RAY CAST GETTER ",message.id)
 		if message.id == hash("/Player_ROOT/Player") then 

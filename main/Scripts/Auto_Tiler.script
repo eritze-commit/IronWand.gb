@@ -1,5 +1,6 @@
 local env = require("main.Scripts.eviorment_data")
 local global = require("main.GLOBAL.GLOBAL")
+local tiles = require("main.Scripts.Map_Tile_data") 
 
 local floor_tile_size = 500 * global.floor_linear_scalar
 local floor_repeat = 1
@@ -25,10 +26,12 @@ function init(self)
 		[14] = 15,
 		[15] = 16,
 	}
+	
 	self.pressed = false 
 	math.randomseed(os.time())
 
 end
+local tile_set_name = 0 
 local object_que = {}
 local function clr_screen()
 	for y = 0, 23 do 
@@ -49,6 +52,7 @@ local function clr_screen()
 	end
 end
 local function Room_gen_floor()
+	tile_set_name = tiles.tile_set_names[math.random(1,#tiles.tile_set_names)]
 	local y = 11
 	local x = 21
 	local dir = {{-1,0},{1,0},{0,-1},{0,1}}
@@ -75,13 +79,13 @@ local function wall_placer()
 	for y = 0, 23 do 
 		for x = 0, 37 do 
 			if tilemap.get_tile_info("/Map#Standard", "zero", x, y).index == 18 then
-				tilemap.set_tile("/Map#Standard","zero",x,y,math.random(25,28))
+				tilemap.set_tile("/Map#Standard","zero",x,y,tiles[tile_set_name][math.random(18,21)] )
 				for i, ofdir in ipairs(directions) do 
 					local dx = x + ofdir[2]
 					local dy = y + ofdir[1]
 					if  tilemap.get_tile_info("/Map#Standard", "zero", dx, dy).index == 0  then
 						tilemap.set_tile("/Map#Standard","wall",dx,dy,24)
-						tilemap.set_tile("/Map#Standard","zero",dx,dy,math.random(22,23))
+						tilemap.set_tile("/Map#Standard","zero",dx,dy,tiles[tile_set_name][math.random(16,17)])
 					end
 				end	
 			end
@@ -159,7 +163,9 @@ local function auto_tiler(self)
 					end
 				end
 				--print(total)
-				tilemap.set_tile("/Map#Standard","wall_on_top",x,y,self.aval_tiles[total])
+				tilemap.set_tile("/Map#Standard","wall_on_top",x,y,tiles[tile_set_name][total])
+				--tilemap.set_tile("/Map#Standard","wall",x , y , 0)
+				--self.aval_tiles[total]
 				total = 0 
 			end
 			--msg.post("/Shadow_Map#shdw_map","Place_shadow",{shadow = set_tile, x = x, y = y })

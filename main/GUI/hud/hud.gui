@@ -11,6 +11,10 @@ textures {
   name: "enemy_drops"
   texture: "/main/Enemy_Assets/drops/enemy_drops.tilesource"
 }
+textures {
+  name: "sprite_icons"
+  texture: "/main/GUI/Upgrade_modules/sprite_icons.tilesource"
+}
 nodes {
   position {
     x: 492.0
@@ -208,7 +212,7 @@ nodes {
 nodes {
   position {
     x: 314.0
-    y: 269.0
+    y: 291.0
   }
   size {
     x: 200.0
@@ -221,6 +225,108 @@ nodes {
   xanchor: XANCHOR_LEFT
   yanchor: YANCHOR_BOTTOM
   inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 114.0
+    y: 191.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_1_image"
+  xanchor: XANCHOR_LEFT
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  visible: false
+}
+nodes {
+  position {
+    x: 194.0
+    y: 191.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_2_image"
+  xanchor: XANCHOR_LEFT
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  visible: false
+}
+nodes {
+  position {
+    x: 274.0
+    y: 191.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_3_image"
+  xanchor: XANCHOR_LEFT
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  visible: false
+}
+nodes {
+  position {
+    x: 354.0
+    y: 191.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_4_image"
+  xanchor: XANCHOR_LEFT
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  visible: false
+}
+nodes {
+  position {
+    x: 434.0
+    y: 191.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_5_image"
+  xanchor: XANCHOR_LEFT
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  visible: false
+}
+nodes {
+  position {
+    x: 514.0
+    y: 191.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_6_image"
+  xanchor: XANCHOR_LEFT
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
   visible: false
 }
 layers {

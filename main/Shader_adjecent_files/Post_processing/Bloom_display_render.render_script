@@ -323,6 +323,7 @@ function update(self)
 
 	
 		render.set_viewport(0, 0, state.window_width, state.window_height)
+		-- RGB PURPLE R - 0.32 , G - 0.03 , B - 0.38
 		render.clear({[graphics.BUFFER_TYPE_COLOR0_BIT] = vmath.vector4(0,0,0,1)})
 	end
 	

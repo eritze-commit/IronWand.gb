@@ -198,6 +198,10 @@ embedded_instances {
   "  id: \"Game_state_manager\"\n"
   "  component: \"/main/GLOBAL/Game_state_manager.script\"\n"
   "}\n"
+  "components {\n"
+  "  id: \"Timer_squeduler\"\n"
+  "  component: \"/main/GLOBAL/Timer_squeduler.script\"\n"
+  "}\n"
   ""
 }
 embedded_instances {

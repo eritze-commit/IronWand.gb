@@ -1,4 +1,4 @@
-tile_set: "/main/assets/tile sources/shadow_map.tilesource"
+tile_set: "/main/assets/tile sources/shadow_tile_map_2.tilesource"
 layers {
   id: "layer"
   z: 0.0

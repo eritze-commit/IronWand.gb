@@ -1,7 +1,7 @@
-tile_set: "/main/assets/tile sources/BW.tilesource"
+tile_set: "/main/assets/tile sources/tile_set_2.tilesource"
 layers {
   id: "zero"
-  z: 0.0
+  z: -1.0
   cell {
     x: -2
     y: -2
@@ -20,6 +20,7 @@ layers {
 layers {
   id: "wall"
   z: 0.5
+  is_visible: 0
 }
 layers {
   id: "peak"

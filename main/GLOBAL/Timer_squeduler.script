@@ -1,0 +1,44 @@
+local game_state = require("main.GLOBAL.in_game")
+
+function init(self)
+	--frame_time = 1.6511111111111111111111
+	-- local frame_time = 2.6625766708942 --37.407
+	
+end
+
+local timer_buffer = {} 
+
+function final(self)
+	
+end
+
+
+function update(self, dt)
+	if game_state.paused ~= true then 
+		if #timer_buffer ~= 0 then 
+			for i =  #timer_buffer, 1 , -1 do 
+				timer_buffer[i].time = timer_buffer[i].time - dt 
+				if  timer_buffer[i].time <= 0 then
+					--print(timer_buffer[i].script, " sender ")
+					msg.post(timer_buffer[i].script,"timer_end",{type = timer_buffer[i].type, optional = timer_buffer[i].optional })
+					--print("SCRIPT ",timer_buffer[1].script," type ",timer_buffer[1].type)
+					table.remove(timer_buffer,i)
+				end
+			end
+		end 
+	end
+	
+	--count = count + 1 
+	--result  = result - dt 
+  
+	--dt_counter =  dt_counter + dt 
+	--print("result ",result," count ", count ," dt  ", dt )
+	
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("add_timer") then 
+		timer_buffer[#timer_buffer+1] = message.data
+	end 
+end
+

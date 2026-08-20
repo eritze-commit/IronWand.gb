@@ -3,7 +3,7 @@ local env = require("main.Scripts.eviorment_data")
 local Pstate = require "main.Player_assets.Player_state_module"
 local global = require  "main.GLOBAL.GLOBAL"
 
-local enemie_names = {"skull","batorb","slime","cow"}
+local enemie_names = {"skull","batorb","slime","cow","steye"}
 local random_bullets  = {
 	{type = "tiny", speed = math.random(70,120), diameter = 3 },
 	{type = "medium", speed = math.random(70,120), diameter = 7 },
@@ -136,6 +136,30 @@ local enemies  = {
 		bullets = {	
 			{type = "tiny", speed = 90, diameter = 3 },
 			{type = "medium", speed = 79, diameter = 7 },
+			--{type = "big", speed = 50, diameter = 13 },
+			--{type = "star", speed = 0.01, diameter = 6 } 
+		}
+	},
+	{
+		name = "steye",
+		speed = 0, 
+		health = math.random(50,100),
+		shooting_speed = 2 ,
+		bullet_ammount = 0,
+		per_shot_cooldown = 0.05,
+		smart_aim =  math.random() < 0.5,
+
+		weight_values = { 
+			fluke = 0.5,
+			rush = 0.5 ,
+			flee = 0.5 , 
+			circle = 0.5
+		},
+		special = math.random() < 0.01  ,
+
+		bullets = {	
+			{type = "tiny", speed = 180, diameter = 3 },
+			--{type = "medium", speed = 79, diameter = 7 },
 			--{type = "big", speed = 50, diameter = 13 },
 			--{type = "star", speed = 0.01, diameter = 6 } 
 		}
