@@ -21,6 +21,30 @@ animations {
   playback: PLAYBACK_NONE
 }
 animations {
+  id: "circlep"
+  start_tile: 14
+  end_tile: 14
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "deagle"
+  start_tile: 1
+  end_tile: 1
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "doublep"
+  start_tile: 13
+  end_tile: 13
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "g19"
+  start_tile: 15
+  end_tile: 15
+  playback: PLAYBACK_NONE
+}
+animations {
   id: "god"
   start_tile: 11
   end_tile: 11
@@ -46,8 +70,8 @@ animations {
 }
 animations {
   id: "pistol"
-  start_tile: 1
-  end_tile: 1
+  start_tile: 12
+  end_tile: 12
   playback: PLAYBACK_NONE
 }
 animations {

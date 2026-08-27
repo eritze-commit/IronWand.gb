@@ -90,6 +90,11 @@ function fixed_update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
+	if message_id == hash("player_idle") then 
+		self.input={left= false, right = false ,down=false, up = false, roll = false}
+		self.prev_state = "idle"
+		self.cur_anim = "idle"
+	end
 	if message_id == hash("right_dir_change") then 
 		self.input.right = message.dir 
 	elseif message_id ==  hash("left_dir_change") then 
@@ -120,6 +125,12 @@ function on_message(self, message_id, message, sender)
 			msg.post(message.other_id,"player_hit",{data = 6767})
 		end
 		end
+	if message_id == hash("heart_pickup") then
+		if Pstate.health < Pstate.max_health then
+			Pstate.health = Pstate.health + 1 
+			msg.post("/Gui_collection/hud#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})
+		end
+	end 
 	if message_id == hash("Hit_response") then 
 		Pstate.health  = Pstate.health - 1
 		sound.stop("/Sound_manager#Pl_hit_sfx")

@@ -9,15 +9,17 @@ function init(self)
 	particlefx.play("#drop_Pfx")
 	particlefx.play("#drops_spawn_fx")
 	print("OBJECT SPAWN  ITEM SPAWN SPANDER ")
-	self.avalible_items  = {"gun_mag","mana_orb"}
-	self.cur_item = self.avalible_items[math.random(1,#self.avalible_items)]
+	local avalible_items = {"gun_mag","mana_orb","heart","mana_star"}
+	self.cur_item = avalible_items[math.random(1,#avalible_items)]
 	sprite.play_flipbook("#sprite", self.cur_item)
 	
 end
 local action_table = {
 
 	["gun_mag"] = function()  msg.post("/Player_ROOT/gun_cont#gun_controller","mag_pickup")          end,
+	["heart"] = function()  msg.post("/Player_ROOT/Pl_Sprite#Pl_Sprite_Script","heart_pickup") end,
 	["mana_orb"] = function() hud_drop_data.mana = hud_drop_data.mana + 1   end, 
+	["mana_star"] = function() hud_drop_data.mana = hud_drop_data.mana + 1   end, 
 }
 
 function final(self)

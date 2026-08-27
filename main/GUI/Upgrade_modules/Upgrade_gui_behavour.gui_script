@@ -94,22 +94,34 @@ local function play_sfx(sfx,options)
 end
 
 local function reset_shop_button_price()
-	local price =  math.random(4,10) +  math.floor(1 + (hud_state.map_cur_floor/ global.max_floor) * 100)
+	local price =  math.random(1,2) +  math.floor(1 + (hud_state.map_cur_floor/ global.max_floor) * 20)
 	reset_shop_price = reset_shop_price + price 
 end
 
-reset_shop_button_price()
+
+
+local function icon_display(table) 
+	if table.name ~= "2gun" and table.name ~= "1gun"  then 
+			return table.name 
+	else
+			return table.type
+	end
+end
 
 local function render_bottom_row()
 	for i = 1 , 6 do
-		local temp_image_name = upgrades.upgrade_slots[i].name
+		local temp_image_name = icon_display(upgrades.upgrade_slots[i]) 
 		if temp_image_name ~= nil then
 			gui.play_flipbook(gui.get_node("down_"..i.."_image"), temp_image_name)
+		else
+			gui.play_flipbook(gui.get_node("down_"..i.."_image"), "empty")
+			
 		end
 	end
 end 
 local function quit_shop(self)
 	msg.post(".", "release_input_focus")
+	reset_shop_price = 0
 	for i in ipairs(self.all_nodes) do 
 
 		gui.set_enabled(gui.get_node(self.all_nodes[i]),false)
@@ -129,7 +141,7 @@ local function shake_selector(options)
 			starting_pos = gui.get_position(gui.get_node("Up_"..cur_slot.."_image"))
 		end
 		if options == "up_right" then 
-			starting_pos = gui.get_position(gui.get_node("Up_"..cur_slot_Up_right.."left"))
+			starting_pos = gui.get_position(gui.get_node("Up_"..cur_slot_Up_right.."_left"))
 		end
 		local negatizer_x = math.random(0,1) == 1 and 1 or -1
 		local negatizer_y = math.random(0,1) == 1 and 1 or -1
@@ -156,6 +168,7 @@ local function change_state_position(self, position)
 	end
 end
 
+
 local function upgrade_compare(input) 
 	for i = 1 , #upgrades.upgrade_slots do 
 		if input == upgrades.upgrade_slots[i].name then 
@@ -169,7 +182,8 @@ local function generate_shop()
 	upgrades:generate_shop_slots()  
 	for i = 1 , 3 do 
 		gui.set_text(gui.get_node("Up_"..i.."_text"),upgrades.shop_slots[i].description)
-		gui.play_flipbook(gui.get_node("Up_"..i.."_image"),upgrades.shop_slots[i].name) 
+		
+		gui.play_flipbook(gui.get_node("Up_"..i.."_image"),icon_display( upgrades.shop_slots[i] ) ) 
 	end
 
 end
@@ -178,6 +192,7 @@ function on_message(self, message_id, message, sender)
 	if message_id == hash("toggle_screen") then
 		print("TOGGLE SCREEN IS TOGGLEEDED ")
 		if  message.enabled then
+			reset_shop_button_price()
 			msg.post(".", "acquire_input_focus")
 		else
 			msg.post(".","release_input_focus")
@@ -192,7 +207,7 @@ function on_message(self, message_id, message, sender)
 		upgrades:generate_shop_slots()  
 		for i = 1 , 3 do 
 			gui.set_text(gui.get_node("Up_"..i.."_text"),upgrades.shop_slots[i].description)
-			gui.play_flipbook(gui.get_node("Up_"..i.."_image"),upgrades.shop_slots[i].name) 
+			gui.play_flipbook(gui.get_node("Up_"..i.."_image"), icon_display(upgrades.shop_slots[i])) 
 		end
 	end 
 end
@@ -267,7 +282,7 @@ function on_input(self, action_id, action)
 					gui.play_particlefx(gui.get_node("selector_particle"))
 					buying_state = true
 					--gui.set_position(gui.get_node("selector_onionskin"), gui.get_position(gui.get_node("selector")))
-					gui.play_flipbook(gui.get_node("selector_onionskin"), upgrades.shop_slots[cur_slot].name)
+					gui.play_flipbook(gui.get_node("selector_onionskin"),icon_display(upgrades.shop_slots[cur_slot]))
 					state_of_screen = "down"
 					change_state_position(self,"neg")
 					--hud_state.mana = hud_state.mana - upgrades.shop_slots[cur_slot].price
@@ -417,7 +432,7 @@ function on_input(self, action_id, action)
 			if  next(upgrades.shop_slots[cur_slot])     ~= nil then 
 				if  state_of_screen ~= "up_right" then 
 					gui.set_text(gui.get_node("price"),"Price : "..upgrades.shop_slots[cur_slot].price)
-					gui.play_flipbook(gui.get_node("Up_"..cur_slot.."_image"), upgrades.shop_slots[cur_slot].name)
+					gui.play_flipbook(gui.get_node("Up_"..cur_slot.."_image"),icon_display( upgrades.shop_slots[cur_slot] ) )
 				end
 			else
 				if state_of_screen ~="up_right" then 
@@ -440,7 +455,7 @@ function on_input(self, action_id, action)
 						upgrades.shop_slots[cur_slot] = {}
 					else
 						if  next(upgrades.shop_slots[cur_slot]) ~= nil then 
-							gui.play_flipbook(gui.get_node("Up_"..cur_slot.."_image"),upgrades.shop_slots[cur_slot].name)
+							gui.play_flipbook(gui.get_node("Up_"..cur_slot.."_image"),icon_display(upgrades.shop_slots[cur_slot]))
 						end
 					end
 				change_state_position(self,"pos")
@@ -449,7 +464,7 @@ function on_input(self, action_id, action)
 				gui.set_text(gui.get_node("down_text_error"), ": ")
 				if  next(upgrades.shop_slots[cur_slot])     ~= nil then 
 					gui.set_text(gui.get_node("price"),"Price : "..upgrades.shop_slots[cur_slot].price)
-					gui.play_flipbook(gui.get_node("Up_"..cur_slot.."_image"), upgrades.shop_slots[cur_slot].name)
+					gui.play_flipbook(gui.get_node("Up_"..cur_slot.."_image"),icon_display(upgrades.shop_slots[cur_slot]) )
 				else
 					gui.set_text(gui.get_node("price"),"Price : ".."none")
 					gui.play_flipbook(gui.get_node("Up_"..cur_slot.."_image"), "empty")

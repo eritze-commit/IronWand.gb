@@ -41,13 +41,13 @@ function on_message(self, message_id, message, sender)
 		physics.set_shape("#collisionobject1", "bullet", {type = physics.SHAPE_TYPE_SPHERE, diameter  = message.diameter })
 		sprite.play_flipbook("#sprite",message.type)
 		if message.type == "star" then 
-			--self.lifetime = 10
-			msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "bullet_destroy" , time = 10 , optional = 0 }})
+			self.lifetime = 10
 		end
 
 		self.dir = message.dir 
 		self.speed = message.speed
 
+			msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "bullet_destroy" , time = self.lifetime, optional = 0 }})
 		-- timer.delay(self.lifetime,false, function() 
 		-- 	go.delete(".")
 		-- end)

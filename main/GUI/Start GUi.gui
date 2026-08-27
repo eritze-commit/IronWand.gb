@@ -24,7 +24,7 @@ nodes {
   texture: "Logo/Iron_Wand_TYpeFont"
   id: "logo"
   yanchor: YANCHOR_TOP
-  layer: "layer1"
+  layer: "layer2"
   inherit_alpha: true
 }
 nodes {
@@ -47,7 +47,7 @@ nodes {
   font: "PixeRlino"
   id: "start"
   yanchor: YANCHOR_BOTTOM
-  layer: "layer1"
+  layer: "layer2"
   inherit_alpha: true
 }
 nodes {
@@ -72,6 +72,7 @@ nodes {
   id: "backDrop"
   xanchor: XANCHOR_LEFT
   yanchor: YANCHOR_BOTTOM
+  layer: "layer1"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
 }
@@ -91,13 +92,16 @@ nodes {
   type: TYPE_PARTICLEFX
   id: "Dust"
   xanchor: XANCHOR_LEFT
-  layer: "layer1"
+  layer: "layer2"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   particlefx: "GUi_main_menu_particle"
 }
 layers {
   name: "layer1"
+}
+layers {
+  name: "layer2"
 }
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT

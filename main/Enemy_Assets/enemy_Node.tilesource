@@ -40,8 +40,9 @@ animations {
 animations {
   id: "steye"
   start_tile: 21
-  end_tile: 28
+  end_tile: 29
   playback: PLAYBACK_LOOP_FORWARD
   fps: 10
+  flip_horizontal: 1
 }
 extrude_borders: 2

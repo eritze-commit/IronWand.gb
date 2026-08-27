@@ -172,6 +172,7 @@ function on_message(self, message_id, message, sender)
 		msg.post(".","release_input_focus")
 		self.dir = vmath.vector3(0, 0, 0)
 		self.correction = vmath.vector3()
+		msg.post("Pl_Sprite#Pl_Sprite_Script","dash_end",{dash = false,  cng_spr = "walking" })
 		self.input={left= false, right = false ,up = false, down = false ,roll = false}
 	end
 	if message_id == hash("give_input") then 

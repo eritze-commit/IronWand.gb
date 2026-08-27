@@ -2,10 +2,11 @@ local global = require("main.GLOBAL.GLOBAL")
 local map_state = require("main.Player_assets.G-UNZ.Hud_state")
 local Pstate = require "main.Player_assets.Player_state_module"
 
-local last_map_state_floor = -1
+
 local floor_t
 
 function init(self)
+	msg.post("/global#GLobal_modifyer_state_manager","update_floor_values")
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
 
@@ -20,17 +21,25 @@ end
 
 function update(self, dt)
 	--print("MAP  SCALAR ",global.floor_linear_scalar)
-	if  map_state.map_cur_floor ~= last_map_state_floor then 
-		last_map_state_floor = map_state.map_cur_floor
-		floor_t = map_state.map_cur_floor / global.max_floor
-		global.floor_linear_scalar = 0.7 + ( floor_t  * 4.3 )
-		global.map_tint = -(floor_t * 0.25)
-		global.enemy_spawn_scale = math.floor(floor_t * 40)
-		global.enemy_spawn_delay_scalar = 10 + (floor_t * 50)
-	end	
+	-- if  map_state.map_cur_floor ~= last_map_state_floor then 
+	-- 	last_map_state_floor = map_state.map_cur_floor
+		
+	-- end	
 end
 
 function on_message(self, message_id, message, sender)
+	if message_id == hash("update_floor_values") then
+		global.floor_t = math.max(0,math.min(1, map_state.map_cur_floor / global.max_floor))
+		--[[ magic euler number  and 0.03 another magic number -]]
+		global.expo_decay = 1 * (1 - (2.71828^-0.07)^ math.min(100,map_state.map_cur_floor) )
+		global.expo_decay = 1 * (1 - (2.71828^-0.07)^ math.max(0,math.min(100,map_state.map_cur_floor) ))
+		--print("GLOBAL EXPO DECAY ",global.expo_decay," ,map state ", map_state.map_cur_floor)
+		global.floor_linear_scalar = global.floor_t * 850
+		global.map_tint = -(global.floor_t * 0.25)
+		global.enemie_floor_hp_scale = global.floor_t * 5 
+		global.enemy_spawn_scale = math.floor(global.floor_t * 25)
+		global.enemy_spawn_delay_scalar = 10 + (global.floor_t * 25)
+	end
 	-- Add message-handling code here
 	-- Learn more: https://defold.com/manuals/message-passing/
 	-- Remove this function if not needed

@@ -10,9 +10,23 @@ animations {
   fps: 3
 }
 animations {
+  id: "heart"
+  start_tile: 11
+  end_tile: 15
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 9
+}
+animations {
   id: "mana_orb"
   start_tile: 1
   end_tile: 5
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 7
+}
+animations {
+  id: "mana_star"
+  start_tile: 16
+  end_tile: 19
   playback: PLAYBACK_LOOP_FORWARD
   fps: 7
 }

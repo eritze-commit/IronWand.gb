@@ -94,7 +94,7 @@ function on_message(self, message_id, message, sender)
 		self.hit_position = message.position 
 		self.wall_normal = message.normal 
 
-		print("THIS RAN  RAY CASR RESPONESE ")
+		--print("THIS RAN  RAY CASR RESPONESE ")
 	end
 	
 	if message_id == hash("contact_point_response") and  message.other_group == hash("wall")  then  
@@ -155,9 +155,10 @@ function on_message(self, message_id, message, sender)
 	
 	end
 	if message_id == hash("spawn_data") then
-		timer.delay(5, false, function() 
-			go.delete(".")
-		end)	
+		msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "bullet_destroy" , time = 10, optional = 0 }})
+		-- timer.delay(5, false, function() 
+		-- 	go.delete(".")
+		-- end)	
 		
 		particlefx.play("#bullet_trail")
 		--print("GOT DATA WHY YOU PIECE OF SHIT NOT APPEARING ")
@@ -183,5 +184,10 @@ function on_message(self, message_id, message, sender)
 		-- 	
 		-- end
 		
+	end
+	if message_id == hash("timer_end") then
+		if message.type == "bullet_destroy" then
+			go.delete(".")
+		end
 	end
 end

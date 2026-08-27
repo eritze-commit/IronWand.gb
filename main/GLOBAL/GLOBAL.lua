@@ -4,9 +4,11 @@ local global = {
 	--scalar_value = 1,
 	enemy_spawn_scale = 1, 
 	enemy_spawn_delay_scalar = 5,
+	expo_decay = 0, 
 	max_floor = 100,
 	map_tint = 0,
-
+	floor_t = 0,
+	enemie_floor_hp_scale = 0 , 
 
 
 

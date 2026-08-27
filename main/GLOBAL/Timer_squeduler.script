@@ -20,7 +20,9 @@ function update(self, dt)
 				timer_buffer[i].time = timer_buffer[i].time - dt 
 				if  timer_buffer[i].time <= 0 then
 					--print(timer_buffer[i].script, " sender ")
-					msg.post(timer_buffer[i].script,"timer_end",{type = timer_buffer[i].type, optional = timer_buffer[i].optional })
+					if go.exists(timer_buffer[i].script) then
+						msg.post(timer_buffer[i].script,"timer_end",{type = timer_buffer[i].type, optional = timer_buffer[i].optional })
+					end
 					--print("SCRIPT ",timer_buffer[1].script," type ",timer_buffer[1].type)
 					table.remove(timer_buffer,i)
 				end

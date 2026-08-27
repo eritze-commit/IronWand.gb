@@ -2,6 +2,9 @@ local gun_state = require("main.Player_assets.G-UNZ.Hud_state")
 local Pstate = require "main.Player_assets.Player_state_module"
 local cros_pos = require("main.Player_assets.G-UNZ.cross_hair_data")
 local game_state = require("main.GLOBAL.in_game")
+local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")		
+local gun2 = upgrades.data_layer["2gun"]
+local gun1 = upgrades.data_layer["1gun"]
 
 function init(self)
 	msg.post(".", "acquire_input_focus")
@@ -9,9 +12,11 @@ function init(self)
 	self.btn_prst = false
 	self.input_polls = {left = false, right = false}
 	self.csp =  go.get("gun_cont#slot","position")
-	self.gun_swap = {"god","pistol","uzi","awp","ak47","shotgun","mp5","m4","revolver","p90"}
+	--self.gun_swap = {"god","pistol","uzi","awp","ak47","shotgun","mp5","m4","revolver","p90"}
+	self.gun_swap = {"pistol","2gun"}
 	self.recoil_offset = vmath.vector3(0,0,0)
 	self.cur_gun = 1
+	self.max_gun = 1
 	self.cur_pos = vmath.vector3()
 	self.can_shoot =  true
 	self.opo_dir = vmath.vector3(0,0,0)
@@ -24,10 +29,15 @@ function init(self)
 	self.reload_timer = false
 	self.last_rotate = vmath.vector3()
 	self.clipped = false
+	self.last_update_gun1 = 0
+	self.last_update_gun2 = 0
 	
 
 	self.gun_master_list = {
-		["pistol"] = {spread = 10, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 2,dmg = 100 --[[ original value 3 ]]  ,reload_speed = 0.5 ,    max_mag_size = 15, in_mag = 15, total_mags = 6767676767 },
+		["1gun"] = gun1 , -- {gun_name = "pistol",spread = 10, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 2,dmg = 3 --[[ original value 3 ]]  ,reload_speed = 0.5 ,    max_mag_size = 15, in_mag = 15, total_mags = 6767676767 },
+		["2gun"] = gun2 ,  --{name = gun2.name , spread = gun2.spread, bul_speed = gun2.bul_speed, delay = gun2.delay, ammount = gun2.ammount, recoil = gun2.recoil,dmg = gun2.dmg   ,reload_speed = gun2.reload_speed, max_mag_size = gun2.max_mag_size, in_mag = gun2.in_mag, total_mags = gun2.total_mags},
+		["pistol"] = {gun_name = "pistol",spread = 10, bul_speed = 210, delay = 0.3, ammount = 1, recoil = 2,dmg = 2 --[[ original value 3 ]]  ,reload_speed = 0.5 ,    max_mag_size = 15, in_mag = 15, total_mags = "INF"},
+		--["1gun"] = {name = "doublep",spread = 5, bul_speed = 210, delay = 0.3, ammount = 2, recoil = 3,dmg = 1 --[[ original value 3 ]]  ,reload_speed = 0.5 ,    max_mag_size = 15, in_mag = 15, total_mags = 67 },
 		["uzi"] = {spread = 30, bul_speed = 210, delay = 0.001 --[[ original value 0.06 ]] , ammount = 1, recoil = 3.5,dmg = 1  , reload_speed = 0.5,   max_mag_size = 50, in_mag = 50, total_mags = self.defualt_cheat_vl },
 		["awp"] = {spread = 1, bul_speed = 260, delay = 1, ammount = 1, recoil = 10,dmg = 20, reload_speed = 1 , max_mag_size = 1, in_mag = 1, total_mags = self.defualt_cheat_vl },
 		["ak47"] = {spread = 15, bul_speed = 210, delay = 0.15, ammount = 1, recoil = 2,dmg = 1.5, reload_speed = 1 ,max_mag_size = 35, in_mag = 35, total_mags = self.defualt_cheat_vl },
@@ -38,6 +48,7 @@ function init(self)
 		["revolver"] = {spread = 3, bul_speed = 250, delay = 0.1, ammount = 1, recoil = 4,dmg = 4, reload_speed = 3 ,  max_mag_size = 6, in_mag = 6, total_mags = self.defualt_cheat_vl }, 
 		["p90"] = {spread = 2, bul_speed = 230, delay = 0.05, ammount = 1, recoil = 1,dmg = 0.5,reload_speed = 0.5 , max_mag_size = 50, in_mag = 50, total_mags = self.defualt_cheat_vl },
 		["god"] = {spread = 0, bul_speed = 260, delay = 0.1, ammount = 1, recoil = 7,dmg = 100   ,reload_speed = 0.1 , max_mag_size = 99, in_mag = 99, total_mags = 6767676767 },
+		
 	}
 	
 	self.gun_state = {
@@ -69,7 +80,7 @@ function init(self)
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
-	sprite.play_flipbook("gun_cont#slot", self.gun_swap[self.cur_gun])
+	sprite.play_flipbook("gun_cont#slot", self.gun_master_list[ self.gun_swap[self.cur_gun] ].gun_name)
 	gun_state.gun_name = self.gun_swap[self.cur_gun]
 	gun_state.gun_cur_in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag
 	gun_state.gun_max_mag  =  self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags
@@ -77,11 +88,57 @@ end
 
 local mouse_cords = vmath.vector3()
 
-
+local function display_gun(self) 
+		sprite.play_flipbook("gun_cont#slot", self.gun_master_list[ self.gun_swap[self.cur_gun] ].gun_name )
+			gun_state.gun_name = self.gun_master_list[ self.gun_swap[self.cur_gun] ].gun_name
+			gun_state.gun_cur_in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag
+			gun_state.gun_max_mag  =  self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags
+end
 
 local gun_rot_delay = 0.3
+local gun_rel_delay = 0.15
 function update(self, dt)
 	if Pstate.alive then
+		if self.last_update_gun2 ~= upgrades.data_layer["2gun"].has_gun then
+			if upgrades.data_layer["2gun"].has_gun ~= 0 then
+				self.last_update_gun2 = upgrades.data_layer["2gun"].has_gun
+				self.max_gun = 2 
+				if self.cur_gun == 2 then
+					display_gun(self)
+				end
+			--	 print("GUN THING RAN ")
+				 pprint(self.gun_master_list[ self.gun_swap[2] ])
+			else
+				self.last_update_gun2 = upgrades.data_layer["2gun"].has_gun
+				self.max_gun = 1
+				if self.cur_gun == 2 then
+					self.cur_gun = 1 
+					display_gun(self)
+				end
+			end
+		end
+		if self.last_update_gun1 ~= upgrades.data_layer["1gun"].has_gun then
+			if upgrades.data_layer["1gun"].has_gun ~= 0 then
+				self.last_update_gun1 = upgrades.data_layer["1gun"].has_gun
+				self.gun_swap[1] = "1gun"
+				if self.cur_gun == 1 then 
+					display_gun(self)
+				end
+				--self.max_gun = 2 
+			--	 print("GUN THING RAN ")
+				 pprint(self.gun_master_list[ self.gun_swap[1] ])
+			else
+				self.last_update_gun1 = upgrades.data_layer["1gun"].has_gun
+				self.gun_swap[1] = "pistol"
+			if self.cur_gun == 1 then 
+					display_gun(self)
+			end
+
+				
+				--self.max_gun = 1 
+			end
+
+		end
 		if not game_state.paused then 
 	if vmath.length(self.gun_dir) > 0 then 
 		if vmath.length(self.gun_dir) > 0 then 
@@ -168,9 +225,12 @@ local gun_relapse = false
 local function Gun_reload(self) 
 	local reload_speed =  self.gun_master_list[self.gun_swap[self.cur_gun]].reload_speed 
 	
+	
 	if self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag <= math.floor(self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size/3 ) then
+		
 		local In_mag_negative =  self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size - self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag
-		if self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags >= In_mag_negative then 
+		if self.cur_gun == 1 or  self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags >= 1 then 
+			print("RELOAD TRIGGERED ")
 			local s_s_max = 1.6
 			local s_s_min = 1.1
 			local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
@@ -178,7 +238,9 @@ local function Gun_reload(self)
 			sound.play("/Sound_manager#gun_reload",{speed = random_offset, gain = 0.5})
 			self.reload_timer = true
 			self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag + In_mag_negative
-			self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags  = self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags -  In_mag_negative
+			if self.cur_gun ~= 1 then 
+				self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags  =  self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags -  1
+			end
 		-- if self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags <= self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size then
 		-- 	self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag =  self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag + self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size
 		-- else
@@ -276,7 +338,10 @@ function on_message(self, message_id, message, sender)
 		self.clipped = message.enter
 	end
 	if message_id == hash("mag_pickup") then 
-		self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags = self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags + self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size
+		self.gun_master_list[self.gun_swap[2]].total_mags = self.gun_master_list[self.gun_swap[2]].total_mags + 1 
+		gun_state.gun_cur_in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag
+		gun_state.gun_max_mag  =  self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags
+		-- self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size
 	end
 end
 function on_input(self, action_id, action)
@@ -293,16 +358,16 @@ function on_input(self, action_id, action)
 		if self.btn_prst ~= true then
 			self.btn_prst = true
 
-			timer.delay( gun_rot_delay ,false,
+			timer.delay( gun_rel_delay ,false,
 			function() 
 				self.btn_prst = false
 			end)
 			self.cur_gun = self.cur_gun + 1 
-			if self.cur_gun > 9 then 
+			if self.cur_gun > self.max_gun then 
 				self.cur_gun = 1 
 			end
-			sprite.play_flipbook("gun_cont#slot", self.gun_swap[self.cur_gun])
-			gun_state.gun_name = self.gun_swap[self.cur_gun]
+			sprite.play_flipbook("gun_cont#slot", self.gun_master_list[ self.gun_swap[self.cur_gun] ].gun_name )
+			gun_state.gun_name = self.gun_master_list[ self.gun_swap[self.cur_gun] ].gun_name
 			gun_state.gun_cur_in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag
 			gun_state.gun_max_mag  =  self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags
 		end
