@@ -9,6 +9,7 @@ local scale_strenght = 0.05
 
 local last_enemy = 0
 local last_name = ""
+local last_mag = 0 
 
 local last_mana = 0
 
@@ -51,9 +52,10 @@ function update(self, dt)
 	self.time = self.time * dt
 	dtime.dt = self.time 
 	
-	if gun_state.gun_cur_in_mag ~= Last_in_mag or gun_state.gun_name ~= last_name  then 
+	if gun_state.gun_cur_in_mag ~= Last_in_mag or gun_state.gun_name ~= last_name or gun_state.gun_max_mag ~= last_mag  then 
 		Last_in_mag = gun_state.gun_cur_in_mag
 		last_name = gun_state.gun_name
+		last_mag = gun_state.gun_max_mag
 		gui.set_text( gui.get_node("Gun_ammo" ),gun_state.gun_name.."\n"..gun_state.gun_cur_in_mag.."/"..gun_state.gun_max_mag)
 		gui.animate( gui.get_node("Gun_ammo" ), "scale",vmath.vector3(1+scale_strenght,1+scale_strenght,1),go.EASING_INBOUNCE,0.05,0, function() 
 			gui.animate( gui.get_node("Gun_ammo" ), "scale",vmath.vector3(1,1,1),go.EASING_INBOUNCE,0.05,0)

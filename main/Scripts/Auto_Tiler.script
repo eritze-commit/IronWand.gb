@@ -6,7 +6,7 @@ local floor_tile_size = 250 * global.floor_linear_scalar
 local floor_repeat = 1
 
 function init(self)
-	msg.post(".", "acquire_input_focus")
+--	msg.post(".", "acquire_input_focus")
 	-- UP | DOWN | LEFT | RIGHT
 	self.aval_tiles = {
 		[0] = 1,

@@ -6,8 +6,8 @@ local player_state = {
 	player_dir = vmath.vector3(),
 	player_speed = 0 ,
 	dashing = false,
-	health = 10,
-	max_health = 10,
+	health = 5,
+	max_health = 5,
 	alive = false,
 }
 return player_state

@@ -3,7 +3,7 @@ local env = require("main.Scripts.eviorment_data")
 local Pstate = require "main.Player_assets.Player_state_module"
 local global = require  "main.GLOBAL.GLOBAL"
 
- local enemie_names = {"skull","batorb","slime","cow","steye"}
+local enemie_names = {"skull","batorb","cow","steye"}
 -- local enemie_names = {"steye"}
 local random_bullets  = {
 	{type = "tiny", speed = math.random(70,120), diameter = 3 },
@@ -28,8 +28,8 @@ local buffer_of_enemies = {}
 local enemies  = {
 	{
 		name = enemie_names[math.random(1,#enemie_names)],
-		speed = math.random(20,60), 
-		health = math.random(30,50),
+		speed = math.random(20,50), 
+		health = math.random(20,60),
 		shooting_speed = math.random(3,10) ,
 		bullet_ammount = math.random(0,1),
 		per_shot_cooldown = 0.1,
@@ -144,7 +144,7 @@ local enemies  = {
 	{
 		name = "steye",
 		speed = 0, 
-		health = math.random(50,100),
+		health = math.random(30,50),
 		shooting_speed = 2 ,
 		bullet_ammount = 0,
 		per_shot_cooldown = 0.05,
@@ -178,7 +178,7 @@ local function Node_Placer()
 	local enemies_spawned = 0 
 	local enemies_spawned_this_round = 0
 --	global.expo_decay = 1 * (1 - (2.71828^-0.07)^ math.min(100,0) )
-	local enmey_max_buffer = 2 +  math.floor( global.expo_decay * 11 )  +   math.floor( ( cur_wave * (global.expo_decay * 5 ) ) )
+	local enmey_max_buffer = 2 +  math.floor( global.expo_decay * 8 )  +   math.floor( ( cur_wave * (global.expo_decay * 8 ) ) ) --2 +  math.floor( global.expo_decay * 11 )  +   math.floor( ( cur_wave * (global.expo_decay * 5 ) ) )
 	--print("tried spawing enemy",enmey_max_buffer,"global expo decay ", global.expo_decay, "cur wave ", cur_wave) 
 	for i = 1, 5 do 
 	for y = 0, 23 do 
@@ -191,10 +191,10 @@ local function Node_Placer()
 						msg.post(new_enemy, "start_path", {
 							name = enemies[random_enemie].name ,
 							speed = enemies[random_enemie].speed ,
-							health = ( enemies[random_enemie].health / 1.7 )+ global.enemie_floor_hp_scale ,
+							health = ( enemies[random_enemie].health / 2.5 ) * global.enemie_floor_hp_scale ,
 							shooting_speed = enemies[random_enemie].shooting_speed,
 							weight_values = enemies[random_enemie].weight_values,
-							special =  math.random() < 0.05  ,
+							special =  math.random() < 0.025  ,
 							bullets = enemies[random_enemie].bullets,
 							bullet_ammount = enemies[random_enemie].bullet_ammount,
 							per_shot_cooldown = enemies[random_enemie].per_shot_cooldown,

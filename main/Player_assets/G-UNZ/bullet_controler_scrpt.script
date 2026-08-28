@@ -15,9 +15,11 @@ function init(self)
 	self.sound_manager = nil
 	self.bounces = upgrades.data_layer["bounce"].bounces
 	self.bounces_chance = upgrades.data_layer["bounce"].bounce_chance
-
+	self.wall_hit = false 
 	self.pierce = upgrades.data_layer["pierce"].pierces
 	self.pierce_chance = upgrades.data_layer["pierce"].pierce_chance
+
+	
 
 	self.enemies_pierced = {}
 
@@ -88,6 +90,7 @@ function on_message(self, message_id, message, sender)
 	
 	if message_id == hash("get_type") then
 		msg.post(sender,"break_wall" ,{type = "ball",dmg = self.dmg}) 
+		self.wall_hit = true 
 	end
 
 	if message_id  == hash("ray_cast_response") then 

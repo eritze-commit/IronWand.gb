@@ -53,6 +53,7 @@ function on_message(self, message_id, message, sender)
 			self.curent_state = message.state
 
 			if self.curent_state == "playing" then 
+				active.cur_scene_active = false 
 				window.set_mouse_lock(true)
 				--print("RIght state",message.state)
 				self.curent_state = "playing"
@@ -62,10 +63,10 @@ function on_message(self, message_id, message, sender)
 				msg.post("/Gui_collection/StartMenu#Start GUi","show_gui",{show = false}) 
 				msg.post("/Map#Auto_Tiler","asm",{map = 1})
 				msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","enemy_clear_from_buffer",{chat = 0})
-				active.cur_scene_active = true
 				msg.post("/Gui_collection/hud#hud","show_gui",{show = true})
 				msg.post("/Gui_collection/hud#hud","acquire_input_focus")
 				msg.post("/Gui_collection/StartMenu#Start GUi","release_input_focus")
+				active.cur_scene_active = true
 
 			elseif self.curent_state == "up_floor" then
 				active.cur_scene_active = false 
@@ -133,17 +134,15 @@ function on_message(self, message_id, message, sender)
 					shop_floor = shop_floor_incriment
 					map_state.mana = 0
 					go.set_position(vmath.vector3(0,0,0,0), "/Player_ROOT/Player")
-					
 					msg.post("/Gui_collection/hud#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})
 					
 					
 					msg.post("/Gui_collection/hud#hud","show_gui",{show = false})
 					msg.post("/Gui_collection/hud#hud","release_input_focus")
 					msg.post("/Gui_collection/StartMenu#Start GUi","acquire_input_focus")
-
-					
-					
 					self.curent_state = "menu"
+					
+					
 				end)
 			elseif self.curent_state == "paused"then
 				
