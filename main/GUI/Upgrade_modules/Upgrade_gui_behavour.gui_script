@@ -3,7 +3,7 @@ local hud_state = require("main.Player_assets.G-UNZ.Hud_state")
 
 local global = require("main.GLOBAL.GLOBAL")
 local cur_slot = 1
-local enabled = false 
+local enabled = true  
 local state_of_screen = "up"
 local button_cooldown = 0.2
 local cur_slot_down = 1 

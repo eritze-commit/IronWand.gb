@@ -3,6 +3,18 @@ tile_width: 16
 tile_height: 16
 collision_groups: "default"
 animations {
+  id: "+heart"
+  start_tile: 5
+  end_tile: 5
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "+mags"
+  start_tile: 4
+  end_tile: 4
+  playback: PLAYBACK_NONE
+}
+animations {
   id: "ak47"
   start_tile: 15
   end_tile: 15
@@ -38,6 +50,12 @@ animations {
   playback: PLAYBACK_NONE
 }
 animations {
+  id: "mini uzi"
+  start_tile: 29
+  end_tile: 29
+  playback: PLAYBACK_NONE
+}
+animations {
   id: "nothing"
   start_tile: 6
   end_tile: 6
@@ -58,6 +76,18 @@ animations {
   id: "selector"
   start_tile: 9
   end_tile: 9
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "shrapnel"
+  start_tile: 2
+  end_tile: 2
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "uzi"
+  start_tile: 14
+  end_tile: 14
   playback: PLAYBACK_NONE
 }
 extrude_borders: 2

@@ -57,3 +57,6 @@ fixed_update_frequency = 100
 [input]
 use_accelerometer = 0
 
+[native_extension]
+app_manifest = /main/native_extension.appmanifest
+

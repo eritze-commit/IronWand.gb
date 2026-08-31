@@ -1,0 +1,90 @@
+go.property("dmg", 0)
+go.property("speed", 0)
+go.property("dir",vmath.vector3())
+local game_state = require("main.GLOBAL.in_game")
+
+
+
+function init(self)
+	--self.curpos = vmath.vector3()
+	self.cur_pos = vmath.vector3()--go.get_position(".")
+	--self.dmg = 0
+	--self.dmg_loss = 0.5
+	self.sound_manager = nil
+	--self.bounces = upgrades.data_layer["bounce"].bounces
+	--self.bounces_chance = upgrades.data_layer["bounce"].bounce_chance
+	--self.wall_hit = false 
+	--self.pierce = upgrades.data_layer["pierce"].pierces
+	--self.pierce_chance = upgrades.data_layer["pierce"].pierce_chance
+
+	
+
+	--self.enemies_pierced = {}
+
+	--self.hit_position  = nil
+	--self.wall_normal = nil 
+	self.moving = false
+	particlefx.play("#bullet_trail")
+	msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "bullet_destroy" , time = 10, optional = 0 }})
+	--print("SELF DIR ",self.dir, "self SPEED ",self.speed)
+
+	
+	-- Add initialization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function final(self)
+	local s_s_max = 1.5
+	local s_s_min = 0.5
+	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+	particlefx.play("#bullet_on_contact")
+	particlefx.stop("#bullet_trail")
+	sound.stop("/Sound_manager#bullet_collision_sound")
+	sound.play("/Sound_manager#bullet_collision_sound",{speed = random_offset, gain = 0.01})
+
+	
+end
+
+
+
+function update(self, dt)
+		if  not game_state.paused then 
+			self.cur_pos = go.get_position(".")
+			self.cur_pos = self.cur_pos + self.dir * self.speed * dt
+			go.set_position(self.cur_pos, ".")
+		end
+		--msg.post("@render:", "draw_line", { start_point = go.get_position(".") ,  end_point = self.hit_position, color = vmath.vector4(1,1,1,1) })
+end
+
+function fixed_update(self, dt)
+	
+end	
+
+function on_message(self, message_id, message, sender)
+	-- if message_id == hash("trigger_response") then 
+	-- 	go.delete(".")
+	-- 	particlefx.stop("#bullet_trail")
+	-- end
+	if message_id == hash("contact_by_bullet") then 
+		--print("THIS IS CONTACT BY BULLET ")
+			msg.post(sender,"retrun_of_contact_bullet",{bullet_dir = self.dir,dmg = self.dmg})
+			go.delete(".")
+	end
+	
+	if message_id == hash("get_type") then
+		msg.post(sender,"break_wall" ,{type = "ball",dmg = self.dmg})  
+	end
+
+	
+	if message_id == hash("contact_point_response") and  message.other_group == hash("wall")  then 
+			go.delete(".")
+			particlefx.stop("#bullet_trail")
+	end
+	
+	if message_id == hash("timer_end") then
+		if message.type == "bullet_destroy" then
+			go.delete(".")
+		end
+	end
+end

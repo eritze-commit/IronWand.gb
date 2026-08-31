@@ -57,6 +57,12 @@ animations {
   playback: PLAYBACK_NONE
 }
 animations {
+  id: "mini uzi"
+  start_tile: 16
+  end_tile: 16
+  playback: PLAYBACK_NONE
+}
+animations {
   id: "mp5"
   start_tile: 3
   end_tile: 3

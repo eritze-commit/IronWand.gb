@@ -1,4 +1,5 @@
 local Pstate = require "main.Player_assets.Player_state_module"
+local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
 local game_state = require("main.GLOBAL.in_game")
 
 function init(self)
@@ -127,7 +128,10 @@ function on_message(self, message_id, message, sender)
 		end
 	if message_id == hash("heart_pickup") then
 		if Pstate.health < Pstate.max_health then
-			Pstate.health = Pstate.health + 1 
+			Pstate.health = Pstate.health + ( 0.5 + upgrades.data_layer["+heart"].health)
+			if Pstate.health > Pstate.max_health then
+				Pstate.health = Pstate.max_health
+			end
 			msg.post("/Gui_collection/hud#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})
 		end
 	end 

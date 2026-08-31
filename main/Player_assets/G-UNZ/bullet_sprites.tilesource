@@ -1,11 +1,18 @@
-image: "/main/Player_assets/G-UNZ/Sprite-0002.png"
+image: "/main/Player_assets/G-UNZ/bullet_sprites.png"
 tile_width: 3
 tile_height: 3
 collision_groups: "default"
 animations {
-  id: "anim"
+  id: "bullet"
   start_tile: 1
   end_tile: 3
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 15
+}
+animations {
+  id: "shrapnel"
+  start_tile: 4
+  end_tile: 7
   playback: PLAYBACK_LOOP_FORWARD
   fps: 15
 }

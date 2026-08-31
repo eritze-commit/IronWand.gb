@@ -37,7 +37,7 @@ function on_message(self, message_id, message, sender)
 		--print("GLOBAL EXPO DECAY ",global.expo_decay," ,map state ", map_state.map_cur_floor)
 		global.floor_linear_scalar = global.floor_t * 850
 		global.map_tint = -(global.floor_t * 0.25)
-		global.enemie_floor_hp_scale = 1 + global.floor_t * 5
+		global.enemie_floor_hp_scale = 1 + (map_state.map_cur_floor / global.max_floor) * 5
 		global.enemy_spawn_scale = math.floor(global.floor_t * 25)
 		global.enemy_spawn_delay_scalar = 10 + (global.floor_t * 25)
 	end

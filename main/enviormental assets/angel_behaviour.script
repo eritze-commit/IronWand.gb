@@ -31,7 +31,7 @@ function final(self)
 		sound.play("/Sound_manager#break_explode_sound",{speed = random_offset, gain = self.sound_gain-0.1 })
 		particlefx.stop("#explode_triangle_fx")
 		particlefx.play("#explode_triangle_fx")
-		msg.post("/Drop_Spawner#Drop_spawner","spawn_drop",{position = go.get_position("."), max_drop = 2, min_drop = 0 })
+		msg.post("/Drop_Spawner#Drop_spawner","spawn_drop",{position = go.get_position("."), max_drop = 1, min_drop = 0 })
 	end
 end
 

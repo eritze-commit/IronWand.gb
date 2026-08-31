@@ -202,6 +202,12 @@ embedded_instances {
   "  id: \"Timer_squeduler\"\n"
   "  component: \"/main/GLOBAL/Timer_squeduler.script\"\n"
   "}\n"
+  "embedded_components {\n"
+  "  id: \"shrapnel_spawn\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/main/Player_assets/G-UNZ/shrapnel.go\\\"\\n"
+  "\"\n"
+  "}\n"
   ""
 }
 embedded_instances {
