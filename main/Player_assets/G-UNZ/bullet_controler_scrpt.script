@@ -21,6 +21,9 @@ function init(self)
 	
 	self.shrapnel =  upgrades.data_layer["shrapnel"].shrapnel
 	self.shrapnel_chance = upgrades.data_layer["shrapnel"].shrapnel_chance
+
+	self.expo_diameter = upgrades.data_layer["exploding"].diameter
+	self.expo_chance = upgrades.data_layer["exploding"].chance 
 	
 
 	self.enemies_pierced = {}
@@ -48,15 +51,17 @@ function final(self)
 	print(self.wall_hit)
 	if self.wall_hit == true and self.shrapnel > 0 and math.random(1,100) <= self.shrapnel_chance then
 		for i = 1 , self.shrapnel do
-			print("shrapnerlll SPAWNED ")
+			--print("shrapnerlll SPAWNED ")
 			local rad =  math.atan2(self.dir.y,self.dir.x)
 			local negator_modulator = math.random() < 0.5 and 1 or 0
 			local dir = rad + (math.random() * 0.7 * negator_modulator ) 
 			--vmath.quat(0,0,math.random(),0)
 			factory.create("/global#shrapnel_spawn",go.get_position(".")+(self.dir*-1)*5 ,vmath.quat(0,0,math.random(),0) ,{speed = self.speed/1.5 , dir = vmath.vector3(math.cos(dir)*-1,math.sin(dir)*-1 ,self.dir.x) , dmg = self.dmg / 3  })
 		end
+	elseif self.wall_hit == false and self.expo_diameter > 0 and math.random(1,100) <= self.expo_chance then
+		factory.create("/global#exploding_bullet",go.get_position(".") ,nil ,{diameter_scale = self.expo_diameter , dmg = self.dmg / 3  })
 	end
-
+	
 	
 end
 

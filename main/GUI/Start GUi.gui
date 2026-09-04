@@ -7,6 +7,10 @@ textures {
   name: "Logo"
   texture: "/main/assets/atlasses/Logo.atlas"
 }
+textures {
+  name: "defold_logo"
+  texture: "/main/assets/atlasses/defold_logo.atlas"
+}
 nodes {
   position {
     x: 324.0
@@ -52,7 +56,7 @@ nodes {
 }
 nodes {
   position {
-    x: 323.0
+    x: 303.0
     y: 235.0
   }
   scale {
@@ -96,6 +100,24 @@ nodes {
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   particlefx: "GUi_main_menu_particle"
+}
+nodes {
+  position {
+    x: 551.0
+    y: 93.0
+  }
+  scale {
+    x: 0.04
+    y: 0.04
+  }
+  type: TYPE_BOX
+  texture: "defold_logo/logo-ver-outline-white"
+  id: "defold_logo"
+  layer: "layer1"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  enabled: false
+  visible: false
 }
 layers {
   name: "layer1"

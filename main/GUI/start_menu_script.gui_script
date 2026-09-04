@@ -52,6 +52,7 @@ function update(self, dt)
 
 	gui.set_position(gui.get_node("logo"), nex_pos_1)
 	gui.set_position(gui.get_node("start"), nex_pos_2)
+	--gui.set_position(gui.get_node("defold_logo"), nex_pos_2)
 	-- Add update code here
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
@@ -61,6 +62,7 @@ local function Flip_gui_state(self,state)
 	gui.set_enabled(gui.get_node("logo"),state)
 	gui.set_enabled(gui.get_node("backDrop"),state)
 	gui.set_enabled(gui.get_node("Dust"),state)
+	--gui.set_enabled(gui.get_node("defold_logo"),state)
 	self.button_selected = false
 end
 

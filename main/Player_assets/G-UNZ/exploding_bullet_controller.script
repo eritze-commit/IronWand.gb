@@ -1,0 +1,84 @@
+go.property("dmg", 0)
+go.property("diameter_scale",0 )
+
+local game_state = require("main.GLOBAL.in_game")
+
+
+
+function init(self)
+
+	self.cur_pos = vmath.vector3()
+
+	self.sound_manager = nil
+	self.dir = vmath.vector3(0,0,0)
+
+
+	self.cur_diameter = 0.01
+	self.scale = vmath.vector3(0.035,0.035,0) * ( self.diameter_scale /2 )
+	go.set("#sprite","scale",self.scale)
+	self.diameter = 1 * self.diameter_scale
+	physics.set_shape("#collisionobject", "bullet", {type = physics.SHAPE_TYPE_SPHERE, diameter  = self.diameter })
+
+
+	
+	msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "bullet_destroy" , time = 0.5, optional = 0 }})
+	go.animate("#sprite","scale",go.PLAYBACK_ONCE_FORWARD,vmath.vector3(0.001,0.001,0),go.EASING_INEXPO,0.5)
+	self.attacked = false 
+	self.attacked_2 = false
+	timer.delay(0.1,false , function() self.attacked = true end   )
+	--print("SELF DIR ",self.dir, "self SPEED ",self.speed)
+
+end
+
+function final(self)
+	local s_s_max = 1.5
+	local s_s_min = 0.5
+	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+	sound.stop("/Sound_manager#bullet_collision_sound")
+	sound.play("/Sound_manager#bullet_collision_sound",{speed = random_offset, gain = 0.01})
+	
+	
+end
+
+
+
+function update(self, dt)			
+
+		--msg.post("@render:", "draw_line", { start_point = go.get_position(".") ,  end_point = self.hit_position, color = vmath.vector4(1,1,1,1) })
+end
+
+function fixed_update(self, dt)
+	
+end	
+
+function on_message(self, message_id, message, sender)
+	-- if message_id == hash("trigger_response") then 
+	-- 	go.delete(".")
+	-- 	particlefx.stop("#bullet_trail")
+	-- end
+	if message_id == hash("contact_by_bullet") then 
+		--print("THIS IS CONTACT BY BULLET ")
+				if self.attacked == false then
+					msg.post(sender,"retrun_of_contact_bullet",{bullet_dir = vmath.vector3(0.01,0.01,0),dmg = self.dmg})
+				end
+				--go.delete(".")
+			
+
+ 
+	end
+	
+	if message_id == hash("get_type") then
+		if self.attacked == false then
+			msg.post(sender,"break_wall" ,{type = "ball",dmg = self.dmg})  
+			
+		end
+			--go.delete(".")
+
+	end
+	
+	if message_id == hash("timer_end") then
+		if message.type == "bullet_destroy" then
+			go.delete(".")
+		end
+	end
+end

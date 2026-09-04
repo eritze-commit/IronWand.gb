@@ -3,7 +3,7 @@ local hud_state = require("main.Player_assets.G-UNZ.Hud_state")
 
 local global = require("main.GLOBAL.GLOBAL")
 local cur_slot = 1
-local enabled = true  
+local enabled = false  
 local state_of_screen = "up"
 local button_cooldown = 0.2
 local cur_slot_down = 1 
@@ -94,7 +94,7 @@ local function play_sfx(sfx,options)
 end
 
 local function reset_shop_button_price()
-	local price =  math.random(0,1) +  math.floor(1 + (hud_state.map_cur_floor/ global.max_floor) * 20)
+	local price =  math.random(0,1) +  math.floor((hud_state.map_cur_floor/ global.max_floor) * 20)
 	reset_shop_price = reset_shop_price + price 
 end
 
@@ -126,8 +126,10 @@ local function quit_shop(self)
 
 		gui.set_enabled(gui.get_node(self.all_nodes[i]),false)
 	end
-	hud_state.map_cur_floor = hud_state.map_cur_floor - 1 
-	msg.post("/global#Game_state_manager","change_state",{state = "up_floor"})
+	if enabled == false then 
+		hud_state.map_cur_floor = hud_state.map_cur_floor - 1 
+		msg.post("/global#Game_state_manager","change_state",{state = "up_floor"})
+	end
 	-- subtract one from the map floor because going to up floor is going to add one 
 
 end

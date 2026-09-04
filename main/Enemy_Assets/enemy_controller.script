@@ -2,6 +2,7 @@
 	local global = require("main.GLOBAL.GLOBAL")
 	local Pstate = require "main.Player_assets.Player_state_module"
 	local game_state = require("main.GLOBAL.in_game")
+	local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
 	
 function init(self)
 	self.pl_p = go.get_position("/Player_ROOT/Player")
@@ -37,8 +38,8 @@ function init(self)
 	self.smoothed_vel = vmath.vector3()
 	self.alive = false
 
-	self.critical_hit_chance = global.crit_chance
-	self.critical_hit_multiplyer = global.crit_multiplyer
+	self.critical_hit_chance = global.crit_chance + (upgrades.data_layer["^crit"].chance*100) 
+	self.critical_hit_multiplyer = global.crit_multiplyer * ( 1 + upgrades.data_layer["+crit"].damage) 
 
 	self.cur_bullet_type = nil
 
@@ -569,10 +570,10 @@ function on_message(self, message_id, message, sender)
 				go.set("#Main_sprite","flasher",vmath.vector4(1,0,0,0))
 			end)
 		end
-		if math.random(0,100) < self.critical_hit_chance then
-			self.health = self.health - message.dmg * self.critical_hit_multiplyer 
+		if math.random(0,100) < ( self.critical_hit_chance + (upgrades.data_layer["^crit"].chance*10) ) then
+			self.health = self.health - message.dmg * ( self.critical_hit_multiplyer * ( 1 + upgrades.data_layer["+crit"].damage ))
 		--	print("took damage ")
-			factory.create("/DynamicProceduralEnemyController#numerical_facotry",go.get_position("."),nil,{value = message.dmg * self.critical_hit_multiplyer, special = vmath.vector4(1,0,1,1)})
+			factory.create("/DynamicProceduralEnemyController#numerical_facotry",go.get_position("."),nil,{value = message.dmg * (self.critical_hit_multiplyer * ( 1 + upgrades.data_layer["+crit"].damage)), special = vmath.vector4(1,0,1,1)})
 		else
 			self.health = self.health - message.dmg
 			--print("took damage ",factory.create("/DynamicProceduralEnemyController#numerical_facotry",go.get_position("."),nil,{value = message.dmg , special = vmath.vector4(1,1,1,1)}))

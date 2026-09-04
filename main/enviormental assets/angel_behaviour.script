@@ -1,7 +1,12 @@
+
+local active = require("main.Enemy_Assets.drops.spawnded_items_data")
 local Pstate = require "main.Player_assets.Player_state_module"
 local env = require("main.Scripts.eviorment_data")
 
 function init(self)
+	self.type = "core"
+	self.min = 0
+	self.max = 1 
 	self.durab = 5
 	self.can_attack = true
 	self.first_pos = go.get_position(".")
@@ -16,6 +21,7 @@ function init(self)
 	self.default_tint =  s_s_min + (math.random() * (s_s_max -  s_s_min))
 	self.default_tint = self.default_tint * neg_mod
 	go.set("#sprite","color_mod",vmath.vector4(self.default_tint,0,0,0)) 
+
 end
 
 function final(self)
@@ -26,12 +32,13 @@ function final(self)
 
 		env.statue_pos[self.cord_key] = false
 		
-		
-		sound.stop("/Sound_manager#break_explode_sound")
-		sound.play("/Sound_manager#break_explode_sound",{speed = random_offset, gain = self.sound_gain-0.1 })
-		particlefx.stop("#explode_triangle_fx")
-		particlefx.play("#explode_triangle_fx")
-		msg.post("/Drop_Spawner#Drop_spawner","spawn_drop",{position = go.get_position("."), max_drop = 1, min_drop = 0 })
+		if active.cur_scene_active then
+			sound.stop("/Sound_manager#break_explode_sound")
+			sound.play("/Sound_manager#break_explode_sound",{speed = random_offset, gain = self.sound_gain-0.1 })
+			particlefx.stop("#explode_triangle_fx")
+			particlefx.play("#explode_triangle_fx")
+			msg.post("/Drop_Spawner#Drop_spawner","spawn_drop",{position = go.get_position("."), max_drop = self.max, min_drop = self.min,loot = self.type })
+		end
 	end
 end
 
@@ -51,6 +58,13 @@ function fixed_update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
+	if message_id == hash("statue_type") then
+		self.type = message.type 
+		self.min = message.min
+		self.max = message.max
+		sprite.play_flipbook("#sprite",self.type)
+		sprite.play_flipbook("#shadow","shadow_"..self.type)
+	end
 	if message_id == hash("contact_point_response") then 
 		msg.post(message.other_id,"get_type",{type = 1 })
 		self.objects_normal = message.normal

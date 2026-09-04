@@ -13,8 +13,8 @@ local global = {
 
 
 	
-	crit_chance  = 5,
-	crit_multiplyer = 3 ,
+	crit_chance  = 2,
+	crit_multiplyer = 1.5 ,
 	
 	
 }

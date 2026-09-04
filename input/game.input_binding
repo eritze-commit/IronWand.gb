@@ -35,7 +35,7 @@ key_trigger {
   action: "less"
 }
 key_trigger {
-  input: KEY_G
+  input: KEY_Q
   action: "swap"
 }
 key_trigger {
@@ -75,10 +75,6 @@ key_trigger {
   action: "action_but"
 }
 key_trigger {
-  input: KEY_Q
-  action: "reload"
-}
-key_trigger {
   input: KEY_LSHIFT
   action: "dash"
 }
@@ -92,7 +88,7 @@ key_trigger {
 }
 key_trigger {
   input: KEY_R
-  action: "reset"
+  action: "reload"
 }
 mouse_trigger {
   input: MOUSE_BUTTON_LEFT

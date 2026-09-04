@@ -9,7 +9,7 @@ components {
 embedded_components {
   id: "sprite"
   type: "sprite"
-  data: "default_animation: \"core\"\n"
+  data: "default_animation: \"heart\"\n"
   "material: \"/main/Enemy_Assets/Enemy_shader_related_files/Enemy_Material_custom.material\"\n"
   "textures {\n"
   "  sampler: \"texture_sampler\"\n"
@@ -21,9 +21,9 @@ embedded_components {
   }
 }
 embedded_components {
-  id: "sprite1"
+  id: "shadow"
   type: "sprite"
-  data: "default_animation: \"shadow\"\n"
+  data: "default_animation: \"shadow_mag\"\n"
   "material: \"/builtins/materials/sprite.material\"\n"
   "blend_mode: BLEND_MODE_MULT\n"
   "size {\n"

@@ -268,3 +268,14 @@ embedded_instances {
   "}\n"
   ""
 }
+embedded_instances {
+  id: "bullet_casing"
+  data: "components {\n"
+  "  id: \"flying_shell\"\n"
+  "  component: \"/main/Player_assets/G-UNZ/flying_shell.particlefx\"\n"
+  "}\n"
+  ""
+  position {
+    y: 26.0
+  }
+}

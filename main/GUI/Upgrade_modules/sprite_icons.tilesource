@@ -3,6 +3,12 @@ tile_width: 16
 tile_height: 16
 collision_groups: "default"
 animations {
+  id: "+crit"
+  start_tile: 24
+  end_tile: 24
+  playback: PLAYBACK_NONE
+}
+animations {
   id: "+heart"
   start_tile: 5
   end_tile: 5
@@ -12,6 +18,18 @@ animations {
   id: "+mags"
   start_tile: 4
   end_tile: 4
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "+reload speed"
+  start_tile: 21
+  end_tile: 21
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "^crit"
+  start_tile: 23
+  end_tile: 23
   playback: PLAYBACK_NONE
 }
 animations {
@@ -26,9 +44,27 @@ animations {
   end_tile: 8
 }
 animations {
+  id: "awp"
+  start_tile: 16
+  end_tile: 16
+  playback: PLAYBACK_NONE
+}
+animations {
   id: "bounce"
   start_tile: 1
   end_tile: 1
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "deagle"
+  start_tile: 11
+  end_tile: 11
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "dodge"
+  start_tile: 30
+  end_tile: 30
   playback: PLAYBACK_NONE
 }
 animations {
@@ -44,6 +80,12 @@ animations {
   playback: PLAYBACK_NONE
 }
 animations {
+  id: "exploding"
+  start_tile: 27
+  end_tile: 27
+  playback: PLAYBACK_NONE
+}
+animations {
   id: "g19"
   start_tile: 20
   end_tile: 20
@@ -53,6 +95,12 @@ animations {
   id: "mini uzi"
   start_tile: 29
   end_tile: 29
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "minigun"
+  start_tile: 32
+  end_tile: 32
   playback: PLAYBACK_NONE
 }
 animations {
@@ -68,6 +116,17 @@ animations {
   playback: PLAYBACK_NONE
 }
 animations {
+  id: "pocket shotgun"
+  start_tile: 28
+  end_tile: 28
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "quicker dash"
+  start_tile: 26
+  end_tile: 26
+}
+animations {
   id: "reroll"
   start_tile: 7
   end_tile: 7
@@ -79,9 +138,21 @@ animations {
   playback: PLAYBACK_NONE
 }
 animations {
+  id: "shotgun"
+  start_tile: 12
+  end_tile: 12
+  playback: PLAYBACK_NONE
+}
+animations {
   id: "shrapnel"
   start_tile: 2
   end_tile: 2
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "snubby"
+  start_tile: 25
+  end_tile: 25
   playback: PLAYBACK_NONE
 }
 animations {

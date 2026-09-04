@@ -1,8 +1,9 @@
 local Pstate = require "main.Player_assets.Player_state_module"
 local game_state = require("main.GLOBAL.in_game")
+local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")		
 local dash_timer = 0.1
 local can_dash = true 
-local dash_cooldown = 2
+local dash_cooldown = 2 
 local dash_state = false  
 local dash_init = false 
 local last_position = vmath.vector3()
@@ -96,8 +97,9 @@ local function dash(self)
 			msg.post("Pl_Sprite#Pl_Sprite_Script","dash_end",{dash = false,  cng_spr = "walking" })
 			particlefx.stop("Particle #Plr_Dash")
 			--particlefx.stop("Particle #PLr_Trail")
-			dash_init = false 
-			timer.delay(dash_cooldown, false, function()
+			dash_init = false
+			--print("dash cooldown ",dash_cooldown) 
+			timer.delay(dash_cooldown/ (1 + upgrades.data_layer["quicker dash"].speed ), false, function()
 				
 				--particlefx.stop("Particle #PLr_Trail")
 				--particlefx.stop("Particle #PLr_Trail")

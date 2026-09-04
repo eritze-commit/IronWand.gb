@@ -1,0 +1,4 @@
+images {
+  image: "/main/assets/Images/logo-ver-outline-white.png"
+}
+extrude_borders: 2

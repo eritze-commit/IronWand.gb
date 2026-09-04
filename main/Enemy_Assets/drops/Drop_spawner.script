@@ -26,11 +26,22 @@ function fixed_update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
-	if message_id == hash("spawn_drop") then 
+	if message_id == hash("spawn_drop") then
+			local loot_name = nil
+			if message.loot == nil then
+				loot_name = "core"
+				else
+			loot_name = message.loot
+				end
+			local loot_tables = {["core"]={"gun_mag","mana_orb","heart","mana_star","heart"},
+			["heart"] = {"heart"},
+			["mag"] = {"gun_mag"}, }
 			for i =1,   math.random(message.min_drop,message.max_drop) do 
 				local x_modulatro = math.random(0,1) == 1 and -1 or 1 
 				local y_modulatro = math.random(0,1) == 1 and -1 or 1 
-				factory.create("/Drop_Spawner#drop_spawn",message.position+vmath.normalize(vmath.vector3(math.random()*x_modulatro,math.random()*y_modulatro,0))*(math.random(5,20)))
+				local selected_item =  loot_tables[loot_name][math.random(1,#loot_tables[loot_name])]
+				local drop = factory.create("/Drop_Spawner#drop_spawn",message.position+vmath.normalize(vmath.vector3(math.random()*x_modulatro,math.random()*y_modulatro,0))*(math.random(5,20)) )
+				msg.post(drop,"cur_item",{cur_item=selected_item})
 			end
 			local s_s_max = 0.5
 			local s_s_min = 0.1

@@ -84,6 +84,8 @@ function init(self)
 	gun_state.gun_name = self.gun_swap[self.cur_gun]
 	gun_state.gun_cur_in_mag = self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag
 	gun_state.gun_max_mag  =  self.gun_master_list[self.gun_swap[self.cur_gun]].total_mags
+	self.last_gun_name_1 = ""
+	self.last_gun_name_2 = ""
 end
 
 local mouse_cords = vmath.vector3()
@@ -98,6 +100,21 @@ end
 local gun_rot_delay = 0.3
 local gun_rel_delay = 0.15
 function update(self, dt)
+	if upgrades.data_layer["2gun"].gun_name ~= self.last_gun_name_2 then
+		self.last_gun_name_2 =  upgrades.data_layer["2gun"].gun_name
+		if self.cur_gun == 2 then
+			display_gun(self)
+		end
+
+	end
+	if upgrades.data_layer["1gun"].gun_name ~= self.last_gun_name_1 then
+		self.last_gun_name_1 =  upgrades.data_layer["1gun"].gun_name
+		if self.cur_gun == 1 then
+			display_gun(self)
+		end
+
+	end
+
 	if Pstate.alive then
 		if self.last_update_gun2 ~= upgrades.data_layer["2gun"].has_gun then
 			if upgrades.data_layer["2gun"].has_gun ~= 0 then
@@ -155,7 +172,7 @@ function update(self, dt)
 
 		end
 	end
-	
+--	go.set("bullet_casing","position",go.get_world_position("target_trig"))
 	if self.cur_state ~= self.prev_state and not self.reload_timer  then 
 		self.prev_state = self.cur_state
 		-- if self.input_polls.right then 
@@ -209,7 +226,7 @@ function update(self, dt)
 	
 	local x_y = vmath.vector3(pl_pos.x,pl_pos.y,self.cur_z)
 
-	local new_pos = vmath.lerp(0.4,my_pos,x_y)
+	local new_pos = vmath.lerp(0.4,my_pos,x_y)	
 	
 	go.set_position(new_pos, ".")
 	self.cur_pos = pl_pos
@@ -223,7 +240,7 @@ end
 local gun_relapse = false
 
 local function Gun_reload(self) 
-	local reload_speed =  self.gun_master_list[self.gun_swap[self.cur_gun]].reload_speed 
+	local reload_speed =  self.gun_master_list[self.gun_swap[self.cur_gun]].reload_speed / ( 1 + upgrades.data_layer["+reload speed"].speed * 2 )
 	
 	
 	if self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag <= math.floor(self.gun_master_list[self.gun_swap[self.cur_gun]].max_mag_size/3 ) then
@@ -265,7 +282,8 @@ local function Gun_shoot(self)
 		local s_s_min = 0.9
 		local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
 		sound.stop("gun_cont#shoot_sound_effect")
-		
+		go.set("bullet_casing","position",go.get_world_position("target_trig"))
+		particlefx.play("bullet_casing#flying_shell")
 		sound.play("gun_cont#shoot_sound_effect",{speed = random_offset, gain = 0.5})
 		print(random_offset)
 		self.can_shoot = false

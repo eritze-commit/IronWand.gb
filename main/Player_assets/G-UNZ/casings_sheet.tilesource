@@ -1,0 +1,17 @@
+image: "/main/Player_assets/G-UNZ/casings_sheet.png"
+tile_width: 10
+tile_height: 10
+collision_groups: "default"
+animations {
+  id: "anim"
+  start_tile: 1
+  end_tile: 1
+}
+animations {
+  id: "reg"
+  start_tile: 4
+  end_tile: 4
+  playback: PLAYBACK_NONE
+  fps: 1
+}
+extrude_borders: 2

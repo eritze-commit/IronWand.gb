@@ -63,6 +63,11 @@ animations {
   playback: PLAYBACK_NONE
 }
 animations {
+  id: "minigun"
+  start_tile: 20
+  end_tile: 20
+}
+animations {
   id: "mp5"
   start_tile: 3
   end_tile: 3
@@ -81,6 +86,12 @@ animations {
   playback: PLAYBACK_NONE
 }
 animations {
+  id: "pocket shotgun"
+  start_tile: 17
+  end_tile: 17
+  playback: PLAYBACK_NONE
+}
+animations {
   id: "revolver"
   start_tile: 9
   end_tile: 9
@@ -90,6 +101,12 @@ animations {
   id: "shotgun"
   start_tile: 2
   end_tile: 2
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "snubby"
+  start_tile: 18
+  end_tile: 18
   playback: PLAYBACK_NONE
 }
 animations {

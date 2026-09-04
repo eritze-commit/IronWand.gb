@@ -2,8 +2,8 @@ local hud_state = {
 	gun_max_mag = 0,
 	gun_cur_in_mag = 0,
 	gun_reload_mag  = 0,
-	gun_name = "Uzi",
-	mana = 9999,
+	gun_name = "no_gun",
+	mana = 0,
 
 	enemy_max_in_lvl = 0,
 	enemy_cur_alive = 0,

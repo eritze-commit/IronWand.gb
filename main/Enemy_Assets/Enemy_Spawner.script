@@ -73,7 +73,7 @@ local enemies  = {
 		name = "slime",
 		speed = 40, 
 		health = math.random(30,50),
-		shooting_speed = 1.5 ,
+		shooting_speed = 3	 ,
 		bullet_ammount = 0,
 		per_shot_cooldown = 0.05,
 		smart_aim = false,
@@ -178,7 +178,7 @@ local function Node_Placer()
 	local enemies_spawned = 0 
 	local enemies_spawned_this_round = 0
 --	global.expo_decay = 1 * (1 - (2.71828^-0.07)^ math.min(100,0) )
-	local enmey_max_buffer = 2 +  math.floor( global.expo_decay * 8 )  +   math.floor( ( cur_wave * (global.expo_decay * 8 ) ) ) --2 +  math.floor( global.expo_decay * 11 )  +   math.floor( ( cur_wave * (global.expo_decay * 5 ) ) )
+	local enmey_max_buffer = 1 +  math.floor( global.expo_decay * 8 )  +   math.floor( ( cur_wave * (global.expo_decay * 9 ) ) ) --2 +  math.floor( global.expo_decay * 11 )  +   math.floor( ( cur_wave * (global.expo_decay * 5 ) ) )
 	--print("tried spawing enemy",enmey_max_buffer,"global expo decay ", global.expo_decay, "cur wave ", cur_wave) 
 	for i = 1, 5 do 
 	for y = 0, 23 do 

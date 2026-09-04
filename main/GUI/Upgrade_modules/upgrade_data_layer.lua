@@ -4,7 +4,7 @@ local global = require("main.GLOBAL.GLOBAL")
 -- 30 leters is max description size  3 lines max per description  
 local function price_calc() 
 	local max_upgrade_cost = 20 
-	return ( math.random(2,4) +  math.floor(global.floor_t * max_upgrade_cost) ) + (math.floor(math.random()*global.floor_t*max_upgrade_cost))
+	return ( math.random(1,2) +  math.floor(global.floor_t * max_upgrade_cost) ) + (math.floor(math.random()*global.floor_t*10))
 end
 local upgrade = {
 	
@@ -14,7 +14,7 @@ local upgrade = {
 		type = "bullet", 
 		name = "bounce", 
 		bounces = function() return  math.floor((1 +  global.floor_t * 10 ) + (math.random() < 0.2 and math.random(0,2) or 0) ) end,
-		bounce_chance = function() return math.floor( global.floor_t * 70 ) + (math.random(1,10)+ math.floor(math.random() * (map_state.map_cur_floor/ global.max_floor) * 20) )   end,
+		bounce_chance = function() return math.floor( global.floor_t * 70 ) + (math.random(1,10)+ math.floor(math.random() * global.floor_t * 20) )   end,
 		price = function() return  price_calc()  end,
 		description = function(self)
 			return  self.type..": "..self.name.."\n bounces - "..self.bounces.."\n chance to bounce "..self.bounce_chance.."%"
@@ -25,7 +25,7 @@ local upgrade = {
 		type = "bullet", 
 		name = "shrapnel", 
 		shrapnel = function() return  math.floor((1 +  global.floor_t * 2 ) + (math.random() < 0.2 and math.random(0,2) or 0) ) end,
-		shrapnel_chance = function() return math.floor( global.floor_t * 70 ) + (math.random(1,10)+ math.floor(math.random() * (map_state.map_cur_floor/ global.max_floor) * 20) )   end,
+		shrapnel_chance = function() return math.floor( global.floor_t * 70 ) + (math.random(1,10)+ math.floor(math.random() * global.floor_t * 20) )   end,
 		price = function() return  price_calc()  end,
 		description = function(self)
 			return  self.type..": "..self.name.."\n ammount - "..self.shrapnel.."\n chance "..self.shrapnel_chance.."%"
@@ -36,11 +36,22 @@ local upgrade = {
 	{
 		type = "bullet", 
 		name = "pierce", 
-		pierces = function() return math.floor((1 + global.floor_t * 10 ) + (math.random() < 0.2 and math.random(0,2) or 0) ) end,
+		pierces = function() return math.floor(1 + global.floor_t * 5 ) + ( math.floor(math.random() * global.floor_t * 5) )  end,
 		pierce_chance = function() return math.floor( global.floor_t * 70 ) + (math.random(1,10)+ math.floor(math.random() * global.floor_t * 20) ) end,
 		price = function() return price_calc() end,
 		description = function(self)
 			return  self.type..": "..self.name.."\n pierces - "..self.pierces.."\n chance to pierce "..self.pierce_chance.."%"
+		end
+
+	},
+	{
+		type = "bullet", 
+		name = "exploding", 
+		diameter = function() return math.floor(10 + global.floor_t * 39 ) + ( math.floor(math.random() * global.floor_t * 10) )  end,
+		chance = function() return math.floor( global.floor_t * 70 ) + (math.random(1,10)+ math.floor(math.random() * global.floor_t * 20) ) end,
+		price = function() return price_calc() end,
+		description = function(self)
+			return  self.type..": "..self.name.."\n diameter - "..self.diameter.."\n chance to explode "..self.chance.."%"
 		end
 
 	},
@@ -58,21 +69,63 @@ local upgrade = {
 	{
 		type = "loot", 
 		name = "+heart", 
-		health = function() return (0.1  +  global.floor_t * 0.5  ) + ( math.random() * global.floor_t * 0.5 ) end,
+		health = function() return (0.2  +  global.floor_t * 0.5  ) + ( math.random() * global.floor_t * 0.5 ) end,
 		price = function() return price_calc() end,
 		description = function(self)
-			return  self.type..": "..self.name.."\n + "..self.health.." per heart looted" 
+			return  self.type..": "..self.name.."\n + "..string.format("%.1f",self.health).." per heart looted" 
+		end
+
+	},
+	-- stat upgrades
+	 {
+		type = "stat", 
+		name = "+crit", 
+		damage = function() return (0.1  +  global.floor_t * 0.5) + ( math.random() * global.floor_t * 0.4) end,
+		price = function() return price_calc() end,
+		description = function(self)
+			return  self.type..": "..self.name.."\n + "..string.format("%.1f",self.damage * 100 ) .." % crit damage" 
+		end
+
+	},
+	{
+		type = "stat", 
+		name = "^crit", 
+		chance = function() return (0.1  +  global.floor_t * 0.5) + ( math.random() * global.floor_t * 0.4) end,--  (0.1  +  global.floor_t * 0.5) + ( math.random() * global.floor_t * 0.4) end,
+		price = function() return price_calc() end,
+		description = function(self)
+			return  self.type..": "..self.name.."\n + "..string.format("%.1f",self.chance * 10 ) .." % crit chance" 
+		end
+
+	},
+	-- Player UPGRADES 
+	{
+		type = "player", 
+		name = "quicker dash", 
+		speed = function() return (0.1  +  global.floor_t * 1  ) + ( math.random() * global.floor_t * 0.40 ) end,
+		price = function() return price_calc() end,
+		description = function(self)
+			return  self.type..": "..self.name.."\n + "..string.format("%.1f",self.speed * 100 ) .." % shorter\n dash cooldown" 
+		end
+
+	},
+	{
+		type = "player", 
+		name = "dodge", 
+		chance = function() return (0.1  +  global.floor_t * 0.20  ) + ( math.random() * global.floor_t * 0.20 ) end,
+		price = function() return price_calc() end,
+		description = function(self)
+			return  self.type..": "..self.name.."\n + "..string.format("%.1f",self.chance * 100 ) .." % bullet\n dodge chance " 
 		end
 
 	},
 	-- actuall GUN UPGRADES 
 	{
-		type = "loot", 
-		name = "+heart", 
-		health = function() return (0.1  +  global.floor_t * 0.5  ) + ( math.random() * global.floor_t * 0.5 ) end,
+		type = "gun", 
+		name = "+reload speed", 
+		speed = function() return (0.1  +  global.floor_t * 0.20  ) + ( math.random() * global.floor_t * 0.20 ) end,
 		price = function() return price_calc() end,
 		description = function(self)
-			return  self.type..": "..self.name.."\n + "..self.health.." per heart looted" 
+			return  self.type..": "..self.name.."\n + "..string.format("%.1f",self.speed * 100 * 2) .." % faster reload  " 
 		end
 
 	},
@@ -87,10 +140,10 @@ local upgrade = {
 		has_gun = function() return 1 end,
 		spread = function() return 15 end, 
 		bul_speed = function() return 210 end,
-		delay = function() return  (0.25  - global.floor_t * 0.1 ) - math.random() * global.floor_t * 0.05 end,--0.25  - (map_state.map_cur_floor/ global.max_floor) * 0.15 end,
+		delay = function() return  (0.25  - global.floor_t * 0.05 ) - math.random() * global.floor_t * 0.05 end,--0.25  - (map_state.map_cur_floor/ global.max_floor) * 0.15 end,
 		ammount = function() return 1 end ,
 		recoil = function() return 2 end , 
-		dmg = function()   return (1.25  + global.floor_t * 1) + (math.random() * global.floor_t * 1 ) end,--  math.random() + global.floor_t * 1 end,
+		dmg = function()   return (1.25  + global.floor_t * 0.5) + (math.random() * global.floor_t * 0.5 ) end,--  math.random() + global.floor_t * 1 end,
 		reload_speed = function() return 2 end ,
 		max_mag_size = function() return 35 end, 
 		in_mag = function() return 35 end,
@@ -100,7 +153,48 @@ local upgrade = {
 			return  self.name..": "..self.type.."\n dmg - "..string.format("%.1f",self.dmg).."\n fire rate - ".. string.format("%.1f", 1/self.delay).." RPS"
 		end
 	},
-
+	--["shotgun"] = {spread = 20, bul_speed = 200, delay = 2, ammount = 10, recoil = 7,dmg = 1,reload_speed = 2  ,   max_mag_size = 5, in_mag = 5, total_mags = self.defualt_cheat_vl },
+	{
+		type = "shotgun", 
+		name = "2gun",
+		gun_name = function() return "shotgun" end,
+		has_gun = function() return 1 end,
+		spread = function() return 25 end, 
+		bul_speed = function() return 210 end,
+		delay = function() return  (2 - global.floor_t * 0.5 ) - (math.random() * global.floor_t * 0.5) end,--0.25  - (map_state.map_cur_floor/ global.max_floor) * 0.15 end,
+		ammount = function() return 10 end ,
+		recoil = function() return 7 end , 
+		dmg = function()   return (1  + global.floor_t * 0.25) + (math.random() * global.floor_t * 0.25 ) end,--  math.random() + global.floor_t * 1 end,
+		reload_speed = function() return 3 end ,
+		max_mag_size = function() return 5 end, 
+		in_mag = function() return 5 end,
+		total_mags = function() return 5  end,
+		price = function() return price_calc()  end,
+		description = function(self)
+			return  self.name..": "..self.type.."\n dmg - "..string.format("%.1f",self.dmg).."\n fire rate - ".. string.format("%.1f", 1/self.delay).." RPS"
+		end
+	},
+--		["awp"] = {spread = 1, bul_speed = 260, delay = 1, ammount = 1, recoil = 10,dmg = 20, reload_speed = 1 , max_mag_size = 1, in_mag = 1, total_mags = self.defualt_cheat_vl },
+	{
+		type = "awp", 
+		name = "2gun",
+		gun_name = function() return "awp" end,
+		has_gun = function() return 1 end,
+		spread = function() return 1 end, 
+		bul_speed = function() return 260 end,
+		delay = function() return  1   end,
+		ammount = function() return 1 end ,
+		recoil = function() return 10 end , 
+		dmg = function()   return (15 + global.floor_t * 15) + (math.random() * global.floor_t * 15) end,--  math.random() + global.floor_t * 1 end,
+		reload_speed = function() return 3 end ,
+		max_mag_size = function() return 1 end, 
+		in_mag = function() return 1 end,
+		total_mags = function() return 5  end,
+		price = function() return price_calc()  end,
+		description = function(self)
+			return  self.name..": "..self.type.."\n dmg - "..string.format("%.1f",self.dmg).."\n fire rate - ".. string.format("%.1f", 1/self.delay).." RPS"
+		end
+	},
 	{
 		type = "uzi", 
 		name = "2gun",
@@ -121,6 +215,27 @@ local upgrade = {
 			return  self.name..": "..self.type.."\n dmg - "..string.format("%.1f",self.dmg).."\n fire rate - ".. string.format("%.1f", 1/self.delay).." RPS"
 		end
 	},
+	{
+		type = "minigun", 
+		name = "2gun",
+		gun_name = function() return "minigun" end,
+		has_gun = function() return 1 end,
+		spread = function() return 10 end, 
+		bul_speed = function() return 250 end,
+		delay = function() return  (0.05  - global.floor_t * 0.02 ) - ( math.random() * global.floor_t * 0.01 )  end,
+		ammount = function() return 1 end ,
+		recoil = function() return 1 end , 
+		dmg = function() return 0.15   end,--  math.random() + global.floor_t * 1 end,
+		reload_speed = function() return 5 end ,
+		max_mag_size = function() return 200 end, 
+		in_mag = function() return 100 end,
+		total_mags = function() return 5  end,
+		price = function() return price_calc()  end,
+		description = function(self)
+			return  self.name..": "..self.type.."\n dmg - "..string.format("%.1f",self.dmg).."\n fire rate - ".. string.format("%.1f", 1/self.delay).." RPS"
+		end
+	},
+	
 	-- GUN 1 UPGRADES 
 		{
 		type = "g19", 
@@ -142,7 +257,7 @@ local upgrade = {
 			return  self.name..": "..self.type.."\n dmg - "..string.format("%.1f",self.dmg).."\n fire rate - ".. string.format("%.1f", 1/self.delay).." RPS"
 		end
 	},
-			{
+	{
 		type = "mini uzi", 
 		name = "1gun",
 		gun_name = function() return "mini uzi" end,
@@ -156,6 +271,67 @@ local upgrade = {
 		reload_speed = function() return 1 end ,
 		max_mag_size = function() return 30 end, 
 		in_mag = function() return 30 end,
+		total_mags = function() return "INF"  end,
+		price = function() return price_calc() end,
+		description = function(self)
+			return  self.name..": "..self.type.."\n dmg - "..string.format("%.1f",self.dmg).."\n fire rate - ".. string.format("%.1f", 1/self.delay).." RPS"
+		end
+	},
+	{
+		type = "deagle", 
+		name = "1gun",
+		gun_name = function() return "deagle" end,
+		has_gun = function() return 1 end,
+		spread = function() return 10 end, 
+		bul_speed = function() return 200 end,
+		delay = function() return  (0.4 - global.floor_t * 0.1 ) - (math.random() * global.floor_t * 0.1) end,--0.25  - (map_state.map_cur_floor/ global.max_floor) * 0.15 end,
+		ammount = function() return 1 end ,
+		recoil = function() return 3.5 end , 
+		dmg = function()   return (1.75 + global.floor_t * 0.75) + (math.random() * global.floor_t * 0.50) end,
+		reload_speed = function() return 1 end ,
+		max_mag_size = function() return 30 end, 
+		in_mag = function() return 30 end,
+		total_mags = function() return "INF"  end,
+		price = function() return price_calc() end,
+		description = function(self)
+			return  self.name..": "..self.type.."\n dmg - "..string.format("%.1f",self.dmg).."\n fire rate - ".. string.format("%.1f", 1/self.delay).." RPS"
+		end
+	},
+	{
+		type = "pocket shotgun", 
+		name = "1gun",
+		gun_name = function() return "pocket shotgun" end,
+		has_gun = function() return 1 end,
+		spread = function() return 25 end, 
+		bul_speed = function() return 200 end,
+		delay = function() return  (1 - global.floor_t * 0.15) - (math.random() * global.floor_t * 0.15) end,--0.25  - (map_state.map_cur_floor/ global.max_floor) * 0.15 end,
+		ammount = function() return 4 end ,
+		recoil = function() return 3.5 end , 
+		dmg = function()   return (1 + global.floor_t * 0.5) + (math.random() * global.floor_t * 0.5) end,
+		reload_speed = function() return 2 end ,
+		max_mag_size = function() return 4 end, 
+		in_mag = function() return 4 end,
+		total_mags = function() return "INF"  end,
+		price = function() return price_calc() end,
+		description = function(self)
+			return  self.name..": "..self.type.."\n dmg - "..string.format("%.1f",self.dmg).."\n fire rate - ".. string.format("%.1f", 1/self.delay).." RPS"
+		end
+	},
+--	["revolver"] = {spread = 3, bul_speed = 250, delay = 0.1, ammount = 1, recoil = 4,dmg = 4, reload_speed = 3 ,  max_mag_size = 6, in_mag = 6, total_mags = self.defualt_cheat_vl }, 
+			{
+		type = "snubby", 
+		name = "1gun",
+		gun_name = function() return "snubby" end,
+		has_gun = function() return 1 end,
+		spread = function() return 5 end, 
+		bul_speed = function() return 210 end,
+		delay = function() return  (0.1 - global.floor_t * 0.02 ) - (math.random() * global.floor_t * 0.02) end,--0.25  - (map_state.map_cur_floor/ global.max_floor) * 0.15 end,
+		ammount = function() return 1 end ,
+		recoil = function() return 4 end , 
+		dmg = function()   return (2  + global.floor_t * 1.5) + (math.random() * global.floor_t * 1.5) end,
+		reload_speed = function() return 3 end ,
+		max_mag_size = function() return 6 end, 
+		in_mag = function() return 6 end,
 		total_mags = function() return "INF"  end,
 		price = function() return price_calc() end,
 		description = function(self)
@@ -176,6 +352,12 @@ local upgrade = {
 		["shrapnel"] = {shrapnel = 0 ,shrapnel_chance  = 0},
 		["+mags"] = {mags = 0},
 		["+heart"] = {health = 0},
+		["+reload speed"] = {speed = 0},
+		["quicker dash"] = {speed = 0},
+		["+crit"] = {damage=0},
+		["^crit"] = {chance=0},
+		["dodge"] = {chance = 0},
+		["exploding"] = {chance = 0 , diameter = 0 },
 		["2gun"] = {gun_name = 0 , has_gun = 0,spread = 0 , bul_speed = 0, delay = 0 , ammount = 0 , recoil = 0 , dmg = 0 ,max_mag_size = 0, in_mag = 0, total_mags = 0, reload_speed = 0  },
 		["1gun"] = {gun_name = 0 , has_gun = 0,spread = 0 , bul_speed = 0, delay = 0 , ammount = 0 , recoil = 0 , dmg = 0 ,max_mag_size = 0, in_mag = 0, total_mags = 0, reload_speed = 0  },
 
