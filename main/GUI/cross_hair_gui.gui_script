@@ -2,6 +2,7 @@
 local cros_pos  = require("main.Player_assets.G-UNZ.cross_hair_data")
 
 function init(self)
+	gui.set_visible(gui.get_node("box"),false)
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
@@ -20,9 +21,10 @@ function update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
-	-- Add message-handling code here
-	-- Learn more: https://defold.com/manuals/message-passing/
-	-- Remove this function if not needed
+	if message_id == hash("toggle") then
+		gui.set_visible(gui.get_node("box"),message.toggle)
+	end
+
 end
 
 function on_input(self, action_id, action)

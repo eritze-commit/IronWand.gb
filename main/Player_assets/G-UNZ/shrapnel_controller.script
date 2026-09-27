@@ -25,7 +25,7 @@ function init(self)
 	--self.wall_normal = nil 
 	self.moving = false
 	particlefx.play("#bullet_trail")
-	msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "bullet_destroy" , time = 1, optional = 0 }})
+	msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "bullet_destroy" , time = 10, optional = 0 }})
 	--print("SELF DIR ",self.dir, "self SPEED ",self.speed)
 
 	

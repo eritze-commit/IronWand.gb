@@ -1,0 +1,72 @@
+go.property("dmg", 0)
+go.property("dir",vmath.vector3())
+local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
+
+local game_state = require("main.GLOBAL.in_game")
+
+
+
+function init(self)
+	--self.curpos = vmath.vector3()
+	self.cur_pos = vmath.vector3()--go.get_position(".")
+	--self.dmg = 0
+	--self.dmg_loss = 0.5
+	self.sound_manager = nil
+	--self.enemies_pierced = {}
+
+	--self.hit_position  = nil
+	--self.wall_normal = nil 
+	self.enemies_pierced = {}
+	self.moving = false
+	self.dir = self.dir + vmath.vector3(0.00001, 0.00001, 0)
+	self.dmg_loss = ( 1 +   upgrades.data_layer["-dmg loss"].loss ) 
+	msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "bullet_destroy" , time = 0.15, optional = 0 }})
+	--print("SELF DIR ",self.dir, "self SPEED ",self.speed)
+
+	
+	-- Add initialization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function final(self)
+	
+end
+
+
+
+function update(self, dt)
+		if  not game_state.paused then 
+			go.set_position(go.get_position("/Player_ROOT/Pl_Sprite")-vmath.vector3(0,4 ,0), ".")
+		else
+			go.delete(".")
+		end
+		--msg.post("@render:", "draw_line", { start_point = go.get_position(".") ,  end_point = self.hit_position, color = vmath.vector4(1,1,1,1) })
+end
+
+function fixed_update(self, dt)
+	
+end	
+
+function on_message(self, message_id, message, sender)
+	-- if message_id == hash("trigger_response") then 
+	-- 	go.delete(".")
+	-- 	particlefx.stop("#bullet_trail")
+	-- end
+	if message_id == hash("contact_by_bullet") then 
+		--print("THIS IS CONTACT BY BULLET ")
+		if not self.enemies_pierced[tostring(sender)] then
+			msg.post(sender,"retrun_of_contact_bullet",{bullet_dir = self.dir,dmg = self.dmg})
+			self.enemies_pierced[tostring(sender)] = true 
+			self.dmg = self.dmg / (3/self.dmg_loss)
+		end	
+
+			--go.delete(".")
+	end
+		
+	if message_id == hash("timer_end") then
+		if message.type == "bullet_destroy" then
+			go.delete(".")
+		end
+	end
+end

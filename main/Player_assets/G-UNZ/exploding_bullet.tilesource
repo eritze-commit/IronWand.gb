@@ -1,4 +1,4 @@
-image: "/main/Player_assets/G-UNZ/purple_circle.png"
+image: "/main/Player_assets/G-UNZ/multiple_circles_transp.png"
 tile_width: 64
 tile_height: 64
 collision_groups: "default"
@@ -7,6 +7,6 @@ animations {
   start_tile: 1
   end_tile: 1
   playback: PLAYBACK_NONE
-  fps: 10
+  fps: 3
 }
 extrude_borders: 2

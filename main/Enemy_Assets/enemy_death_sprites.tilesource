@@ -1,0 +1,35 @@
+image: "/main/Enemy_Assets/enemy_death_sprite_sheet.png"
+tile_width: 18
+tile_height: 18
+collision_groups: "default"
+animations {
+  id: "batorb_death"
+  start_tile: 73
+  end_tile: 77
+  fps: 12
+}
+animations {
+  id: "cow_death"
+  start_tile: 51
+  end_tile: 55
+  fps: 10
+}
+animations {
+  id: "skull_death"
+  start_tile: 61
+  end_tile: 64
+  fps: 10
+}
+animations {
+  id: "slime_death"
+  start_tile: 81
+  end_tile: 84
+  fps: 10
+}
+animations {
+  id: "steye_death"
+  start_tile: 92
+  end_tile: 96
+  fps: 15
+}
+extrude_borders: 2

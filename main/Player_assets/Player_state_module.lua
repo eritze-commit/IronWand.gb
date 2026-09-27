@@ -9,5 +9,6 @@ local player_state = {
 	health = 5,
 	max_health = 5,
 	alive = false,
+	immunity_frame = false, 
 }
 return player_state

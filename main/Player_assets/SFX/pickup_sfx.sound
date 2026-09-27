@@ -1,2 +1,3 @@
 sound: "/main/Player_assets/SFX/Pickup.wav"
+group: "sfx"
 gain: 0.5

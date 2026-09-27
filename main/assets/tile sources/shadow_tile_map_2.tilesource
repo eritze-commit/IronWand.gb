@@ -1,4 +1,4 @@
-image: "/main/assets/Images/shadow_map_tiles_4.png"
+image: "/main/assets/Images/shadow_map_tiles_5.png"
 tile_width: 16
 tile_height: 16
 collision_groups: "default"

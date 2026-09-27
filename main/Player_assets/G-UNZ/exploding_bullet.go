@@ -43,7 +43,7 @@ embedded_components {
   type: "sprite"
   data: "default_animation: \"1 \"\n"
   "material: \"/builtins/materials/sprite.material\"\n"
-  "blend_mode: BLEND_MODE_SCREEN\n"
+  "blend_mode: BLEND_MODE_ADD\n"
   "size {\n"
   "  x: 3.0\n"
   "  y: 3.0\n"

@@ -1,0 +1,40 @@
+image: "/main/enviormental assets/quick graphics/quick_graphic_sprites.png"
+tile_width: 15
+tile_height: 15
+collision_groups: "default"
+animations {
+  id: "dash"
+  start_tile: 7
+  end_tile: 7
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "dodge"
+  start_tile: 2
+  end_tile: 2
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "heart"
+  start_tile: 4
+  end_tile: 4
+}
+animations {
+  id: "mag"
+  start_tile: 3
+  end_tile: 3
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "shield"
+  start_tile: 6
+  end_tile: 6
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "token"
+  start_tile: 5
+  end_tile: 5
+  playback: PLAYBACK_NONE
+}
+extrude_borders: 2

@@ -1,0 +1,11 @@
+image: "/main/Player_assets/G-UNZ/mag_sprite.png"
+tile_width: 10
+tile_height: 10
+collision_groups: "default"
+animations {
+  id: "mmag"
+  start_tile: 1
+  end_tile: 1
+  playback: PLAYBACK_NONE
+}
+extrude_borders: 2

@@ -1,1 +1,3 @@
 sound: "/main/enviormental assets/sounds/Boom15.wav"
+group: "sfx"
+gain: 0.7

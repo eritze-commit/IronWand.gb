@@ -1,2 +1,3 @@
 sound: "/main/Enemy_Assets/Sounds/Hit2.wav"
-gain: 0.5
+group: "sfx"
+gain: 0.4

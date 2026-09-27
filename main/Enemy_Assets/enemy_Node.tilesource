@@ -1,46 +1,127 @@
-image: "/main/Enemy_Assets/Enemy_sprites_master_sheet.png"
+image: "/main/Enemy_Assets/enemy_updated_master_sprite_sheet.png"
 tile_width: 18
 tile_height: 18
 collision_groups: "default"
 animations {
   id: "batorb"
-  start_tile: 14
-  end_tile: 19
-  playback: PLAYBACK_LOOP_FORWARD
-  fps: 10
-}
-animations {
-  id: "cow"
   start_tile: 41
   end_tile: 46
   playback: PLAYBACK_LOOP_FORWARD
   fps: 10
 }
 animations {
+  id: "batorb_1"
+  start_tile: 51
+  end_tile: 56
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "batorb_2"
+  start_tile: 61
+  end_tile: 66
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "cow"
+  start_tile: 131
+  end_tile: 136
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "cow_1"
+  start_tile: 141
+  end_tile: 146
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "cow_2"
+  start_tile: 151
+  end_tile: 156
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
   id: "skull"
-  start_tile: 31
-  end_tile: 39
+  start_tile: 101
+  end_tile: 109
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "skull_1"
+  start_tile: 111
+  end_tile: 119
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "skull_2"
+  start_tile: 121
+  end_tile: 129
   playback: PLAYBACK_LOOP_FORWARD
   fps: 10
 }
 animations {
   id: "slime"
-  start_tile: 1
-  end_tile: 6
+  start_tile: 11
+  end_tile: 16
   playback: PLAYBACK_LOOP_FORWARD
   fps: 15
 }
 animations {
+  id: "slime_1"
+  start_tile: 21
+  end_tile: 26
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 11
+  flip_horizontal: 1
+}
+animations {
+  id: "slime_2"
+  start_tile: 31
+  end_tile: 36
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+  flip_horizontal: 1
+}
+animations {
+  id: "slime_death"
+  start_tile: 20
+  end_tile: 20
+  playback: PLAYBACK_NONE
+  fps: 15
+}
+animations {
   id: "spinin"
-  start_tile: 11
-  end_tile: 13
+  start_tile: 1
+  end_tile: 3
   playback: PLAYBACK_LOOP_FORWARD
   fps: 7
 }
 animations {
   id: "steye"
-  start_tile: 21
-  end_tile: 29
+  start_tile: 71
+  end_tile: 79
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+  flip_horizontal: 1
+}
+animations {
+  id: "steye_1"
+  start_tile: 81
+  end_tile: 89
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+  flip_horizontal: 1
+}
+animations {
+  id: "steye_2"
+  start_tile: 91
+  end_tile: 99
   playback: PLAYBACK_LOOP_FORWARD
   fps: 10
   flip_horizontal: 1

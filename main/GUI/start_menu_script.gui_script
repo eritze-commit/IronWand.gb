@@ -1,18 +1,92 @@
 local Pstate = require "main.Player_assets.Player_state_module"
+local global = require("main.GLOBAL.GLOBAL")
 
 function init(self)
 	msg.post(".", "acquire_input_focus")
 	gui.play_particlefx(gui.get_node("Dust"))
 	self.start_pos_node_start = gui.get_position(gui.get_node("start"))
-	self.button_default_color = vmath.vector4(0.9, 0.9, 0.9, 1)
+	self.button_default_color = vmath.vector4(0.8, 0.8, 0.8, 1)
 	self.node_highlight_color = vmath.vector4(1, 1, 1, 1)
-	self.button_states = {"none","start"}
-	self.cur_button_state = 1
-	self.last_node_selected = nil
+	self.button_states = {"start","settings","info"}
+	self.cur_button_state = 0
+	self.last_node_selected = "info"
 	self.cur_selected  = nil
 	self.button_selected = false
 	self.start_pos_node_logo = gui.get_position(gui.get_node("logo"))
 	self.target_pos = vmath.vector3(math.random(),math.random(),0) * 2
+	self.every_node = {"start","logo","backDrop","Dust","info","settings","easy","medium","hard","hardcore","back1"}
+	self.button_actions = {
+		["start"] = function()
+			for i = 1 ,#self.button_states do 
+				gui.set_visible(gui.get_node(self.button_states[i]),false)
+			end
+			self.cur_button_state = 1 
+			self.button_states = {"easy","medium","hard","hardcore","back1"}
+			for i = 1 ,#self.button_states do 
+				gui.set_visible(gui.get_node(self.button_states[i]),true)
+			end
+			gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+			gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+			self.last_node_selected = self.button_states[self.cur_button_state ]
+				
+			--msg.post("/global#Game_state_manager","change_state",{state = "playing"})
+	  end,
+		["info"] = function() end,
+		["settings"] = function() end,
+		["easy"] = function() 
+			global.health_scale = 2 
+			global.health_divide = 2.5
+			Pstate.health = 10
+			Pstate.max_health = 10
+			global.cur_diff = "easy"
+			msg.post("/Gui_collection/hud#hud","health_bar_skin",{health_bar = "bar_slide"})   
+			msg.post("/global#Game_state_manager","change_state",{state = "playing"})
+		end,
+		["medium"] = function() 
+			global.health_scale = 2
+			global.health_divide = 2.25
+			
+			Pstate.health = 5
+			Pstate.max_health = 5
+			global.cur_diff = "medium"
+			msg.post("/Gui_collection/hud#hud","health_bar_skin",{health_bar = "bar_slide"})   
+			msg.post("/global#Game_state_manager","change_state",{state = "playing"})
+		end,
+		["hard"] = function() 
+			global.health_scale = 2.5 
+			global.health_divide = 2
+			Pstate.health = 3
+			Pstate.max_health = 3
+			global.cur_diff = "hard"
+			msg.post("/Gui_collection/hud#hud","health_bar_skin",{health_bar = "bar_slide"})   
+			msg.post("/global#Game_state_manager","change_state",{state = "playing"})
+		end,
+		["hardcore"] = function() 
+			global.health_scale = 3
+			global.health_divide = 2
+			Pstate.health = 1
+			Pstate.max_health = 1
+			global.cur_diff = "hardcore"
+			msg.post("/Gui_collection/hud#hud","health_bar_skin",{health_bar = "bar_slide_2"})   
+			msg.post("/global#Game_state_manager","change_state",{state = "playing"})
+			
+		end,
+		["back1"] = function() 
+			for i = 1 ,#self.button_states do 
+				gui.set_visible(gui.get_node(self.button_states[i]),false)
+			end
+			self.cur_button_state = 1 
+			self.button_states = {"start","settings","info"}
+			for i = 1 ,#self.button_states do 
+				gui.set_visible(gui.get_node(self.button_states[i]),true)
+			end
+			gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+			gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+			self.last_node_selected = self.button_states[self.cur_button_state ]
+			
+			
+		end,
+	}
 	timer.delay(3,true , function() 
 		if math.random(1,10) < 9 then 
 			local x_module = math.random(0,1) == 0 and 1 or -1
@@ -23,6 +97,17 @@ function init(self)
 		end
 	end)
 	gui.set(gui.get_node("start"),"color",self.button_default_color)
+	self.all_nodes = {{name = "logo", start_pos = vmath.vector3(324,323,0)}
+	,{name = "start", start_pos = vmath.vector3(305,150,0) }
+	, {name = "info", start_pos = vmath.vector3(305,100,0) }
+	, {name = "settings", start_pos = vmath.vector3(305,125,0) }
+	,{name = "easy", start_pos = vmath.vector3(305,150,0) }
+	,{name = "medium", start_pos = vmath.vector3(305,125,0) }
+	,{name = "hard", start_pos = vmath.vector3(305,100,0) }
+	,{name = "hardcore", start_pos = vmath.vector3(305,75,0) }
+	,{name = "back1", start_pos = vmath.vector3(305,50,0) }
+	
+	}
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
@@ -37,31 +122,43 @@ local nex_pos_1 = 0
 local nex_pos_2 = 0
 
 function update(self, dt)
-	local logo_node  = gui.get_position(gui.get_node("logo"))
+--	local logo_node  = gui.get_position(gui.get_node("logo"))
 	
-	local start_node =  gui.get_position(gui.get_node("start"))
-
+	local nex_pos = vmath.vector3()
+	for i = 1, #self.all_nodes do 
+	local start_node =  gui.get_position(gui.get_node(self.all_nodes[i].name))
 	if self.target_pos ~= 6767 then 
-		nex_pos_1 = vmath.lerp(0.02,logo_node,logo_node + self.target_pos)
+		 nex_pos = vmath.lerp(0.02,start_node ,start_node + self.target_pos)
 		
-		nex_pos_2 = vmath.lerp(0.02,start_node,start_node + self.target_pos)
 	else
-		 nex_pos_1 = vmath.lerp(0.01,logo_node,self.start_pos_node_logo)
-		 nex_pos_2 = vmath.lerp(0.01,start_node,self.start_pos_node_start)
+		
+		  nex_pos = vmath.lerp(0.01,start_node,self.all_nodes[i].start_pos)
+		-- nex_pos_2 = vmath.lerp(0.01,start_node,self.start_pos_node_start)
 	end
+		gui.set_position(gui.get_node(self.all_nodes[i].name), nex_pos)
+	end
+	
 
-	gui.set_position(gui.get_node("logo"), nex_pos_1)
-	gui.set_position(gui.get_node("start"), nex_pos_2)
+--	gui.set_position(gui.get_node("logo"), nex_pos_1)
+--	gui.set_position(gui.get_node("start"), nex_pos_2)
 	--gui.set_position(gui.get_node("defold_logo"), nex_pos_2)
 	-- Add update code here
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
 end
 local function Flip_gui_state(self,state) 
-	gui.set_enabled(gui.get_node("start"),state)
-	gui.set_enabled(gui.get_node("logo"),state)
-	gui.set_enabled(gui.get_node("backDrop"),state)
-	gui.set_enabled(gui.get_node("Dust"),state)
+	for i = 1 ,#self.every_node do 
+--		pprint("self node ",self.all_nodes[i])
+		gui.set_enabled(gui.get_node( self.every_node[i] ),state)
+	end
+	
+	-- gui.set_enabled(gui.get_node("start"),state)
+	-- gui.set_enabled(gui.get_node("logo"),state)
+	-- gui.set_enabled(gui.get_node("backDrop"),state)
+	-- gui.set_enabled(gui.get_node("Dust"),state)
+	-- gui.set_enabled(gui.get_node("info"),state)
+	-- gui.set_enabled(gui.get_node("settings"),state)
+
 	--gui.set_enabled(gui.get_node("defold_logo"),state)
 	self.button_selected = false
 end
@@ -69,7 +166,7 @@ end
 function on_message(self, message_id, message, sender)
 	if message_id == hash("show_gui") then
 		--self.button_selected = false
-		print("GOT MESSAGE SHOW GUI ")
+		--print("GOT MESSAGE SHOW GUI ")
 		Flip_gui_state(self,message.show) 
 
 		
@@ -87,26 +184,33 @@ function on_input(self, action_id, action)
 			timer.delay(0.2,false,function() 
 				self.button_selected = false
 			end)
-		self.cur_button_state = self.cur_button_state + 1 
-		if self.cur_button_state > #self.button_states then
-			self.cur_button_state = 1 
-		end
-		if self.button_states[self.cur_button_state] ~= "none" then
-			self.last_node_selected = self.button_states[self.button_state]
-			gui.set(gui.get_node("start"),"color",self.node_highlight_color)
-			--gui.set_color()
+		if action_id == hash("down") then
+		
+			self.cur_button_state = self.cur_button_state + 1 
+			if self.cur_button_state > #self.button_states then
+				self.cur_button_state = 1 
+			end
 		else
-			gui.set(gui.get_node("start"),"color",self.button_default_color)
+			self.cur_button_state = self.cur_button_state - 1 
+			if self.cur_button_state <= 0  then
+				self.cur_button_state = #self.button_states
+			end
 		end
+		
+		gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+		gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+		self.last_node_selected = self.button_states[self.cur_button_state ]
+			--gui.set_color()
 		
 	end
 	if action_id == hash("action_but") and not self.button_selected  then 
-		if self.button_states[self.cur_button_state] ~= "none" then
+		if self.cur_button_state ~= 0 then
 			self.button_selected = true
 			timer.delay(0.2,false,function() 
 				self.button_selected = false
 			end)
-			msg.post("/global#Game_state_manager","change_state",{state = "playing"})
+			
+				self.button_actions[self.button_states[self.cur_button_state]]()
 			end
 		end
 	end

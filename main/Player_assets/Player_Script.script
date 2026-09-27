@@ -62,12 +62,13 @@ end
 local function dash(self) 
 	--sound.stop("sounds#Dash")
 	if dash_state == false and can_dash  then 
+		Pstate.immunity_frame = true
 		if vmath.length_sqr(self.dir) > 0  then
 			local s_s_max = 6
 			local s_s_min = 3
 			local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
 			sound.stop("sounds#Dash")
-			sound.play("sounds#Dash",{speed = random_offset ,gain=1})
+			sound.play("sounds#Dash",{speed = random_offset })
 		end
 		msg.post("Pl_Sprite#Pl_Sprite_Script","dash",{dash = true})
 		Pstate.dashing = true
@@ -78,9 +79,14 @@ local function dash(self)
 		--msg.post("dsh_trg#dash_trigger","dsh_trg",{dashing = true, lst_pos = last_position, time = dash_timer})
 		if vmath.length_sqr(self.dir) > 0  then
 			dash_dir = vmath.normalize(self.dir)
+			if upgrades.data_layer["spiky dash"].dmg > 0 then
+				--print("spiky dash ran end")
+				factory.create("/global#spiky_dash_colider", go.get_position(".") , nil ,{ dir = dash_dir  , dmg = upgrades.data_layer["spiky dash"].dmg   })
+			end
 		else
 			dash_dir = self.dir
-		end 
+		end
+		 
 		msg.post("camera#camera_script","camera_snap",{dashing = true, dir = dash_dir })
 		local angle = math.atan2(dash_dir.y,dash_dir.x)
 		if vmath.length_sqr(dash_dir) > 0  then
@@ -92,19 +98,25 @@ local function dash(self)
 		end
 		
 		timer.delay(dash_timer, false, function()
+			
 			Pstate.dashing = false
 			dash_state = false 
+			
 			msg.post("Pl_Sprite#Pl_Sprite_Script","dash_end",{dash = false,  cng_spr = "walking" })
 			particlefx.stop("Particle #Plr_Dash")
 			--particlefx.stop("Particle #PLr_Trail")
 			dash_init = false
+			Pstate.immunity_frame = false
 			--print("dash cooldown ",dash_cooldown) 
-			timer.delay(dash_cooldown/ (1 + upgrades.data_layer["quicker dash"].speed ), false, function()
+			msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "can_dash" , time = dash_cooldown/ (1 + upgrades.data_layer["quicker dash"].speed ), optional = 0 }})
+			
+			-- timer.delay(dash_cooldown/ (1 + upgrades.data_layer["quicker dash"].speed ), false, function()
+			-- --msg.post("gun_cont#gun_controller","clipped")
 				
-				--particlefx.stop("Particle #PLr_Trail")
-				--particlefx.stop("Particle #PLr_Trail")
-				can_dash = true 
-			end)
+			-- 	--particlefx.stop("Particle #PLr_Trail")
+			-- 	--particlefx.stop("Particle #PLr_Trail")
+			-- 	can_dash = true 
+			-- end)
 		end
 		
 		)
@@ -128,7 +140,7 @@ function update(self, dt)
 		--go.set_position(go.get("position"), "#collisionobject")
 		
 		-- math.floor(player.y / grid_size) * grid_size
-		self.new_pos = self.pos + vmath.normalize(self.dir) * self.speed * dt
+		self.new_pos = self.pos + vmath.normalize(self.dir) * ( self.speed * ( 1 + upgrades.data_layer["+player speed"].speed ) )  * dt
 		--self.new_pos = vmath.vector3(math.floor(self.new_pos.x ), math.floor(self.new_pos.y), 1.05 )
 		go.set_position(self.new_pos, ".") 
 		--local cur_pos = go.get_position(".")
@@ -157,6 +169,11 @@ end
 end
 
 function on_message(self, message_id, message, sender)
+	if message_id == hash("timer_end") then
+		if message.type == "can_dash" then 
+			can_dash = true 
+		end
+	end
 	if message_id == hash("ray_cast_caster") then
 		msg.post(sender,"ray_cast_return",{cast = true })
 	end 

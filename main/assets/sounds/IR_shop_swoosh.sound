@@ -1,1 +1,3 @@
 sound: "/main/assets/sounds/IR_shop_swoosh.wav"
+group: "sfx"
+gain: 0.4

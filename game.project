@@ -37,6 +37,7 @@ allow_dynamic_transforms = 1
 debug = 0
 max_collision_object_count = 256
 scale = 1.0
+max_collisions = 128
 
 [profiler]
 track_cpu = 0
@@ -59,4 +60,10 @@ use_accelerometer = 0
 
 [native_extension]
 app_manifest = /main/native_extension.appmanifest
+
+[box2d]
+sub_step_count = 4
+
+[label]
+max_count = 128
 

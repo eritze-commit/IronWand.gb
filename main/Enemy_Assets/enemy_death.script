@@ -1,0 +1,75 @@
+local active = require("main.Enemy_Assets.drops.spawnded_items_data")
+function init(self)
+	-- Add initialization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	if not active.cur_scene_active then
+		go.delete(".")
+	end
+end
+
+function late_update(self, dt)
+	-- This function is called at the end of update cycle but before render
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function fixed_update(self, dt)
+	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
+	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
+	-- Physics section of game.project
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("destroy") then 
+		go.delete(".")
+	end
+	if message_id == hash("collision_response") then
+		go.cancel_animations(".","position")
+
+	end
+	if message_id == hash("sprite_change") then
+		msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "destroy" , time = 30, optional = 0 }})
+		local from = go.get_position(".")
+		local rand_value =  math.random(20,50)
+		local to = go.get_position(".")+ (message.dir*rand_value )
+		local raycast = physics.raycast(from , to ,{ hash("wall") } )
+		if raycast ~= nil then
+			to = raycast.position 
+			--pprint("to ",raycast)
+		end
+		sprite.play_flipbook("#sprite",message.sprite.."_death")
+		go.set("#sprite","color_mod",vmath.vector4(message.shading,0,0,0))
+		go.animate( ".", "position",go.PLAYBACK_ONCE_FORWARD, to ,go.EASING_OUTEXPO ,1)
+	end
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	--    msg.post(".", "acquire_input_focus")
+	--
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

@@ -1,1 +1,2 @@
 sound: "/main/assets/sounds/player_death.wav"
+group: "sfx"

@@ -106,6 +106,7 @@ embedded_components {
   "  data: 1.972269\n"
   "}\n"
   "locked_rotation: true\n"
+  "bullet: true\n"
   "event_trigger: false\n"
   ""
 }

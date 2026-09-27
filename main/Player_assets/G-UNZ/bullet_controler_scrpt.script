@@ -11,7 +11,7 @@ function init(self)
 	self.curpos = vmath.vector3()
 	self.cur_pos = go.get_position(".")
 	self.dmg = 0
-	self.dmg_loss = 0.5
+--	self.dmg_loss = 0.5
 	self.sound_manager = nil
 	self.bounces = upgrades.data_layer["bounce"].bounces
 	self.bounces_chance = upgrades.data_layer["bounce"].bounce_chance
@@ -24,6 +24,8 @@ function init(self)
 
 	self.expo_diameter = upgrades.data_layer["exploding"].diameter
 	self.expo_chance = upgrades.data_layer["exploding"].chance 
+
+	self.dmg_loss = ( 1 +   upgrades.data_layer["-dmg loss"].loss ) 
 	
 
 	self.enemies_pierced = {}
@@ -48,7 +50,7 @@ function final(self)
 	particlefx.stop("#bullet_trail")
 	sound.stop("/Sound_manager#bullet_collision_sound")
 	sound.play("/Sound_manager#bullet_collision_sound",{speed = random_offset, gain = 0.1})
-	print(self.wall_hit)
+	--	print(self.wall_hit)
 	if self.wall_hit == true and self.shrapnel > 0 and math.random(1,100) <= self.shrapnel_chance then
 		for i = 1 , self.shrapnel do
 			--print("shrapnerlll SPAWNED ")
@@ -56,11 +58,14 @@ function final(self)
 			local negator_modulator = math.random() < 0.5 and 1 or 0
 			local dir = rad + (math.random() * 0.7 * negator_modulator ) 
 			--vmath.quat(0,0,math.random(),0)
-			factory.create("/global#shrapnel_spawn",go.get_position(".")+(self.dir*-1)*5 ,vmath.quat(0,0,math.random(),0) ,{speed = self.speed/1.5 , dir = vmath.vector3(math.cos(dir)*-1,math.sin(dir)*-1 ,self.dir.x) , dmg = self.dmg / 3  })
+			factory.create("/global#shrapnel_spawn",go.get_position(".")+ (self.dir*-1)*5 ,vmath.quat(0,0,math.random(),0) ,{speed = self.speed/1.5 , dir = vmath.vector3(math.cos(dir)*-1,math.sin(dir)*-1 ,self.dir.x) , dmg = self.dmg / (3/self.dmg_loss)  })
+			
 		end
 	elseif self.wall_hit == false and self.expo_diameter > 0 and math.random(1,100) <= self.expo_chance then
-		factory.create("/global#exploding_bullet",go.get_position(".") ,nil ,{diameter_scale = self.expo_diameter , dmg = self.dmg / 3  })
+		factory.create("/global#exploding_bullet",go.get_position(".") ,nil ,{diameter_scale = self.expo_diameter , dmg = self.dmg / (3/self.dmg_loss)  })
+		
 	end
+--	print("dmg loss ",self.dmg / (3/self.dmg_loss),(3/self.dmg_loss), self.dmg)
 	
 	
 end
@@ -97,12 +102,12 @@ function on_message(self, message_id, message, sender)
 			if self.pierce <= 0 or math.random(1,100) >= self.pierce_chance then 
 			self.wall_hit = false
 				go.delete(".")
-				
+			else
+				self.pierce = self.pierce - 1 
+				self.dmg = self.dmg / (3/self.dmg_loss)
+				self.enemies_pierced[tostring(sender)] = true 
 			end
 			
-			self.pierce = self.pierce - 1 
-			self.dmg = self.dmg * self.dmg_loss
-			self.enemies_pierced[tostring(sender)] = true 
 			
 		end
 
@@ -136,14 +141,14 @@ function on_message(self, message_id, message, sender)
 				go.set_position(self.hit_position + self.wall_normal * 3   , ".")
 
 				self.dir = self.dir - 2 * vmath.dot(self.dir, self.wall_normal) * self.wall_normal
-
+				
 				local raycast = physics.raycast(go.get_position("."), go.get_position(".") + (self.dir * 300 ), {hash("wall")})
 				self.hit_position = raycast.position 
 				self.wall_normal = raycast.normal 
 
 				self.bounces =  self.bounces - 1 
 
-				self.dmg = self.dmg * self.dmg_loss
+				self.dmg = self.dmg / (3/self.dmg_loss)
 				self.enemies_pierced = {}
 
 				

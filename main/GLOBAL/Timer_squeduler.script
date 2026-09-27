@@ -1,4 +1,6 @@
 local game_state = require("main.GLOBAL.in_game")
+local global = require("main.GLOBAL.GLOBAL")
+local Pstate = require("main.Player_assets.Player_state_module")
 
 function init(self)
 	--frame_time = 1.6511111111111111111111
@@ -27,7 +29,10 @@ function update(self, dt)
 					table.remove(timer_buffer,i)
 				end
 			end
-		end 
+		end
+		if Pstate.alive then
+			global.round_total_time = global.round_total_time + dt
+		end
 	end
 	
 	--count = count + 1 

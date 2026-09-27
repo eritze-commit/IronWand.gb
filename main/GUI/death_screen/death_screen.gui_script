@@ -1,0 +1,273 @@
+local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
+local global = require("main.GLOBAL.GLOBAL")
+function init(self)
+    self.game_over_nodes = {"game_over","box"}
+    self.death_screen_nodes = {"down_1_image","down_2_image","down_3_image","down_4_image","down_5_image","down_6_image","backdrop","floor","menu","restart","difficulty","time","upgrade_text"}
+    self.all_nodes = {"game_over","box","down_1_image","down_2_image","down_3_image","down_4_image","down_5_image","down_6_image","backdrop","floor","menu","restart","difficulty","time","upgrade_text"}
+    self.all_death_screen_node_positions = {
+    ["down_1_image"] = vmath.vector3(108,202,0),
+    ["down_2_image"] = vmath.vector3(188,202,0),
+    ["down_3_image"] = vmath.vector3(268,202,0),
+    ["down_4_image"] = vmath.vector3(348,202,0),
+    ["down_5_image"] = vmath.vector3(428,202,0),
+    ["down_6_image"] = vmath.vector3(508,202,0),
+    ["backdrop"] = vmath.vector3(270,255,0),
+    ["floor"] = vmath.vector3(308,430,0),
+    ["menu"] = vmath.vector3(305,90,0),
+    ["restart"] = vmath.vector3(305,135,0),
+    ["difficulty"] = vmath.vector3(308,400,0),
+    ["time"] = vmath.vector3(308,370,0),
+    ["upgrade_text"] = vmath.vector3(308.0,273.0,0),
+    ["selector"] = vmath.vector3(108,202,0),
+    }
+    for i= 1 , #self.all_nodes do 
+        gui.set_enabled(gui.get_node(self.all_nodes[i]),false )
+    end
+    self.button_selected = false
+    self.last_node_selected = "menu"
+    self.cur_button_state = 1
+    self.button_default_color = vmath.vector4(0.8, 0.8, 0.8, 1)
+	self.node_highlight_color = vmath.vector4(1, 1, 1, 1)
+	self.button_states = {"restart","menu"}
+	self.upgrade_view = false
+	self.cur_upgrade_state = 1
+	self.button_actions = {
+	["restart"] = function()
+        
+        msg.post("/Gui_collection/death#death_screen","release_input_focus")
+
+        for i= 1 , #self.all_nodes do 
+            gui.set_enabled(gui.get_node(self.all_nodes[i]),false )
+        end
+
+
+        msg.post("/global#Game_state_manager","change_state",{state = "playing"})
+  end,
+        
+	["menu"] = function() 
+         msg.post("/Gui_collection/death#death_screen","release_input_focus")
+
+        for i= 1 , #self.all_nodes do 
+            gui.set_enabled(gui.get_node(self.all_nodes[i]),false )
+        end
+
+        msg.post("/global#Game_state_manager","change_state",{state = "menu"})
+	end,
+	}
+	-- self.cur_button_state = 1 
+ --    gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color) 
+    
+    
+	-- Add initialization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+local function icon_display(table) 
+	if  table.name ~= "2gun" and table.name ~= "1gun" then
+			return table.name 
+	else
+			return table.type
+	end
+end
+local function death_screen_toggle(self,toggle,floor_state,diff,time)
+	print("toggle  ",toggle)
+   if toggle == true then
+        for i = 1 , #self.death_screen_nodes do 
+            gui.set_enabled(gui.get_node(self.death_screen_nodes[i]),toggle)
+        end
+        for i =  1, #self.button_states do 
+            gui.set(gui.get_node(self.button_states[i]),"color",self.button_default_color) 
+        end
+        self.upgrade_view = false
+        self.cur_upgrade_state = 1 
+        self.cur_button_state = 1     
+        gui.set_position(gui.get_node("selector"),gui.get_position(gui.get_node("down_"..self.cur_upgrade_state.."_image")))
+        gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color) 
+        self.last_node_selected = self.button_states[self.cur_button_state ]
+        gui.set_text(gui.get_node("floor"),"floor: "..floor_state)
+		gui.set_text(gui.get_node("time"),"time :"..(math.floor(time / 3600 ) )..
+		":"..(math.floor(time/60))..
+		":"..(math.floor(time%60))..
+		":"..( math.floor((time % 1) * 1000 ) )
+		
+		)
+        gui.set_text(gui.get_node("difficulty"),"difficulty: "..diff)
+        gui.set_text(gui.get_node("restart"),"restart [ diff "..diff.." ]")
+        for i = 1 , 6 do
+			local temp_image_name = icon_display(upgrades.upgrade_slots[i])
+			if temp_image_name ~= nil then
+				gui.play_flipbook(gui.get_node("down_"..i.."_image"), temp_image_name)
+			else
+				gui.play_flipbook(gui.get_node("down_"..i.."_image"), "empty")
+			end
+            
+        end
+        for i = 1  , #self.death_screen_nodes do
+			gui.set_position(gui.get_node(self.death_screen_nodes[i]),self.all_death_screen_node_positions[self.death_screen_nodes[i]])
+        end
+        for i = 1  , #self.death_screen_nodes do
+			gui.set_position(gui.get_node(self.death_screen_nodes[i]),gui.get_position(gui.get_node(self.death_screen_nodes[i]))-vmath.vector3(700,0,0) )
+        end
+		for i = 1  , #self.death_screen_nodes do
+			gui.animate(gui.get_node(self.death_screen_nodes[i]),"position",
+			gui.get_position(gui.get_node(self.death_screen_nodes[i]))+vmath.vector3(700,0,0),
+			gui.EASING_OUTEXPO, i * 0.1 )
+			--gui.ani(gui.get_node(self.death_screen_nodes[i]),gui.get_position(gui.get_node(self.death_screen_nodes[i]))-vmath.vector3(700,0,0) )
+		end
+		
+
+            
+    else
+        for i = 1 , #self.death_screen_nodes do 
+            gui.set_enabled(gui.get_node(self.death_screen_nodes[i]),toggle)
+        end
+   end
+   
+end
+
+ function on_message(self, message_id, message, sender)
+    if message_id == hash("toggle_death_screen") then
+--        print("difficulty " , message.floor_state ) 
+        death_screen_toggle(self,message.toggle,message.floor_state,global.cur_diff,message.round_time) 
+    end
+    if message_id == hash("toggle_game_over") then 
+        for i= 1 , #self.game_over_nodes do 
+            gui.set_enabled(gui.get_node(self.game_over_nodes[i]),message.state )
+        end
+       -- gui.set_text(gui.get_node("floor"),"floor: "..message.floor)
+    end
+	-- Add message-handling code here
+	-- Learn more: https://defold.com/manuals/message-passing/
+	-- Remove this function if not needed
+end
+
+function on_input(self, action_id, action)
+    if not self.button_selected then 
+		if action_id == hash("right") or action_id == hash("left")  then
+			if self.upgrade_view then
+			
+			self.button_selected = true
+			timer.delay(0.2,false,function() 
+				self.button_selected = false
+			end)
+			if action_id == hash("right") then
+				self.cur_upgrade_state = self.cur_upgrade_state + 1 
+			else
+				self.cur_upgrade_state = self.cur_upgrade_state - 1 
+			end
+			if self.cur_upgrade_state <= 0 then
+				self.cur_upgrade_state = #upgrades.upgrade_slots
+			elseif self.cur_upgrade_state > #upgrades.upgrade_slots then
+				self.cur_upgrade_state = 1
+			end
+			gui.set_position(gui.get_node("selector"),gui.get_position(gui.get_node("down_"..self.cur_upgrade_state.."_image")))
+			if upgrades.upgrade_slots[self.cur_upgrade_state].description ~= nil then
+				gui.set_text(gui.get_node("upgrade_text"),upgrades.upgrade_slots[self.cur_upgrade_state].description)
+			else
+				gui.set_text(gui.get_node("upgrade_text"),"empty")
+			end
+			
+			end
+		end
+		if action_id == hash("down") or action_id == hash("up") then 
+			
+			self.button_selected = true
+			timer.delay(0.2,false,function() 
+				self.button_selected = false
+			end)
+			
+		
+		if action_id == hash("down") then
+			
+			self.cur_button_state = self.cur_button_state + 1 
+			if self.upgrade_view then
+				gui.set_text(gui.get_node("upgrade_text"),":")
+				self.cur_button_state = 1 
+				self.upgrade_view = false 
+				gui.play_flipbook(gui.get_node("selector"),"nothing")
+				gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)	
+			end
+			if self.cur_button_state > #self.button_states then
+				self.cur_button_state = #self.button_states
+				--print("TS ran ")
+				if not self.upgrade_view then
+					--print("TS ran 2")
+					if upgrades.upgrade_slots[self.cur_upgrade_state].description ~= nil then
+						gui.set_text(gui.get_node("upgrade_text"),upgrades.upgrade_slots[self.cur_upgrade_state].description)
+					else
+						gui.set_text(gui.get_node("upgrade_text"),"empty")
+					end
+					self.upgrade_view = true
+					gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.button_default_color)
+					gui.play_flipbook(gui.get_node("selector"),"selector")
+				end
+			end
+			
+		else
+			
+			self.cur_button_state = self.cur_button_state - 1 
+			if self.upgrade_view then
+					self.upgrade_view = false
+					self.cur_button_state = 2
+					gui.set_text(gui.get_node("upgrade_text"),":")
+					gui.play_flipbook(gui.get_node("selector"),"nothing")
+					gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+			end
+			if self.cur_button_state <= 0  then
+				self.cur_button_state = 1 
+				if not self.upgrade_view then
+					if upgrades.upgrade_slots[self.cur_upgrade_state].description ~= nil then
+						gui.set_text(gui.get_node("upgrade_text"),upgrades.upgrade_slots[self.cur_upgrade_state].description)
+					else
+						gui.set_text(gui.get_node("upgrade_text"),"empty")
+					end
+					self.upgrade_view = true 
+					gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.button_default_color)
+					gui.play_flipbook(gui.get_node("selector"),"selector")
+				
+				end
+				--self.cur_button_state = #self.button_states
+			end
+		end
+		print("upgrade view",self.upgrade_view,"cur node ",self.cur_button_state  )
+		if self.upgrade_view then
+			
+		else
+			gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+			gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+			self.last_node_selected = self.button_states[self.cur_button_state ]
+		end
+		
+		
+	end
+	end
+	if action_id == hash("action_but") and not self.button_selected  then 
+		if self.cur_button_state ~= 0 then
+			self.button_selected = true
+			timer.delay(0.2,false,function() 
+				self.button_selected = false
+			end)
+			
+				self.button_actions[self.button_states[self.cur_button_state]]()
+			
+		end
+	end
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

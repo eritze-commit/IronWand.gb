@@ -53,7 +53,7 @@ function on_message(self, message_id, message, sender)
 		-- end)
 	end
 	if message_id == hash("timer_end") then 
-		print("got message TIMER END ", message.type)
+--		print("got message TIMER END ", message.type)
 		if message.type == "bullet_destroy" then
 			go.delete(".")
 		end

@@ -1,2 +1,3 @@
 sound: "/main/Player_assets/SFX/PL_HIT.wav"
+group: "sfx"
 gain: 0.7

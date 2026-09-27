@@ -13,10 +13,11 @@ function init(self)
 	self.cur_anim = ""
 	self.vertical = nil
 	self.dashing = false
-	self.max =  Pstate.health 
+	self.max = Pstate.health 
 	self.immunity = false
 	self.immunity_frame_time = 0.3
-
+	
+	
 end
 
 function final(self)
@@ -24,9 +25,28 @@ function final(self)
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
 end
-
+local last_own = 0 
+local last_active = 0 
 
 function update(self, dt)
+	if last_own ~= upgrades.data_layer["shield"].owns then 
+		last_own = upgrades.data_layer["shield"].owns
+		if upgrades.data_layer["shield"].owns ~= 1 then
+			sprite.play_flipbook("Pl_Sprite#shield","empty")
+			upgrades.data_layer["shield"].active = 0
+		else
+			upgrades.data_layer["shield"].active = 1 
+			upgrades.data_layer["shield"].buffer = upgrades.data_layer["shield"].max_recharge
+		end
+	end
+	if last_active ~= upgrades.data_layer["shield"].active then
+		last_active = upgrades.data_layer["shield"].active
+		if upgrades.data_layer["shield"].active == 1 and upgrades.data_layer["shield"].owns == 1  then
+			sprite.play_flipbook("Pl_Sprite#shield","rotating")
+		else
+			sprite.play_flipbook("Pl_Sprite#shield","empty")
+		end
+	end
 	if Pstate.alive  or not game_state then 
 	local camera_pos = go.get_position(".")
 
@@ -108,7 +128,7 @@ function on_message(self, message_id, message, sender)
 		self.dashing  = message.dash
 	elseif message_id == hash("dash_end") then 
 		self.dashing  = false
-		print("DASH ENDED ")
+		--print("DASH ENDED ")
 		self.prev_state = "walk"
 		self.cur_anim = "walk"
 		timer.delay(0.3, false, function()
@@ -117,15 +137,20 @@ function on_message(self, message_id, message, sender)
 		)
 		
 	end
-	if message_id == hash("trigger_response") and not self.immunity and message.other_group == hash("bullet_box") and Pstate.alive  then 
-		if not Pstate.dashing then 
-			self.immunity = true
-			timer.delay(self.immunity_frame_time,false,function() 	
+	if message_id == hash("trigger_response") and not Pstate.immunity_frame and message.other_group == hash("bullet_box") and Pstate.alive  then 
+		if not self.immunity then
+			msg.post(message.other_id,"player_hit",{data = 6767})
+		else
+			self.immunity = true 
+			timer.delay(0.3,false, function() 
 				self.immunity = false
 			end)
-			msg.post(message.other_id,"player_hit",{data = 6767})
 		end
-		end
+	elseif message_id == hash("trigger_response") and Pstate.immunity_frame then 
+		local graphic = factory.create("/global#quick_graphic",go.get_position(".")+vmath.vector3(0,6,10))
+		msg.post(graphic,"spawn",{graphic = "dash",duration = 0.5 })
+		
+	end
 	if message_id == hash("heart_pickup") then
 		if Pstate.health < Pstate.max_health then
 			Pstate.health = Pstate.health + ( 0.5 + upgrades.data_layer["+heart"].health)
@@ -137,17 +162,27 @@ function on_message(self, message_id, message, sender)
 	end 
 	if message_id == hash("Hit_response") then 
 		if math.random() >  upgrades.data_layer["dodge"].chance  then
+			if upgrades.data_layer["shield"].owns == 1 and upgrades.data_layer["shield"].active == 1 then
+				upgrades.data_layer["shield"].active = 0
+				local graphic = factory.create("/global#quick_graphic",go.get_position(".")+vmath.vector3(0,6,10))
+				msg.post(graphic,"spawn",{graphic = "shield",duration = 1.5 })
+			else
+			
 			Pstate.health = Pstate.health - 1
 			sound.stop("/Sound_manager#Pl_hit_sfx")
 			sound.play("/Sound_manager#Pl_hit_sfx")
 			msg.post("/Gui_collection/hud#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})
-				msg.post("/Player_ROOT/camera#camera_script","screen_shake",{strenght  = 10})
+					msg.post("/Player_ROOT/camera#camera_script","screen_shake",{strenght  = 10})
 				if Pstate.health <= 0 then 
 					sprite.play_flipbook("Pl_Sprite#plr","dead")
 					Pstate.alive = false
 					particlefx.play("Pl_Sprite#player_death")
 					msg.post("/global#Game_state_manager","change_state",{state = "dead"})
+				end
 			end
+		else
+			local graphic = factory.create("/global#quick_graphic",go.get_position(".")+vmath.vector3(0,6,10))
+			msg.post(graphic,"spawn",{graphic = "dodge",duration = 2 })
 		end
 	end
 	
@@ -158,7 +193,7 @@ end
 
 function on_input(self, action_id, action)
 	if action_id == hash("raw") then 
-		pprint(action.gamepad_axis)
+		--pprint(action.gamepad_axis)
 	end
 	
 	-- Add input-handling code here. The game object this script is attached to

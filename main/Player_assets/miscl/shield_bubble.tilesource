@@ -1,0 +1,18 @@
+image: "/main/Player_assets/miscl/shield_sprite_sheet.png"
+tile_width: 16
+tile_height: 16
+collision_groups: "default"
+animations {
+  id: "empty"
+  start_tile: 13
+  end_tile: 13
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "rotating"
+  start_tile: 1
+  end_tile: 12
+  playback: PLAYBACK_LOOP_PINGPONG
+  fps: 10
+}
+extrude_borders: 2

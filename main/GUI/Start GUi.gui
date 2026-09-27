@@ -74,8 +74,6 @@ nodes {
   }
   type: TYPE_BOX
   id: "backDrop"
-  xanchor: XANCHOR_LEFT
-  yanchor: YANCHOR_BOTTOM
   layer: "layer1"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
@@ -117,6 +115,165 @@ nodes {
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   enabled: false
+  visible: false
+}
+nodes {
+  position {
+    x: 305.0
+    y: 100.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "info"
+  font: "PixeRlino"
+  id: "info"
+  yanchor: YANCHOR_BOTTOM
+  layer: "layer2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 305.0
+    y: 125.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "settings"
+  font: "PixeRlino"
+  id: "settings"
+  yanchor: YANCHOR_BOTTOM
+  layer: "layer2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 305.0
+    y: 152.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "easy"
+  font: "PixeRlino"
+  id: "easy"
+  yanchor: YANCHOR_BOTTOM
+  layer: "layer2"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 305.0
+    y: 125.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "medium"
+  font: "PixeRlino"
+  id: "medium"
+  yanchor: YANCHOR_BOTTOM
+  layer: "layer2"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 305.0
+    y: 100.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "hard"
+  font: "PixeRlino"
+  id: "hard"
+  yanchor: YANCHOR_BOTTOM
+  layer: "layer2"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 305.0
+    y: 75.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "hardcore"
+  font: "PixeRlino"
+  id: "hardcore"
+  yanchor: YANCHOR_BOTTOM
+  layer: "layer2"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 305.0
+    y: 50.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "back"
+  font: "PixeRlino"
+  id: "back1"
+  yanchor: YANCHOR_BOTTOM
+  layer: "layer2"
+  inherit_alpha: true
   visible: false
 }
 layers {

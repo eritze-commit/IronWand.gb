@@ -1,5 +1,5 @@
 font: "/main/GUI/hud/Pixel_NES.otf"
 material: "/builtins/fonts/font.material"
-size: 25
+size: 22
 antialias: 0
 characters: " !\"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"

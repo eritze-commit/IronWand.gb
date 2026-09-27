@@ -24,22 +24,24 @@ function init(self)
 
 end
 
-function final(self)
-	if self.sound_enabled then 
+function final(self) 
 		local s_s_max = 1.1
 		local s_s_min = 0.7
 		local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
 
 		env.statue_pos[self.cord_key] = false
-		
 		if active.cur_scene_active then
+--			msg.post("/Player_ROOT/gun_cont#gun_controller","clipped")
 			sound.stop("/Sound_manager#break_explode_sound")
-			sound.play("/Sound_manager#break_explode_sound",{speed = random_offset, gain = self.sound_gain-0.1 })
+			sound.play("/Sound_manager#break_explode_sound",{speed = random_offset, gain = 1 })
 			particlefx.stop("#explode_triangle_fx")
 			particlefx.play("#explode_triangle_fx")
+		if active.cur_scene_active then
 			msg.post("/Drop_Spawner#Drop_spawner","spawn_drop",{position = go.get_position("."), max_drop = self.max, min_drop = self.min,loot = self.type })
 		end
-	end
+			
+		end
+		
 end
 
 function update(self, dt)
@@ -69,15 +71,15 @@ function on_message(self, message_id, message, sender)
 		msg.post(message.other_id,"get_type",{type = 1 })
 		self.objects_normal = message.normal
 		if  Pstate.dashing and vmath.length_sqr(Pstate.player_dir) > 0 and message.other_id == hash("/Player_ROOT/Player") then
-			self.sound_enabled = true
-			self.sound_gain = 1.2
+			--self.sound_enabled = true
+			--self.sound_gain = 1.2
 			msg.post("/Map#Auto_Tiler","clear_object_self",{id = go.get_id()})
 			go.delete(".")
 		end
 	end
 
 	if message_id == hash("break_wall") then
-		self.sound_enabled = true
+		--self.sound_enabled = true
 		if self.can_attack == true then
 			self.can_attack = false
 			local nrml = self.objects_normal
@@ -95,7 +97,7 @@ function on_message(self, message_id, message, sender)
 		end
 	end
 	if message_id == hash("cord_key") then 
-		print("GOT MESSAGE CORD INSERT ")
+	--	print("GOT MESSAGE CORD INSERT ")
 		self.cord_key = message.cord_key
 	end
 end

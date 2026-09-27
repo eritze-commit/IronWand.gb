@@ -63,12 +63,12 @@ nodes {
   font: "PixeRlino"
   id: "map_info"
   yanchor: YANCHOR_TOP
-  layer: "behind2"
+  layer: "frnt7"
   inherit_alpha: true
 }
 nodes {
   position {
-    x: -654.0
+    x: -609.0
     y: 240.0
     z: 1.0
   }
@@ -82,8 +82,7 @@ nodes {
   }
   type: TYPE_BOX
   id: "box"
-  xanchor: XANCHOR_LEFT
-  layer: "back"
+  layer: "frnt6"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   material: "gui_mod"
@@ -94,7 +93,7 @@ nodes {
     y: 85.0
   }
   scale {
-    x: 9.743875
+    x: 4.9
     y: 0.755927
   }
   type: TYPE_BOX
@@ -134,7 +133,7 @@ nodes {
 nodes {
   position {
     x: 314.0
-    y: 330.0
+    y: 369.0
   }
   size {
     x: 200.0
@@ -168,7 +167,7 @@ nodes {
 }
 nodes {
   position {
-    x: 85.0
+    x: 95.0
     y: 72.0
   }
   scale {
@@ -176,7 +175,7 @@ nodes {
     y: 4.0
   }
   type: TYPE_BOX
-  texture: "enemy_drops/mana_orb"
+  texture: "enemy_drops/mana_star"
   id: "mana_icon"
   xanchor: XANCHOR_LEFT
   inherit_alpha: true
@@ -188,8 +187,8 @@ nodes {
     y: 249.0
   }
   scale {
-    x: 5.04828
-    y: 9.458284
+    x: 12.319863
+    y: 27.02462
   }
   size {
     x: 200.0
@@ -202,8 +201,7 @@ nodes {
   }
   type: TYPE_BOX
   id: "pause_box"
-  xanchor: XANCHOR_LEFT
-  yanchor: YANCHOR_BOTTOM
+  layer: "frnt4"
   inherit_alpha: true
   alpha: 0.52
   size_mode: SIZE_MODE_AUTO
@@ -224,6 +222,7 @@ nodes {
   id: "paused"
   xanchor: XANCHOR_LEFT
   yanchor: YANCHOR_BOTTOM
+  layer: "frnt7"
   inherit_alpha: true
   visible: false
 }
@@ -241,6 +240,7 @@ nodes {
   id: "down_6_image"
   xanchor: XANCHOR_LEFT
   parent: "paused"
+  layer: "frnt7"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   visible: false
@@ -259,6 +259,7 @@ nodes {
   id: "down_5_image"
   xanchor: XANCHOR_LEFT
   parent: "paused"
+  layer: "frnt7"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   visible: false
@@ -277,6 +278,7 @@ nodes {
   id: "down_4_image"
   xanchor: XANCHOR_LEFT
   parent: "paused"
+  layer: "frnt7"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   visible: false
@@ -295,6 +297,7 @@ nodes {
   id: "down_3_image"
   xanchor: XANCHOR_LEFT
   parent: "paused"
+  layer: "frnt7"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   visible: false
@@ -313,6 +316,7 @@ nodes {
   id: "down_2_image"
   xanchor: XANCHOR_LEFT
   parent: "paused"
+  layer: "frnt7"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   visible: false
@@ -331,9 +335,83 @@ nodes {
   id: "down_1_image"
   xanchor: XANCHOR_LEFT
   parent: "paused"
+  layer: "frnt7"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   visible: false
+}
+nodes {
+  position {
+    y: 25.0
+  }
+  scale {
+    x: 0.8
+    y: 0.8
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "floor:"
+  font: "PixeRlino"
+  id: "floor"
+  parent: "paused"
+  layer: "frnt7"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 325.0
+    y: 86.0
+  }
+  scale {
+    x: 0.6
+    y: 0.6
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  blend_mode: BLEND_MODE_MULT
+  text: "1.0/10\n"
+  ""
+  font: "PixeRlino"
+  id: "health"
+  outline {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+  layer: "frnt3"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 324.0
+    y: 85.0
+  }
+  scale {
+    x: 0.245648
+    y: 0.11924
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  type: TYPE_BOX
+  id: "health_box"
+  layer: "front2"
+  inherit_alpha: true
+  alpha: 0.5
+  size_mode: SIZE_MODE_AUTO
 }
 layers {
   name: "front"
@@ -343,6 +421,24 @@ layers {
 }
 layers {
   name: "behind2"
+}
+layers {
+  name: "front2"
+}
+layers {
+  name: "frnt3"
+}
+layers {
+  name: "frnt4"
+}
+layers {
+  name: "frnt5"
+}
+layers {
+  name: "frnt6"
+}
+layers {
+  name: "frnt7"
 }
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT

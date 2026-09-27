@@ -6,9 +6,11 @@ local floor_tile_size = 250 * global.floor_linear_scalar
 local floor_repeat = 1
 
 function init(self)
---	msg.post(".", "acquire_input_focus")
+--msg.post(".", "acquire_input_focus")
 	-- UP | DOWN | LEFT | RIGHT
+	go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/center_point")
 	self.aval_tiles = {
+	
 		[0] = 1,
 		[1] = 2,
 		[2] = 3,
@@ -26,7 +28,7 @@ function init(self)
 		[14] = 15,
 		[15] = 16,
 	}
-	
+	self.cur_floor_algo = 0 
 	self.pressed = false 
 	math.randomseed(os.time())
 
@@ -51,25 +53,111 @@ local function clr_screen()
 		end
 	end
 end
-local function Room_gen_floor()
-	tile_set_name = tiles.tile_set_names[math.random(1,#tiles.tile_set_names)]
+local function Room_gen_floor_v3() -- V 3 
 	local y = 11
 	local x = 21
+	local y_true = false
+	local random_mod = 0.5 
+	local random_tile_number = 0
+	local count = 0
+	local cord_mod = 0	
+	local cord_rotation = {1,1,-1,-1}
+	local cord_rotation_count = 1
+	local firs_size = 0
+--	local second_size = math.random(4,10)
+	-- while true do 
+	-- 	firs_size = math.random(3,9)
+	-- 	if firs_size < second_size and firs_size ~= second_size then
+	-- 		break
+	-- 	end
+	-- end
+	tilemap.set_tile("/Map#Standard","zero",x,y, 18) 
+	--print("1-",firs_size,"2-",second_size)
+	for i=1,floor_tile_size do
+	
+		if count == random_tile_number then
+			random_tile_number = math.random(1,6)
+--			random_mod = 0.1 + ( math.random() - 0.1)
+			cord_mod = cord_rotation[cord_rotation_count]
+			if cord_rotation_count == #cord_rotation then
+				cord_rotation_count = 1 
+			else
+				cord_rotation_count = cord_rotation_count + 1
+			end
+--			cord_mod = math.random() > 0.5 and -1 or 1 
+			if y_true == 1 then
+				y_true = 0
+			else
+				y_true = 1 
+			end
+			--y_true = math.random() > 0.5 and 1  or 0
+			count = 0 
+		end
+		
+		count = count + 1
+		for i = 0 , 50 do
+			if  y_true == 0  then
+				y = y + cord_mod 
+			else
+				x = x + cord_mod 
+			end
+			y = math.min(math.max(y, 1), 21)
+			x = math.min(math.max(x, 1), 36)
+			if not env.floor_tiles[x.."_"..y] then
+				tilemap.set_tile("/Map#Standard","zero",x,y, 18) 
+				env.floor_tiles[x.."_"..y] = true
+				break
+			end
+		end
+	end
+	
+end
+
+local function Room_gen_floor_v2() -- V 2 
+	
+	local y = 11
+	local x = 21
+	local random_mod = 0.5 
 	local dir = {{-1,0},{1,0},{0,-1},{0,1}}
 
 	tilemap.set_tile("/Map#Standard","zero",x,y, 18) 
-	for i=1,floor_tile_size do 
-		if math.random(1,10) < math.random(1,10)  then
-			y = y + dir[math.random(1,4)][1]
-		else
-			x = x + dir[math.random(1,4)][2]
+	for i=1,floor_tile_size do
+		for i = 0 , 10 do
+			if  math.random() > random_mod  then
+				y = y + dir[math.random(1,4)][1]
+			else
+				x = x + dir[math.random(1,4)][2]
+			end
+			y = math.min(math.max(y, 1), 21)
+			x = math.min(math.max(x, 1), 36)
+			if not  env.floor_tiles[x.."_"..y] then
+				tilemap.set_tile("/Map#Standard","zero",x,y, 18) 
+				env.floor_tiles[x.."_"..y] = true
+				break
+			end
 		end
-		y = math.min(math.max(y, 1), 21)
-		x = math.min(math.max(x, 1), 36)
-		tilemap.set_tile("/Map#Standard","zero",x,y, 18) 
-		env.floor_tiles[x.."_"..y] = true
 	end
 end
+-- OLD algorithm
+-- local function Room_gen_floor() V 1
+-- 	tile_set_name = tiles.tile_set_names[math.random(1,#tiles.tile_set_names)]
+-- 	local y = 11
+-- 	local x = 21
+-- 	local dir = {{-1,0},{1,0},{0,-1},{0,1}}
+
+-- 	tilemap.set_tile("/Map#Standard","zero",x,y, 18) 
+-- 	for i=1,floor_tile_size do 
+-- 		if math.random(1,10) < math.random(1,10)  then
+-- 			y = y + dir[math.random(1,4)][1]
+-- 		else
+-- 			x = x + dir[math.random(1,4)][2]
+-- 		end
+-- 		y = math.min(math.max(y, 1), 21)
+-- 		x = math.min(math.max(x, 1), 36)
+-- 		tilemap.set_tile("/Map#Standard","zero",x,y, 18) 
+-- 		env.floor_tiles[x.."_"..y] = true
+-- 	end
+-- end
 local function wall_placer()
 	local directions = {
 		{-1, -1}, {0, -1}, {1, -1},  
@@ -187,18 +275,27 @@ local function auto_tiler(self)
 end
 
 local function map_assembler(self) 
-	floor_tile_size = 150 +  global.floor_linear_scalar
-	print("floor_tile_size",floor_tile_size)
-	go.set("/Map#Standard","color_mod",vmath.vector4(global.map_tint,0,0,0))
-	clr_screen()
+	floor_tile_size = 25 +  global.floor_linear_scalar
+	tile_set_name = tiles.tile_set_names[math.random(1,#tiles.tile_set_names)]
+	--print("floor_tile_size",floor_tile_size)
 	go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
-	for i = 1 , floor_repeat do 
-		Room_gen_floor()
+	go.set("/Map#Standard","color_mod",vmath.vector4(global.map_tint,0,0,0))
+	go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
+	clr_screen()
+	if self.cur_floor_algo == 0 then 
+		Room_gen_floor_v2()
+		self.cur_floor_algo = 1 
+	else 
+		Room_gen_floor_v3()
+		self.cur_floor_algo = 0
 	end
+	go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
+	msg.post("/Player_ROOT/gun_cont#gun_controller","clipped")
 	angel_gen()
 	wall_placer()
 	auto_tiler(self)
 	shadow_gen()
+	go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
 end
 	
 function final(self)
@@ -207,6 +304,10 @@ end
 function update(self, dt)
 end
 function on_message(self, message_id, message, sender)
+	if message_id == hash("reset_floor_state") then
+		self.cur_floor_algo = 0 
+		--print("TS ran 1 ")
+	end
 	if message_id == hash("clear_object_self") then 
 		--print("GOT THE FUCKING MESSEGE BRUH YOU FUCKING CLEAR ",message.id)
 		for i = #object_que , 1 , -1 do 
@@ -246,7 +347,7 @@ function on_input(self, action_id, action)
 	end
 	if action_id == hash("flor")  and self.pressed == false  then 
 		self.pressed = true
-		Room_gen_floor()
+		Room_gen_floor_v3()
 		if self.pressed == true then
 			timer.delay(0.3,false,function()  
 				self.pressed = false

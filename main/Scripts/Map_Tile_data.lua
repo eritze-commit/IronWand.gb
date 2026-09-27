@@ -1,5 +1,5 @@
 local tile_sets = {
-    tile_set_names = {"classic","stone","pillar","minimal"},
+    tile_set_names = {"classic","stone","pillar","minimal","skull"},
 --    tile_set_names = {"minimal"},
     ["classic"] = {	
     -- wall tiles
@@ -116,6 +116,37 @@ local tile_sets = {
 
 
     },
+    ["skull"] = {
+     -- wall tiles	
+        [0] = 121,
+		[1] = 122,
+		[2] = 123,
+		[3] = 124,
+		[4] = 125,
+		[5] = 126,
+		[6] = 127,
+		[7] = 128,
+		[8] = 129,
+		[9] = 130,
+		[10] = 131,
+		[11] = 132,
+		[12] = 133,
+		[13] = 134,
+		[14] = 135,
+		[15] = 136,
+	-- floor tiles default
+		[16] = 142,
+		[17] = 143,
+	-- floor tiles custom 
+		[18] = 145,
+		[19] = 146,
+		[20] = 147,
+		[21] = 148,
+
+
+
+    },
+    
     
 
 
@@ -123,3 +154,4 @@ local tile_sets = {
 }
 
 return tile_sets
+

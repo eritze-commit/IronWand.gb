@@ -78,8 +78,6 @@ nodes {
   }
   type: TYPE_BOX
   id: "backdrop"
-  xanchor: XANCHOR_LEFT
-  yanchor: YANCHOR_BOTTOM
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
 }
@@ -179,8 +177,8 @@ nodes {
 }
 nodes {
   position {
-    x: 503.0
-    y: 53.0
+    x: 465.0
+    y: 57.0
   }
   size {
     x: 200.0
@@ -192,6 +190,7 @@ nodes {
   font: "PixeRlino"
   id: "mana"
   xanchor: XANCHOR_LEFT
+  pivot: PIVOT_W
   layer: "front layer"
   inherit_alpha: true
 }
@@ -243,7 +242,7 @@ nodes {
     y: 4.5
   }
   type: TYPE_BOX
-  texture: "enemy_drops/mana_orb"
+  texture: "enemy_drops/mana_star"
   id: "mana_icon"
   xanchor: XANCHOR_LEFT
   layer: "front layer"

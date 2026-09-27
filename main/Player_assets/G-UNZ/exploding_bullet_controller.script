@@ -3,7 +3,13 @@ go.property("diameter_scale",0 )
 
 local game_state = require("main.GLOBAL.in_game")
 
+local function play_sfx(sfx,options)
+	local s_s_max = options[2]
+	local s_s_min = options[1]
+	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
 
+	sound.play(sfx,{speed = random_offset ,gain=1})
+end
 
 function init(self)
 
@@ -14,21 +20,27 @@ function init(self)
 
 
 	self.cur_diameter = 0.01
-	self.scale = vmath.vector3(0.035,0.035,0) * ( self.diameter_scale /2 )
+	self.neg_mod = math.random() < 0.5 and -1 or 1 
+	self.scale = vmath.vector3(0.035,0.035,0) * ( ( self.diameter_scale /2 )  +  ( self.neg_mod * math.random()* ( (self.diameter_scale /2) /4)  ) )
 	go.set("#sprite","scale",self.scale)
-	self.diameter = 1 * self.diameter_scale
+	self.diameter = (1 * self.diameter_scale + (self.neg_mod * math.random()*(self.diameter_scale/4) ) )
 	physics.set_shape("#collisionobject", "bullet", {type = physics.SHAPE_TYPE_SPHERE, diameter  = self.diameter })
 
 
 	
 	msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "bullet_destroy" , time = 0.5, optional = 0 }})
-	go.animate("#sprite","scale",go.PLAYBACK_ONCE_FORWARD,vmath.vector3(0.001,0.001,0),go.EASING_INEXPO,0.5)
+	local x_mod = math.random() < 0.5 and -1 or 1  
+	local y_mod = math.random() < 0.5  and -1 or 1  
+	go.animate("#sprite","scale",go.PLAYBACK_ONCE_FORWARD,vmath.vector3(0.1*x_mod,0.1*y_mod,0),go.EASING_INEXPO,0.5)
 	self.attacked = false 
 	self.attacked_2 = false
 	timer.delay(0.1,false , function() self.attacked = true end   )
+	play_sfx("/Sound_manager#explosion",{0.9,1.5})
 	--print("SELF DIR ",self.dir, "self SPEED ",self.speed)
 
 end
+
+
 
 function final(self)
 	local s_s_max = 1.5

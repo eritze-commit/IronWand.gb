@@ -1,0 +1,3 @@
+sound: "/main/assets/sounds/explosion.wav"
+group: "sfx"
+gain: 0.5

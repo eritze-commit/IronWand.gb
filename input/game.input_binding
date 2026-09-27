@@ -56,7 +56,7 @@ key_trigger {
 }
 key_trigger {
   input: KEY_E
-  action: "dash"
+  action: "reload"
 }
 key_trigger {
   input: KEY_F
@@ -77,10 +77,6 @@ key_trigger {
 key_trigger {
   input: KEY_LSHIFT
   action: "dash"
-}
-key_trigger {
-  input: KEY_SPACE
-  action: "reload"
 }
 key_trigger {
   input: KEY_ESC

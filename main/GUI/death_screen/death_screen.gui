@@ -1,0 +1,327 @@
+script: "/main/GUI/death_screen/death_screen.gui_script"
+fonts {
+  name: "PixeRlino"
+  font: "/main/GUI/hud/PixeRlino.font"
+}
+textures {
+  name: "sprite_icons"
+  texture: "/main/GUI/Upgrade_modules/sprite_icons.tilesource"
+}
+nodes {
+  position {
+    x: 310.0
+    y: 240.0
+  }
+  scale {
+    x: 2.0
+    y: 2.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    y: 0.0
+  }
+  type: TYPE_TEXT
+  blend_mode: BLEND_MODE_ADD
+  text: "GAME OVER "
+  font: "PixeRlino"
+  id: "game_over"
+  layer: "2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 308.0
+    y: 430.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "FLoor:\n"
+  ""
+  font: "PixeRlino"
+  id: "floor"
+  layer: "2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 338.0
+    y: 232.0
+  }
+  scale {
+    x: 1.65755
+    y: 0.295651
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.5019608
+    y: 0.0
+    z: 0.5019608
+  }
+  type: TYPE_BOX
+  blend_mode: BLEND_MODE_MULT
+  id: "box"
+  layer: "1"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  enabled: false
+}
+nodes {
+  position {
+    x: 508.0
+    y: 202.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_6_image"
+  layer: "2"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 428.0
+    y: 202.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_5_image"
+  layer: "2"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 348.0
+    y: 202.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_4_image"
+  layer: "2"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 268.0
+    y: 202.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_3_image"
+  layer: "2"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 188.0
+    y: 202.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_2_image"
+  layer: "2"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 108.0
+    y: 202.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "down_1_image"
+  layer: "2"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 270.0
+    y: 225.0
+  }
+  scale {
+    x: 11.150164
+    y: 21.247797
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  type: TYPE_BOX
+  id: "backdrop"
+  layer: "1"
+  inherit_alpha: true
+  alpha: 0.57
+  size_mode: SIZE_MODE_AUTO
+  enabled: false
+}
+nodes {
+  position {
+    x: 305.0
+    y: 90.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "menu\n"
+  "\n"
+  ""
+  font: "PixeRlino"
+  id: "menu"
+  layer: "2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 305.0
+    y: 135.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "restart \'difficulty hard\""
+  font: "PixeRlino"
+  id: "restart"
+  layer: "2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 308.0
+    y: 400.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "difficulty: "
+  font: "PixeRlino"
+  id: "difficulty"
+  layer: "2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 308.0
+    y: 370.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "time: "
+  font: "PixeRlino"
+  id: "time"
+  layer: "2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 308.0
+    y: 273.0
+  }
+  scale {
+    x: 0.7
+    y: 0.7
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: ":\n"
+  "\n"
+  "\n"
+  "\n"
+  ""
+  font: "PixeRlino"
+  id: "upgrade_text"
+  layer: "2"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 108.0
+    y: 202.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  size {
+    x: 16.0
+    y: 16.0
+  }
+  type: TYPE_BOX
+  blend_mode: BLEND_MODE_ADD
+  texture: "sprite_icons/nothing"
+  id: "selector"
+  layer: "2"
+  inherit_alpha: true
+  alpha: 0.84
+}
+layers {
+  name: "1"
+}
+layers {
+  name: "2"
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

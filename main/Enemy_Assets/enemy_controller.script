@@ -7,16 +7,20 @@
 function init(self)
 	self.pl_p = go.get_position("/Player_ROOT/Player")
 	self.self_pos = go.get_position(".")
+	self.last_dmg = 0
 	--msg.post(".", "acquire_input_focus")
 	self.next_point = 1
 	self.dir = vmath.vector3()
 	self.distance = vmath.vector3()
 	self.speed = 40--math.random(40,50)
 	self.target_pos =  vmath.vector3()
+	self.max_health = 10
 	self.grid_size = 16
 	self.real_end = vmath.vector3()
 	self.cur_pos =  vmath.vector3()
+	self.name = "name"
 	self.start_pos = vmath.vector3()
+	self.h_flip = true 
 	self.angle_transform = nil
 	self.path = {}
 	self.smallest = nil 
@@ -38,8 +42,8 @@ function init(self)
 	self.smoothed_vel = vmath.vector3()
 	self.alive = false
 
-	self.critical_hit_chance = global.crit_chance + (upgrades.data_layer["^crit"].chance*100) 
-	self.critical_hit_multiplyer = global.crit_multiplyer * ( 1 + upgrades.data_layer["+crit"].damage) 
+	self.critical_hit_chance = 5 -- global.crit_chance + (upgrades.data_layer["^crit"].chance*10) 
+	self.critical_hit_multiplyer = 1.5 --global.crit_multiplyer * ( 1 + upgrades.data_layer["+crit"].damage) 
 
 	self.cur_bullet_type = nil
 
@@ -84,6 +88,7 @@ function init(self)
 	self.distance_leeway = 3
 	self.smoothness = 15
 	self.noise_floor = 3
+	self.cur_health_state = 0
 	
 
 	self.all_directions = {
@@ -349,6 +354,7 @@ function final(self)
 	msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","enemy_clear_from_buffer",{id = go.get_id()})
 	msg.post("/global#Game_state_manager","change_state",{state = "combo"})
 
+
 	-- if math.random(0,1) == 1 then 
 	-- 	for i =1,   math.random(1,3) do 
 	-- 		local x_modulatro = math.random(0,1) == 1 and -1 or 1 
@@ -406,7 +412,7 @@ local function path_state_calc(self)
 		
 	else
 		path_finder(self,{noise = true, noise_strenght = math.random()*0.5 })
-		print("PATH none ")
+		--print("PATH none ")
 	end
 	self.modulate.rush = 0
 	self.modulate.circle = 0
@@ -427,7 +433,7 @@ function update(self, dt)
 	--print("SELF DX ",self.Dx)
 	if self.Dx ~= 0 then 
 		self.should_flip = self.Dx > 0
-		if self.should_flip ~= self.is_flipped then 
+		if self.should_flip ~= self.is_flipped and self.h_flip  then 
 			sprite.set_hflip("#Main_sprite",self.should_flip)
 			self.is_flipped = self.should_flip
 		end
@@ -563,21 +569,30 @@ function on_message(self, message_id, message, sender)
 		if self.can_take_knockback == true then 
 		
 			go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, go.get_position(".")+ (self.knockback_dir * math.random() * 5), go.EASING_INBOUNCE, 0.02, 0, function() 
-				go.set("#Main_sprite","flasher",vmath.vector4(1,0,0,0))
+				-- go.set("#Main_sprite","flasher",vmath.vector4(1,0,0,0))
 			end)
-		else
-			timer.delay(0.02, false ,  function() 
-				go.set("#Main_sprite","flasher",vmath.vector4(1,0,0,0))
-			end)
+			
 		end
-		if math.random(0,100) < ( self.critical_hit_chance + (upgrades.data_layer["^crit"].chance*10) ) then
+		timer.delay(0.05, false ,  function() 
+				go.set("#Main_sprite","flasher",vmath.vector4(1,0,0,0))
+			end)
+		if math.random(0,100) < ( self.critical_hit_chance + upgrades.data_layer["^crit"].chance * 10 ) then
 			self.health = self.health - message.dmg * ( self.critical_hit_multiplyer * ( 1 + upgrades.data_layer["+crit"].damage ))
+			self.last_dmg = message.dmg
 		--	print("took damage ")
 			factory.create("/DynamicProceduralEnemyController#numerical_facotry",go.get_position("."),nil,{value = message.dmg * (self.critical_hit_multiplyer * ( 1 + upgrades.data_layer["+crit"].damage)), special = vmath.vector4(1,0,1,1)})
 		else
 			self.health = self.health - message.dmg
+			self.last_dmg = message.dmg
 			--print("took damage ",factory.create("/DynamicProceduralEnemyController#numerical_facotry",go.get_position("."),nil,{value = message.dmg , special = vmath.vector4(1,1,1,1)}))
 			factory.create("/DynamicProceduralEnemyController#numerical_facotry",go.get_position("."),nil,{value = message.dmg , special = vmath.vector4(1,1,1,1)})
+		end
+		if self.health <= self.max_health / 3 and self.cur_health_state == 1 then
+			self.cur_health_state = 2
+			sprite.play_flipbook("#Main_sprite",self.name.."_"..2)
+		elseif  self.health <= ( self.max_health / 3 )* 2  and  self.cur_health_state == 0 then
+			sprite.play_flipbook("#Main_sprite",self.name.."_"..1)
+			self.cur_health_state = 1
 		end
 
 		if self.health <= 0  then 
@@ -593,8 +608,20 @@ function on_message(self, message_id, message, sender)
 			-- 	sound.stop("/Sound_manager#pickup_sfx")
 			-- 	sound.play("/Sound_manager#pickup_sfx",{speed =  random_offset, gain  = 0.5})
 			-- end
+		if self.alive == true  then	
+			self.alive = false 
+		if upgrades.data_layer["shrapnel death"].chance >= math.random(1,100) then
+			for i = 0 ,  upgrades.data_layer["shrapnel death"].shrapnel do 
+			local x_mod = math.random() < 0.5 and -1 or 1 
+			local y_mod = math.random() < 0.5 and -1 or 1 
+			factory.create("/global#shrapnel_spawn",go.get_position(".") ,vmath.quat(0,0,math.random(),0) ,{speed = 200  , dir = vmath.vector3(math.random()*x_mod,math.random()*y_mod,0)  , dmg = self.last_dmg / (3/( 1 +   upgrades.data_layer["-dmg loss"].loss )) })
+		end
+		end
 			
+			local enemy_death = factory.create("/global#enemy_death",go.get_position(".") ) 
+			msg.post(enemy_death,"sprite_change",{sprite = self.name,dir = self.knockback_dir, shading = self.default_tint }) 
 			go.delete()
+		end
 		end
 		
 		--self.dir = vmath.normalize(vmath.lerp(0.9,self.dir,(self.knockback_dir/-1) + vmath.vector3(math.random(-50,50),math.random(-50,50),0)))
@@ -606,6 +633,8 @@ function on_message(self, message_id, message, sender)
 		self.default_speed = message.speed 
 		self.speed = message.speed 
 		self.health = message.health
+		self.max_health =  message.health
+		self.h_flip = message.h_flip
 		self.bullets = message.bullets 
 		self.weight_values = message.weight_values
 		self.special = message.special
@@ -645,6 +674,7 @@ function on_message(self, message_id, message, sender)
 			end
 			particlefx.play("#enemy_spawn")
 			self.alive = true
+		self.name = message.optional
 		sprite.play_flipbook("#Main_sprite",message.optional)
 		path_finder(self,{noise = false})
 
