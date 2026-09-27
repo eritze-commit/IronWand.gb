@@ -11,6 +11,10 @@ textures {
   name: "defold_logo"
   texture: "/main/assets/atlasses/defold_logo.atlas"
 }
+textures {
+  name: "lt_flag"
+  texture: "/main/GUI/lt_flag.atlas"
+}
 nodes {
   position {
     x: 324.0
@@ -101,8 +105,8 @@ nodes {
 }
 nodes {
   position {
-    x: 551.0
-    y: 93.0
+    x: 303.0
+    y: 143.0
   }
   scale {
     x: 0.04
@@ -114,7 +118,6 @@ nodes {
   layer: "layer1"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
-  enabled: false
   visible: false
 }
 nodes {
@@ -274,6 +277,168 @@ nodes {
   yanchor: YANCHOR_BOTTOM
   layer: "layer2"
   inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 305.0
+    y: 316.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "back\n"
+  ""
+  font: "PixeRlino"
+  id: "back2"
+  yanchor: YANCHOR_BOTTOM
+  layer: "layer2"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 305.0
+    y: 340.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "legal"
+  font: "PixeRlino"
+  id: "legal"
+  yanchor: YANCHOR_BOTTOM
+  layer: "layer2"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 85.0
+    y: 209.0
+  }
+  scale {
+    x: 0.5
+    y: 0.5
+  }
+  size {
+    x: 762.0
+    y: 443.0
+  }
+  type: TYPE_TEXT
+  text: "Copyright 2020 The Defold Foundation\n"
+  "\n"
+  "Licensed under the Defold License version 1.0 (the \"License\");\n"
+  "\n"
+  "You may obtain a copy of the License, together with FAQs at\n"
+  "\n"
+  "https://www.defold.com/opensource\n"
+  ""
+  font: "PixeRlino"
+  id: "license"
+  yanchor: YANCHOR_BOTTOM
+  pivot: PIVOT_SW
+  line_break: true
+  layer: "layer2"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 305.0
+    y: 350.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "back\n"
+  ""
+  font: "PixeRlino"
+  id: "back3"
+  yanchor: YANCHOR_BOTTOM
+  layer: "layer2"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 312.0
+    y: 109.0
+  }
+  scale {
+    x: 6.612843
+  }
+  type: TYPE_BOX
+  texture: "lt_flag/lt_flag"
+  id: "lt_flag"
+  layer: "layer2"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  visible: false
+}
+nodes {
+  position {
+    x: 303.0
+    y: 201.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "made by : Eritze"
+  font: "PixeRlino"
+  id: "self"
+  yanchor: YANCHOR_BOTTOM
+  layer: "layer2"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 123.0
+    y: 193.0
+  }
+  type: TYPE_BOX
+  texture: "lt_flag/pixel_logo"
+  id: "pixel_logo"
+  layer: "layer2"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  visible: false
+}
+nodes {
+  position {
+    x: 504.0
+    y: 202.0
+  }
+  type: TYPE_BOX
+  texture: "lt_flag/heart_glass"
+  id: "heart_glass"
+  layer: "layer2"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
   visible: false
 }
 layers {

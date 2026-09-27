@@ -31,7 +31,83 @@ function init(self)
 				
 			--msg.post("/global#Game_state_manager","change_state",{state = "playing"})
 	  end,
-		["info"] = function() end,
+		["info"] = function() 
+			for i = 1 ,#self.button_states do 
+				gui.set_visible(gui.get_node(self.button_states[i]),false)
+			end
+			gui.set_visible(gui.get_node("logo"),false)
+			gui.set_visible(gui.get_node("self"),true)
+			gui.set_visible(gui.get_node("lt_flag"),true)
+			gui.set_visible(gui.get_node("pixel_logo"),true)
+			gui.set_visible(gui.get_node("heart_glass"),true)
+			self.cur_button_state = 1 
+			self.button_states = {"legal","back2"}
+			for i = 1 ,#self.button_states do 
+				gui.set_visible(gui.get_node(self.button_states[i]),true)
+			end
+			gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+			gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+			self.last_node_selected = self.button_states[self.cur_button_state ]
+		end,
+		["legal"] = function() 
+			for i = 1 ,#self.button_states do 
+				gui.set_visible(gui.get_node(self.button_states[i]),false)
+			end
+			self.cur_button_state = 1 
+			self.button_states = {"back3"}
+			gui.set_visible(gui.get_node("license"),true)
+			gui.set_visible(gui.get_node("defold_logo"),true)
+			
+			gui.set_visible(gui.get_node("self"),false)
+			gui.set_visible(gui.get_node("lt_flag"),false)
+						gui.set_visible(gui.get_node("pixel_logo"),false)
+			gui.set_visible(gui.get_node("heart_glass"),false)
+			
+			for i = 1 ,#self.button_states do 
+				gui.set_visible(gui.get_node(self.button_states[i]),true)
+			end
+			gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+			gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+			self.last_node_selected = self.button_states[self.cur_button_state ]
+		end,
+		["back3"] = function() 
+			for i = 1 ,#self.button_states do 
+				gui.set_visible(gui.get_node(self.button_states[i]),false)
+			end
+			gui.set_visible(gui.get_node("logo"),false)
+			gui.set_visible(gui.get_node("license"),false)
+			gui.set_visible(gui.get_node("defold_logo"),false)
+			gui.set_visible(gui.get_node("self"),true)
+			gui.set_visible(gui.get_node("lt_flag"),true)
+			gui.set_visible(gui.get_node("pixel_logo"),true)
+			gui.set_visible(gui.get_node("heart_glass"),true)
+			self.cur_button_state = 1 
+			self.button_states = {"legal","back2"}
+			for i = 1 ,#self.button_states do 
+				gui.set_visible(gui.get_node(self.button_states[i]),true)
+			end
+			gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+			gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+			self.last_node_selected = self.button_states[self.cur_button_state ]
+		end,
+		["back2"] = function() 
+			for i = 1 ,#self.button_states do 
+				gui.set_visible(gui.get_node(self.button_states[i]),false)
+			end
+			self.cur_button_state = 1 
+			gui.set_visible(gui.get_node("logo"),true)
+			gui.set_visible(gui.get_node("self"),false)
+			gui.set_visible(gui.get_node("lt_flag"),false)
+			gui.set_visible(gui.get_node("pixel_logo"),false)
+			gui.set_visible(gui.get_node("heart_glass"),false)
+			self.button_states = {"start","settings","info"}
+			for i = 1 ,#self.button_states do 
+				gui.set_visible(gui.get_node(self.button_states[i]),true)
+			end
+			gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+			gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+			self.last_node_selected = self.button_states[self.cur_button_state ]
+		end,
 		["settings"] = function() end,
 		["easy"] = function() 
 			global.health_scale = 2 
@@ -106,7 +182,15 @@ function init(self)
 	,{name = "hard", start_pos = vmath.vector3(305,100,0) }
 	,{name = "hardcore", start_pos = vmath.vector3(305,75,0) }
 	,{name = "back1", start_pos = vmath.vector3(305,50,0) }
-	
+	,{name = "legal", start_pos = vmath.vector3(305,340.0,0) }
+	,{name = "back2", start_pos = vmath.vector3(305,316.0,0) }
+	,{name = "back3", start_pos = vmath.vector3(305,350.0,0) }
+	,{name = "license", start_pos = vmath.vector3(85.0,209.0,0) }
+	,{name = "defold_logo", start_pos = vmath.vector3(303.0,143.0,0) }
+	,{name = "self", start_pos = vmath.vector3(303.0,201.0,0) }
+	,{name = "lt_flag", start_pos = vmath.vector3(312.0,109.0,0) }
+	,{name = "pixel_logo", start_pos = vmath.vector3(123.0,193.0,0) }
+	,{name = "heart_glass", start_pos = vmath.vector3(504.0,202.0,0) }
 	}
 	-- Add initialization code here
 	-- Learn more: https://defold.com/manuals/script/

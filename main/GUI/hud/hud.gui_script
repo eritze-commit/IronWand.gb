@@ -3,7 +3,9 @@ local dtime = require("main.Shader_adjecent_files.Post_processing.dtime")
 local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
 local global = require("main.GLOBAL.in_game")
 
-local all_nodes = {"Gun_ammo","enemy_count","map_info","box","heatlh_bar","health_bar_back_drop","combo","mana","mana_icon","pause_box","paused","health",'health_box'}
+local all_nodes = {"Gun_ammo","enemy_count","map_info","box",
+"heatlh_bar","health_bar_back_drop","combo","mana",
+"mana_icon","pause_box","paused","health","health_box","upgrade_text","selector","menu","settings","restart","back"}
 
 local  Last_in_mag = 0 
 local scale_strenght = 0.05
@@ -24,6 +26,17 @@ local table_floor_state = {
 
 							
 function init(self)
+	self.button_selected = false
+    self.last_node_selected = "menu"
+    self.cur_button_state = 0
+    self.button_default_color = vmath.vector4(0.8, 0.8, 0.8, 1)
+	self.node_highlight_color = vmath.vector4(1, 1, 1, 1)
+	self.button_states = {"back","settings","menu","restart"}
+	self.upgrade_view = false
+	self.cur_upgrade_state = 1
+	self.button_actions = { 
+	
+	}
 	--msg.post(".", "acquire_input_focus")
 	self.time = 0
 	self.health_bar_size = gui.get(gui.get_node("heatlh_bar" ),"scale.x")
@@ -97,6 +110,19 @@ function on_message(self, message_id, message, sender)
 		gui.set_visible(gui.get_node("pause_box"), visible)
 		gui.set_visible(gui.get_node("paused"), visible )
 		gui.set_visible(gui.get_node("floor"),visible)
+		gui.set_visible(gui.get_node("upgrade_text"),visible)
+		gui.set_visible(gui.get_node("selector"),visible)
+		gui.set_visible(gui.get_node("menu"),visible)
+		gui.set_visible(gui.get_node("settings"),visible)
+		gui.set_visible(gui.get_node("restart"),visible)
+		gui.set_visible(gui.get_node("back"),visible)
+		if self.upgrade_view == true then
+			if upgrades.upgrade_slots[self.cur_upgrade_state].description ~= nil then
+				gui.set_text(gui.get_node("upgrade_text"),upgrades.upgrade_slots[self.cur_upgrade_state].description)
+			else
+				gui.set_text(gui.get_node("upgrade_text"),"empty")
+			end
+		end
 		gui.set_text(gui.get_node("floor"),"floor: "..gun_state.map_cur_floor)
 		for i = 1 , 6 do
 			gui.set_visible(gui.get_node("down_"..i.."_image"), visible )
@@ -164,6 +190,108 @@ local visible = false
 
 
 function on_input(self, action_id, action)
+	if not self.button_selected and global.paused then 
+		self.button_selected = true
+			timer.delay(0.2,false,function() 
+				self.button_selected = false
+			end)
+		if action_id == hash("right") or action_id == hash("left")  then
+			if self.upgrade_view then
+			
+			self.button_selected = true
+			timer.delay(0.2,false,function() 
+				self.button_selected = false
+			end)
+			if action_id == hash("right") then
+				self.cur_upgrade_state = self.cur_upgrade_state + 1 
+			else
+				self.cur_upgrade_state = self.cur_upgrade_state - 1 
+			end
+			if self.cur_upgrade_state <= 0 then
+				self.cur_upgrade_state = #upgrades.upgrade_slots
+			elseif self.cur_upgrade_state > #upgrades.upgrade_slots then
+				self.cur_upgrade_state = 1
+			end
+			gui.set_position(gui.get_node("selector"),gui.get_position(gui.get_node("down_"..self.cur_upgrade_state.."_image")))
+			if upgrades.upgrade_slots[self.cur_upgrade_state].description ~= nil then
+				gui.set_text(gui.get_node("upgrade_text"),upgrades.upgrade_slots[self.cur_upgrade_state].description)
+			else
+				gui.set_text(gui.get_node("upgrade_text"),"empty")
+			end
+			
+			end
+		end
+		if action_id == hash("down") or action_id == hash("up") then 
+			
+			
+			
+		
+		if action_id == hash("down") then
+			
+			self.cur_button_state = self.cur_button_state + 1 
+			if self.upgrade_view then
+				gui.set_text(gui.get_node("upgrade_text"),":")
+				self.cur_button_state = 1 
+				self.upgrade_view = false 
+				gui.play_flipbook(gui.get_node("selector"),"nothing")
+				gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)	
+			end
+			if self.cur_button_state > #self.button_states then
+				self.cur_button_state = #self.button_states
+				--print("TS ran ")
+				if not self.upgrade_view then
+					--print("TS ran 2")
+					if upgrades.upgrade_slots[self.cur_upgrade_state].description ~= nil then
+						gui.set_text(gui.get_node("upgrade_text"),upgrades.upgrade_slots[self.cur_upgrade_state].description)
+					else
+						gui.set_text(gui.get_node("upgrade_text"),"empty")
+					end
+					self.upgrade_view = true
+					gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.button_default_color)
+					gui.play_flipbook(gui.get_node("selector"),"selector")
+				end
+			end
+			
+		else
+			
+			self.cur_button_state = self.cur_button_state - 1 
+			if self.upgrade_view then
+					self.upgrade_view = false
+					self.cur_button_state = #self.button_states
+					gui.set_text(gui.get_node("upgrade_text"),":")
+					gui.play_flipbook(gui.get_node("selector"),"nothing")
+					gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+			end
+			if self.cur_button_state <= 0  then
+				self.cur_button_state = 1 
+				if not self.upgrade_view then
+					if upgrades.upgrade_slots[self.cur_upgrade_state].description ~= nil then
+						gui.set_text(gui.get_node("upgrade_text"),upgrades.upgrade_slots[self.cur_upgrade_state].description)
+					else
+						gui.set_text(gui.get_node("upgrade_text"),"empty")
+					end
+					self.upgrade_view = true 
+					gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.button_default_color)
+					gui.play_flipbook(gui.get_node("selector"),"selector")
+				
+				end
+				--self.cur_button_state = #self.button_states
+			end
+		end
+		--print("upgrade view",self.upgrade_view,"cur node ",self.cur_button_state  )
+		if self.upgrade_view then
+			
+		else
+			gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+			gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+			self.last_node_selected = self.button_states[self.cur_button_state ]
+		end
+		
+		
+	end
+
+
+	end
 
 	if action_id == hash("escape") and not pressed  then
 		pressed = true 

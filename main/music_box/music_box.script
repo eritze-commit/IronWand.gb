@@ -3,8 +3,10 @@ local function rotate_music()
 	local s_s_min = 0.7
 	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
 	local random_slice = math.random(1, 9)
-	sound.play("/music_box#sng_slice_"..random_slice,{speed = random_offset },function() 
-		rotate_music()
+	sound.play("/music_box#sng_slice_"..random_slice,{speed = random_offset },function() 	
+		timer.delay(math.random(10,30),false, function() 
+			rotate_music()
+		end)
 	end)
 end
 function init(self)

@@ -1,9 +1,10 @@
+local debug = require  "main.GLOBAL.debug_data"
 local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
 local hud_state = require("main.Player_assets.G-UNZ.Hud_state")
 
 local global = require("main.GLOBAL.GLOBAL")
 local cur_slot = 1
-local enabled = false 
+local enabled =  debug.upgrade_menu
 local state_of_screen = "up"
 local button_cooldown = 0.2
 local cur_slot_down = 1 

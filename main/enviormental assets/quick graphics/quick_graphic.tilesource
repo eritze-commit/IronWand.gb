@@ -4,8 +4,8 @@ tile_height: 15
 collision_groups: "default"
 animations {
   id: "dash"
-  start_tile: 7
-  end_tile: 7
+  start_tile: 8
+  end_tile: 8
   playback: PLAYBACK_NONE
 }
 animations {

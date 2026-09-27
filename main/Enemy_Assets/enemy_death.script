@@ -33,8 +33,10 @@ function fixed_update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
-	if message_id == hash("destroy") then 
-		go.delete(".")
+	if message_id == hash("timer_end") then 
+		if message.type == "destroy" then
+			go.delete(".")
+		end
 	end
 	if message_id == hash("collision_response") then
 		go.cancel_animations(".","position")

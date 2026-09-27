@@ -1,0 +1,10 @@
+images {
+  image: "/main/GUI/lt_flag.png"
+}
+images {
+  image: "/main/GUI/pixel_logo.png"
+}
+images {
+  image: "/main/GUI/heart_glass.png"
+}
+extrude_borders: 2

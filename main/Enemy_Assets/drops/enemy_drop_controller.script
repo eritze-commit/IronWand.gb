@@ -1,4 +1,4 @@
-
+local Pstate = require "main.Player_assets.Player_state_module"
 local active = require("main.Enemy_Assets.drops.spawnded_items_data")
 local hud_drop_data = require("main.Player_assets.G-UNZ.Hud_state")
 local game_state = require("main.GLOBAL.in_game")
@@ -49,13 +49,15 @@ end
 
 function update(self, dt)
 
-		if not game_state.paused then  
+		if Pstate.alive then  
 		go.set_position(vmath.lerp(0.01*math.random(0,5),go.get_position("."),go.get_position("/Player_ROOT/Player"), "."))
 		if vmath.length(go.get_position("/Player_ROOT/Player") - go.get_position(".") ) < 10 then 
 			--msg.post("")
 			action_table[self.cur_item]()
 			go.delete(".")
 		end
+		else
+			go.delete(".")
 		end
 end
 

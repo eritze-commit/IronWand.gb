@@ -203,14 +203,14 @@ nodes {
   id: "pause_box"
   layer: "frnt4"
   inherit_alpha: true
-  alpha: 0.52
+  alpha: 0.91
   size_mode: SIZE_MODE_AUTO
   visible: false
 }
 nodes {
   position {
     x: 314.0
-    y: 291.0
+    y: 391.0
   }
   size {
     x: 200.0
@@ -229,7 +229,7 @@ nodes {
 nodes {
   position {
     x: 198.0
-    y: -84.0
+    y: -221.0
   }
   scale {
     x: 4.5
@@ -248,7 +248,7 @@ nodes {
 nodes {
   position {
     x: 118.0
-    y: -84.0
+    y: -221.0
   }
   scale {
     x: 4.5
@@ -267,7 +267,7 @@ nodes {
 nodes {
   position {
     x: 38.0
-    y: -84.0
+    y: -221.0
   }
   scale {
     x: 4.5
@@ -286,7 +286,7 @@ nodes {
 nodes {
   position {
     x: -42.0
-    y: -84.0
+    y: -221.0
   }
   scale {
     x: 4.5
@@ -305,7 +305,7 @@ nodes {
 nodes {
   position {
     x: -122.0
-    y: -84.0
+    y: -221.0
   }
   scale {
     x: 4.5
@@ -324,7 +324,7 @@ nodes {
 nodes {
   position {
     x: -202.0
-    y: -84.0
+    y: -221.0
   }
   scale {
     x: 4.5
@@ -342,7 +342,7 @@ nodes {
 }
 nodes {
   position {
-    y: 25.0
+    y: -31.0
   }
   scale {
     x: 0.8
@@ -356,6 +356,138 @@ nodes {
   text: "floor:"
   font: "PixeRlino"
   id: "floor"
+  parent: "paused"
+  layer: "frnt7"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    y: -301.0
+  }
+  scale {
+    x: 0.8
+    y: 0.8
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: ":\n"
+  ""
+  font: "PixeRlino"
+  id: "upgrade_text"
+  parent: "paused"
+  layer: "frnt7"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: -202.0
+    y: -221.0
+  }
+  scale {
+    x: 4.5
+    y: 4.5
+  }
+  type: TYPE_BOX
+  texture: "sprite_icons/empty"
+  id: "selector"
+  xanchor: XANCHOR_LEFT
+  parent: "paused"
+  layer: "frnt7"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  visible: false
+}
+nodes {
+  position {
+    y: -128.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.7019608
+    y: 0.7019608
+    z: 0.7019608
+  }
+  type: TYPE_TEXT
+  text: "menu"
+  font: "PixeRlino"
+  id: "menu"
+  parent: "paused"
+  layer: "frnt7"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    y: -98.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.7019608
+    y: 0.7019608
+    z: 0.7019608
+  }
+  type: TYPE_TEXT
+  text: "settings\n"
+  ""
+  font: "PixeRlino"
+  id: "settings"
+  parent: "paused"
+  layer: "frnt7"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    y: -158.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.7019608
+    y: 0.7019608
+    z: 0.7019608
+  }
+  type: TYPE_TEXT
+  text: "restart\n"
+  ""
+  font: "PixeRlino"
+  id: "restart"
+  parent: "paused"
+  layer: "frnt7"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    y: -68.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.7019608
+    y: 0.7019608
+    z: 0.7019608
+  }
+  type: TYPE_TEXT
+  text: "back\n"
+  ""
+  font: "PixeRlino"
+  id: "back"
   parent: "paused"
   layer: "frnt7"
   inherit_alpha: true

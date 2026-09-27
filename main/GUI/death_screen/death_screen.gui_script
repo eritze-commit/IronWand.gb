@@ -241,7 +241,7 @@ function on_input(self, action_id, action)
 				--self.cur_button_state = #self.button_states
 			end
 		end
-		print("upgrade view",self.upgrade_view,"cur node ",self.cur_button_state  )
+--		print("upgrade view",self.upgrade_view,"cur node ",self.cur_button_state  )
 		if self.upgrade_view then
 			
 		else
@@ -254,7 +254,7 @@ function on_input(self, action_id, action)
 	end
 	end
 	if action_id == hash("action_but") and not self.button_selected  then 
-		if self.cur_button_state ~= 0 then
+		if self.cur_button_state ~= 0 and not self.upgrade_view then
 			self.button_selected = true
 			timer.delay(0.2,false,function() 
 				self.button_selected = false
