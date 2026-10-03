@@ -1,6 +1,13 @@
 local Pstate = require "main.Player_assets.Player_state_module"
 local global = require("main.GLOBAL.GLOBAL")
 
+local function menu_sfx(sfx)
+	local s_s_max = 1.05
+	local s_s_min = 0.95
+	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+	sound.play("/Sound_manager#"..sfx,{speed = random_offset })
+end
+
 function init(self)
 	msg.post(".", "acquire_input_focus")
 	gui.play_particlefx(gui.get_node("Dust"))
@@ -31,6 +38,7 @@ function init(self)
 				
 			--msg.post("/global#Game_state_manager","change_state",{state = "playing"})
 	  end,
+	
 		["info"] = function() 
 			for i = 1 ,#self.button_states do 
 				gui.set_visible(gui.get_node(self.button_states[i]),false)
@@ -108,7 +116,11 @@ function init(self)
 			gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
 			self.last_node_selected = self.button_states[self.cur_button_state ]
 		end,
-		["settings"] = function() end,
+		["settings"] = function() 
+			msg.post(".","release_input_focus")
+			msg.post(".","show_gui",{show = false})
+			msg.post("/Gui_collection/settings#settings_menu","toggle_true")
+		end,
 		["easy"] = function() 
 			global.health_scale = 2 
 			global.health_divide = 2.5
@@ -256,6 +268,13 @@ function on_message(self, message_id, message, sender)
 		
 		
 	end
+	if message_id == hash("settings_back") then
+		timer.delay(0.2,false, function() 
+			msg.post(".","acquire_input_focus")
+		end)
+		msg.post(".","show_gui",{show = true})
+		
+	end
 end
 
 
@@ -265,7 +284,7 @@ function on_input(self, action_id, action)
 		if action_id == hash("down") or action_id == hash("up") then 
 			
 			self.button_selected = true
-			timer.delay(0.2,false,function() 
+			timer.delay(0.125,false,function() 
 				self.button_selected = false
 			end)
 		if action_id == hash("down") then
@@ -284,6 +303,7 @@ function on_input(self, action_id, action)
 		gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
 		gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
 		self.last_node_selected = self.button_states[self.cur_button_state ]
+		menu_sfx("menu_move")
 			--gui.set_color()
 		
 	end
@@ -293,8 +313,9 @@ function on_input(self, action_id, action)
 			timer.delay(0.2,false,function() 
 				self.button_selected = false
 			end)
-			
+				
 				self.button_actions[self.button_states[self.cur_button_state]]()
+				menu_sfx("menu_select")
 			end
 		end
 	end

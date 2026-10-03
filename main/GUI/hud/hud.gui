@@ -42,7 +42,7 @@ nodes {
     y: 100.0
   }
   type: TYPE_TEXT
-  text: "0/5"
+  text: "0/0"
   font: "PixeRlino"
   id: "enemy_count"
   yanchor: YANCHOR_TOP
@@ -203,7 +203,7 @@ nodes {
   id: "pause_box"
   layer: "frnt4"
   inherit_alpha: true
-  alpha: 0.91
+  alpha: 0.65
   size_mode: SIZE_MODE_AUTO
   visible: false
 }
@@ -222,7 +222,7 @@ nodes {
   id: "paused"
   xanchor: XANCHOR_LEFT
   yanchor: YANCHOR_BOTTOM
-  layer: "frnt7"
+  layer: "frnt5"
   inherit_alpha: true
   visible: false
 }
@@ -240,7 +240,7 @@ nodes {
   id: "down_6_image"
   xanchor: XANCHOR_LEFT
   parent: "paused"
-  layer: "frnt7"
+  layer: "frnt5"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   visible: false
@@ -259,7 +259,7 @@ nodes {
   id: "down_5_image"
   xanchor: XANCHOR_LEFT
   parent: "paused"
-  layer: "frnt7"
+  layer: "frnt5"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   visible: false
@@ -278,7 +278,7 @@ nodes {
   id: "down_4_image"
   xanchor: XANCHOR_LEFT
   parent: "paused"
-  layer: "frnt7"
+  layer: "frnt5"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   visible: false
@@ -297,7 +297,7 @@ nodes {
   id: "down_3_image"
   xanchor: XANCHOR_LEFT
   parent: "paused"
-  layer: "frnt7"
+  layer: "frnt5"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   visible: false
@@ -316,7 +316,7 @@ nodes {
   id: "down_2_image"
   xanchor: XANCHOR_LEFT
   parent: "paused"
-  layer: "frnt7"
+  layer: "frnt5"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   visible: false
@@ -335,7 +335,7 @@ nodes {
   id: "down_1_image"
   xanchor: XANCHOR_LEFT
   parent: "paused"
-  layer: "frnt7"
+  layer: "frnt5"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   visible: false
@@ -357,7 +357,7 @@ nodes {
   font: "PixeRlino"
   id: "floor"
   parent: "paused"
-  layer: "frnt7"
+  layer: "frnt5"
   inherit_alpha: true
   visible: false
 }
@@ -379,7 +379,7 @@ nodes {
   font: "PixeRlino"
   id: "upgrade_text"
   parent: "paused"
-  layer: "frnt7"
+  layer: "frnt5"
   inherit_alpha: true
   visible: false
 }
@@ -393,11 +393,11 @@ nodes {
     y: 4.5
   }
   type: TYPE_BOX
-  texture: "sprite_icons/empty"
+  texture: "sprite_icons/nothing"
   id: "selector"
   xanchor: XANCHOR_LEFT
   parent: "paused"
-  layer: "frnt7"
+  layer: "frnt5"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
   visible: false
@@ -420,7 +420,7 @@ nodes {
   font: "PixeRlino"
   id: "menu"
   parent: "paused"
-  layer: "frnt7"
+  layer: "frnt5"
   inherit_alpha: true
   visible: false
 }
@@ -443,7 +443,7 @@ nodes {
   font: "PixeRlino"
   id: "settings"
   parent: "paused"
-  layer: "frnt7"
+  layer: "frnt5"
   inherit_alpha: true
   visible: false
 }
@@ -466,7 +466,7 @@ nodes {
   font: "PixeRlino"
   id: "restart"
   parent: "paused"
-  layer: "frnt7"
+  layer: "frnt5"
   inherit_alpha: true
   visible: false
 }
@@ -489,7 +489,7 @@ nodes {
   font: "PixeRlino"
   id: "back"
   parent: "paused"
-  layer: "frnt7"
+  layer: "frnt5"
   inherit_alpha: true
   visible: false
 }
@@ -512,6 +512,7 @@ nodes {
   ""
   font: "PixeRlino"
   id: "health"
+  yanchor: YANCHOR_BOTTOM
   outline {
     x: 1.0
     y: 1.0
@@ -540,6 +541,7 @@ nodes {
   }
   type: TYPE_BOX
   id: "health_box"
+  yanchor: YANCHOR_BOTTOM
   layer: "front2"
   inherit_alpha: true
   alpha: 0.5

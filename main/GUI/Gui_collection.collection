@@ -32,3 +32,11 @@ embedded_instances {
   "}\n"
   ""
 }
+embedded_instances {
+  id: "settings"
+  data: "components {\n"
+  "  id: \"settings_menu\"\n"
+  "  component: \"/main/GUI/settings_menu/settings_menu.gui\"\n"
+  "}\n"
+  ""
+}

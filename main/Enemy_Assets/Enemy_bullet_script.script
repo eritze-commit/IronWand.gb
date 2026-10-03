@@ -47,7 +47,7 @@ function on_message(self, message_id, message, sender)
 		self.dir = message.dir 
 		self.speed = message.speed
 
-			msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "bullet_destroy" , time = self.lifetime, optional = 0 }})
+		msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "bullet_destroy" , time = self.lifetime, optional = 0 }})
 		-- timer.delay(self.lifetime,false, function() 
 		-- 	go.delete(".")
 		-- end)

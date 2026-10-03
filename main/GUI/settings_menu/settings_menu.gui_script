@@ -1,0 +1,260 @@
+local settings = require("main.GLOBAL.settings_data")
+
+local function menu_sfx(sfx)
+	local s_s_max = 1.05
+	local s_s_min = 0.95
+	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+	sound.play("/Sound_manager#"..sfx,{speed = random_offset })
+end
+local function render_settings_data()
+    gui.set_text(gui.get_node("sfx"), "<"..(settings.sfx_vol*100).."%>")
+    gui.set_text(gui.get_node("sfx"),"<"..(settings.sfx_vol*100).."%>")
+    gui.set_text(gui.get_node("music"), "<"..(settings.music_vol*100).."%>")
+    gui.set_text(gui.get_node("music"),"<"..(settings.music_vol*100).."%>")
+end
+
+function init(self)
+    self.all_nodes = {"back","controlls","volume","sfx_volume","music_volume","sfx","music","joystick","joystick_y","joystick_x","jy","jx","box","camera"
+,"scrn_shake_toggle","screen_shake","keyboard_controlls","back2","controlls_controller","back3","controller_controlls","jyr","jxr"}
+    self.settings_nodes = {"back","controlls","volume","sfx_volume","music_volume","sfx","music","joystick","joystick_y","joystick_x","jy","jx","box","camera"
+,"scrn_shake_toggle","screen_shake","jyr","jxr"}
+    
+    self.sender = ""
+    for i = 1 , #self.all_nodes do 
+        gui.set_visible(gui.get_node(self.all_nodes[i]),false)
+    end
+    self.button_default_color = vmath.vector4(0.8, 0.8, 0.8, 1)
+	self.node_highlight_color = vmath.vector4(1, 1, 1, 1)
+	self.button_states = {"back","controlls","sfx","music","jyr","jxr","jy","jx","scrn_shake_toggle"}
+	self.cur_button_state = 0
+	self.last_node_selected = "back2"
+	self.cur_selected  = nil
+	self.button_selected = false
+	self.escape_buffer = "back"
+	self.button_lr_actions = {
+        ["jyr_r"] = function() 
+            local sfx_vol = settings.sfx_vol + 0.1
+            settings.sfx_vol = math.min(1,math.max(0,sfx_vol ))
+            
+        end,
+        ["jxr_r"] = function() 
+            
+        end,
+        ["sfx_r"] = function() 
+      --      print("settings_vol",settings.sfx_vol)
+            local sfx_vol = settings.sfx_vol + 0.1
+            settings.sfx_vol = math.min(1,math.max(0,sfx_vol ))
+            --gui.set_text( gui.get_node("mana")," :"..gun_state.mana)
+            gui.set_text(gui.get_node("sfx"), "<"..(settings.sfx_vol*100).."%>")
+            sound.set_group_gain("sfx",settings.sfx_vol)
+        end, 
+        ["sfx_l"] = function() 
+    --     print("settings_vol",settings.sfx_vol)
+            local sfx_vol = settings.sfx_vol - 0.1
+            if sfx_vol <= 1e-10 then
+                sfx_vol = 0
+            end
+            --sound.set_group_gain("music",0.3)
+            settings.sfx_vol = math.min(1,math.max(0,sfx_vol ))
+            gui.set_text(gui.get_node("sfx"),"<"..(settings.sfx_vol*100).."%>")
+            sound.set_group_gain("sfx",settings.sfx_vol)
+            
+        end,
+        ["music_r"] = function() 
+  --          print("settings_vol",settings.sfx_vol)
+            local vol = settings.music_vol + 0.1
+            settings.music_vol = math.min(1,math.max(0,vol ))
+            --gui.set_text( gui.get_node("mana")," :"..gun_state.mana)
+            gui.set_text(gui.get_node("music"), "<"..(settings.music_vol*100).."%>")
+            sound.set_group_gain("music",settings.music_vol/settings.music_damper)
+        end, 
+        ["music_l"] = function() 
+--         print("settings_vol",settings.sfx_vol)
+            local vol = settings.music_vol - 0.1
+            if vol <= 1e-10 then
+                vol = 0
+            end
+            --sound.set_group_gain("music",0.3)
+            settings.music_vol = math.min(1,math.max(0,vol ))
+            gui.set_text(gui.get_node("music"), "<"..(settings.music_vol*100).."%>")
+            sound.set_group_gain("music",settings.music_vol/settings.music_damper)
+            
+        end,
+	}
+    self.button_actions = {
+        ["back"] = function() 
+            msg.post(".","release_input_focus")
+            msg.post(self.sender,"settings_back") 
+            for i = 1 , #self.all_nodes do 
+                gui.set_visible(gui.get_node(self.all_nodes[i]),false)
+            end
+        
+        end,
+        ["controlls_controller"] = function() 
+            self.cur_button_state = 1
+            self.button_states = {"back3"}
+            gui.set_visible(gui.get_node("back2"),false)
+            gui.set_visible(gui.get_node("keyboard_controlls"),false)
+            gui.set_visible(gui.get_node("controlls_controller"),false)
+            gui.set_visible(gui.get_node("controller_controlls"),true)
+            gui.set_visible(gui.get_node("back3"),true)
+            self.escape_buffer = "back3"
+            gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+            gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+            self.last_node_selected = self.button_states[self.cur_button_state ]
+        end,
+        ["back3"] = function() 
+            self.cur_button_state = 1
+            self.button_states = {"back2","controlls_controller"}
+            gui.set_visible(gui.get_node("controlls_controller"),false)
+            gui.set_visible(gui.get_node("back3"),false)
+            gui.set_visible(gui.get_node("box"),true)
+            gui.set_visible(gui.get_node("back2"),true)
+            gui.set_visible(gui.get_node("controller_controlls"),false)
+            gui.set_visible(gui.get_node("keyboard_controlls"),true)
+            gui.set_visible(gui.get_node("controlls_controller"),true)
+            self.escape_buffer = "back2"
+            gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+            gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+            self.last_node_selected = self.button_states[self.cur_button_state ]
+        end,
+        ["back2"] = function() 
+            self.cur_button_state = 1 
+            self.button_states = {"back","controlls","sfx","music","jyr","jxr","jy","jx","scrn_shake_toggle"}
+            for i = 1 , #self.settings_nodes do 
+                
+                gui.set_visible(gui.get_node(self.settings_nodes[i]),true)
+            end
+            gui.set_visible(gui.get_node("back2"),false)
+            gui.set_visible(gui.get_node("keyboard_controlls"),false)
+            gui.set_visible(gui.get_node("controlls_controller"),false)
+            self.escape_buffer = "back"
+            gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+            gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+            self.last_node_selected = self.button_states[self.cur_button_state ]
+        end,
+        ["controlls"] = function()
+            for i = 1 , #self.settings_nodes do 
+                
+                gui.set_visible(gui.get_node(self.settings_nodes[i]),false)
+            end
+            self.cur_button_state = 1
+            self.button_states = {"back2","controlls_controller"}
+            gui.set_visible(gui.get_node("box"),true)
+            gui.set_visible(gui.get_node("back2"),true)
+            gui.set_visible(gui.get_node("keyboard_controlls"),true)
+            gui.set_visible(gui.get_node("controlls_controller"),true)
+            self.escape_buffer = "back2"
+            gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+            gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+            self.last_node_selected = self.button_states[self.cur_button_state ]
+        end,
+        
+    }
+
+end
+local function toggle_true_settings(self) 
+    for i = 1 , #self.settings_nodes do 
+        gui.set_visible(gui.get_node(self.settings_nodes[i]),true)
+    end
+    render_settings_data()
+    self.cur_button_state = 1
+    gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+	gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+	self.last_node_selected = self.button_states[self.cur_button_state ]
+	--gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+
+		menu_sfx("menu_move")
+		timer.delay(0.2,false, function() 
+            msg.post(".","acquire_input_focus")
+		end)
+    
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("toggle_true") then
+        self.sender = sender
+        toggle_true_settings(self)
+    end
+end
+
+function on_input(self, action_id, action)
+	if not self.button_selected then 
+        if action_id == hash("escape") then 
+            self.button_selected = true
+			timer.delay(0.2,false,function() 
+				self.button_selected = false
+			end)
+            self.button_actions[self.escape_buffer]()
+			
+        end
+        if action_id == hash("left") or action_id == hash("right") then
+            self.button_selected = true
+			timer.delay(0.2,false,function() 
+				self.button_selected = false
+			end)
+			if action_id == hash("left") then
+                self.button_lr_actions[self.button_states[self.cur_button_state].."_".."l"]()
+            else
+                 self.button_lr_actions[self.button_states[self.cur_button_state].."_".."r"]()
+            end
+			menu_sfx("menu_select")
+			
+        end
+		if action_id == hash("down") or action_id == hash("up") then 
+			
+			self.button_selected = true
+			timer.delay(0.125,false,function() 
+				self.button_selected = false
+			end)
+		if action_id == hash("down") then
+		
+			self.cur_button_state = self.cur_button_state + 1 
+			if self.cur_button_state > #self.button_states then
+				self.cur_button_state = 1 
+			end
+		else
+			self.cur_button_state = self.cur_button_state - 1 
+			if self.cur_button_state <= 0  then
+				self.cur_button_state = #self.button_states
+			end
+		end
+		
+		gui.set(gui.get_node(self.last_node_selected),"color",self.button_default_color)
+		gui.set(gui.get_node(self.button_states[self.cur_button_state]),"color",self.node_highlight_color)
+		self.last_node_selected = self.button_states[self.cur_button_state ]
+		menu_sfx("menu_move")
+			--gui.set_color()
+		
+	end
+	if action_id == hash("action_but") and not self.button_selected  then 
+		if self.cur_button_state ~= 0 then
+			self.button_selected = true
+			timer.delay(0.2,false,function() 
+				self.button_selected = false
+			end)
+				
+				self.button_actions[self.button_states[self.cur_button_state]]()
+				menu_sfx("menu_select")
+			end
+		end
+	end
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

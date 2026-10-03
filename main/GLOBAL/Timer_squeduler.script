@@ -46,6 +46,7 @@ end
 function on_message(self, message_id, message, sender)
 	if message_id == hash("add_timer") then 
 		timer_buffer[#timer_buffer+1] = message.data
+--		print("timer buffer ", #timer_buffer)
 	end 
 end
 

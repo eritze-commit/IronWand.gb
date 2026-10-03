@@ -47,7 +47,6 @@ function update(self, dt)
 			sprite.play_flipbook("Pl_Sprite#shield","empty")
 		end
 	end
-	if Pstate.alive  or not game_state then 
 	local camera_pos = go.get_position(".")
 
 	local pl_pos =  go.get_position("Player")
@@ -84,20 +83,20 @@ function update(self, dt)
 		self.cur_anim = "idle"
 	else
 		--self.prev_state = "walk"
-		self.cur_anim = "walk"
 	end
 	if self.dashing then 
 		sprite.play_flipbook("Pl_Sprite#plr","dash" )
 	end
 	if self.state ~= self.prev_state and not self.dashing  then
-		sprite.play_flipbook("Pl_Sprite#plr",self.cur_anim )
-		self.state = self.prev_state
+		if Pstate.alive then
+			sprite.play_flipbook("Pl_Sprite#plr",self.cur_anim )
+			self.state = self.prev_state
+		end
 	end
 	
 	sprite.set_hflip("Pl_Sprite#plr", self.vertical)
-	else
-		sprite.play_flipbook("Pl_Sprite#plr","dead")
-	end
+
+	
 	
 end
 
@@ -113,8 +112,15 @@ end
 function on_message(self, message_id, message, sender)
 	if message_id == hash("player_idle") then 
 		self.input={left= false, right = false ,down=false, up = false, roll = false}
-		self.prev_state = "idle"
-		self.cur_anim = "idle"
+		sprite.play_flipbook("Pl_Sprite#plr","idle")
+	
+	end
+	if message_id == hash("player_dead") then
+		sprite.play_flipbook("Pl_Sprite#plr","dead")
+		--self.prev_state = "dead"
+		--self.cur_anim = "dead"
+		--print("this shit ran")
+		--self.cur_anim = "dead"
 	end
 	if message_id == hash("right_dir_change") then 
 		self.input.right = message.dir 
@@ -132,7 +138,9 @@ function on_message(self, message_id, message, sender)
 		self.prev_state = "walk"
 		self.cur_anim = "walk"
 		timer.delay(0.3, false, function()
-			sprite.play_flipbook("Pl_Sprite#plr",self.cur_anim )
+			if Pstate.alive then
+				sprite.play_flipbook("Pl_Sprite#plr",self.cur_anim )
+			end
 		end
 		)
 		

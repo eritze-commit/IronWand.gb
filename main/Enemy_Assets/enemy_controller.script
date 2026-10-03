@@ -341,18 +341,20 @@ local function path_finder(self,cus_path)
 end 
 
 function final(self)
-	particlefx.play("#Enemy_death_explosion")
-	msg.post("/Drop_Spawner#Drop_spawner","spawn_drop",{position = go.get_position("."), max_drop = self.max_drops, min_drop = self.min_drops})
+	if Pstate.alive then
+		particlefx.play("#Enemy_death_explosion")
+		msg.post("/Drop_Spawner#Drop_spawner","spawn_drop",{position = go.get_position("."), max_drop = self.max_drops, min_drop = self.min_drops})
 
-	local s_s_max = 2
-	local s_s_min = 1.5
-	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+		local s_s_max = 2
+		local s_s_min = 1.5
+		local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
 
 	
-	sound.stop("/Sound_manager#break_explode_sound")
-	sound.play("/Sound_manager#break_explode_sound",{speed = random_offset })
-	msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","enemy_clear_from_buffer",{id = go.get_id()})
-	msg.post("/global#Game_state_manager","change_state",{state = "combo"})
+		sound.stop("/Sound_manager#break_explode_sound")
+		sound.play("/Sound_manager#break_explode_sound",{speed = random_offset })
+		msg.post("/global#Game_state_manager","change_state",{state = "combo"})
+		msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","enemy_clear_from_buffer",{id = go.get_id()})
+	end
 
 
 	-- if math.random(0,1) == 1 then 

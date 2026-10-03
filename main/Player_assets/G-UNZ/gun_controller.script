@@ -1,3 +1,4 @@
+local settings = require("main.GLOBAL.settings_data")
 local debug = require  "main.GLOBAL.debug_data"
 local gun_state = require("main.Player_assets.G-UNZ.Hud_state")
 local Pstate = require "main.Player_assets.Player_state_module"
@@ -8,7 +9,7 @@ local gun2 = upgrades.data_layer["2gun"]
 local gun1 = upgrades.data_layer["1gun"]
 
 function init(self)
-	msg.post(".", "acquire_input_focus")
+	--msg.post(".", "acquire_input_focus")
 	self.clipped_items = {} 
 	self.rot = 0
 	self.btn_prst = false
@@ -121,16 +122,6 @@ end
 local gun_rot_delay = 0.3
 local gun_rel_delay = 0.15
 function update(self, dt)
-	--print( self.clipping_flag )
-	
-	--self.clipping_flag = false
-	
-	-- if next(self.clipped_items) == nil then 
-	-- 	self.clipped = false
-	-- else
-	-- 	self.clipped = true 
-	-- end
-	--self.clipped = false
 	
 	if upgrades.data_layer["2gun"].gun_name ~= self.last_gun_name_2 then
 		self.last_gun_name_2 =  upgrades.data_layer["2gun"].gun_name
@@ -147,77 +138,71 @@ function update(self, dt)
 		end
 
 	end
-	-- if next(self.clipped_items) == nil then 
-	-- 	self.clipped = false
-	-- else
-	-- 	self.clipped = true 
-	-- end
-	if Pstate.alive then
-		if game_state.paused then 
-			if self.reload_timer then 
-				go.cancel_animations(".","euler.z")
-				self.reload_timer = false
-				go.set(go.get_id(),"euler.z", self.rot) 
-			end
-		elseif not  game_state.paused then 
-			
-			if self.gun_1_delay and self.cur_gun == 1 then 
-				self.gun_1_timer = self.gun_1_timer - dt
-				if self.gun_1_timer <= 0 then
+	if not game_state.paused then
+		
+	
+		if self.gun_1_delay and self.cur_gun == 1 then 
+			self.gun_1_timer = self.gun_1_timer - dt
+					if self.gun_1_timer <= 0 then
 					--print("RUN THIS SHIT ")
-					self.gun_1_delay = false
-				end
-			end
-			if self.gun_2_delay and self.cur_gun == 2 then 
-				self.gun_2_timer = self.gun_2_timer - dt
+						self.gun_1_delay = false
+					end
+		end
+		if self.gun_2_delay and self.cur_gun == 2 then 
+			self.gun_2_timer = self.gun_2_timer - dt
 				if self.gun_2_timer <= 0 then
 					self.gun_2_delay = false
 				end
-			end
 		end
+	else
+
+		if self.reload_timer then 
+			go.cancel_animations(".","euler.z")
+			self.reload_timer = false
+			go.set(go.get_id(),"euler.z", self.rot) 
+		end
+	
+	end
+	
 		--self.clipped = true  
-		if self.last_update_gun2 ~= upgrades.data_layer["2gun"].has_gun then
-			if upgrades.data_layer["2gun"].has_gun ~= 0 then
+	if self.last_update_gun2 ~= upgrades.data_layer["2gun"].has_gun then
+		if upgrades.data_layer["2gun"].has_gun ~= 0 then
 				self.last_update_gun2 = upgrades.data_layer["2gun"].has_gun
 				self.max_gun = 2 
 				self.second_gun_mags = 5 
-				if self.cur_gun == 2 then
+			if self.cur_gun == 2 then
 					display_gun(self)
-				end
+			end
 			--	 print("GUN THING RAN ")
 				 --pprint(self.gun_master_list[ self.gun_swap[2] ])
-			else
-				self.last_update_gun2 = upgrades.data_layer["2gun"].has_gun
-				self.max_gun = 1
-				if self.cur_gun == 2 then
-					self.cur_gun = 1 
-					display_gun(self)
-				end
+		else
+			self.last_update_gun2 = upgrades.data_layer["2gun"].has_gun
+			self.max_gun = 1
+			if self.cur_gun == 2 then
+				self.cur_gun = 1 
+				display_gun(self)
 			end
 		end
-		if self.last_update_gun1 ~= upgrades.data_layer["1gun"].has_gun then
-			if upgrades.data_layer["1gun"].has_gun ~= 0 then
-				self.last_update_gun1 = upgrades.data_layer["1gun"].has_gun
-				self.gun_swap[1] = "1gun"
-				if self.cur_gun == 1 then 
-					display_gun(self)
-				end
-				--self.max_gun = 2 
-			--	 print("GUN THING RAN ")
-				 --pprint(self.gun_master_list[ self.gun_swap[1] ])
-			else
-				self.last_update_gun1 = upgrades.data_layer["1gun"].has_gun
-				self.gun_swap[1] = "pistol"
+	end
+	if self.last_update_gun1 ~= upgrades.data_layer["1gun"].has_gun then
+		if upgrades.data_layer["1gun"].has_gun ~= 0 then
+			self.last_update_gun1 = upgrades.data_layer["1gun"].has_gun
+			self.gun_swap[1] = "1gun"
 			if self.cur_gun == 1 then 
 					display_gun(self)
 			end
-
-				
-				--self.max_gun = 1 
+	
+		else
+			self.last_update_gun1 = upgrades.data_layer["1gun"].has_gun
+			self.gun_swap[1] = "pistol"
+			if self.cur_gun == 1 then 
+					display_gun(self)
 			end
-
 		end
-		if not game_state.paused then 
+	end
+
+		
+
 	if vmath.length(self.gun_dir) > 0 then 
 		if vmath.length(self.gun_dir) > 0 then 
 			self.gun_dir = vmath.normalize(self.gun_dir)
@@ -235,12 +220,14 @@ function update(self, dt)
 	end
 	
 --	go.set("bullet_casing","position",go.get_world_position("target_trig"))
-	if self.cur_state ~= self.prev_state and not self.reload_timer  then 
+	if self.cur_state ~= self.prev_state and not self.reload_timer and not game_state.paused and Pstate.alive then 
 		self.prev_state = self.cur_state
 		
 		self.last_rotate = self.rot
+		
 		local current_rot = go.get(".","euler.z")
 		self.rot = self.cur_state
+
 		go.animate(".","euler.z",go.PLAYBACK_ONCE_FORWARD,current_rot + ((self.rot - current_rot + 180 )%360-180) ,go.EASING_OUTBACK,0.2 )
 		if self.focus_on_gun then
 			local cur_dir_rad = math.rad(self.rot)
@@ -248,7 +235,9 @@ function update(self, dt)
 			math.cos(cur_dir_rad),
 			math.sin(cur_dir_rad),
 			0) 
-			msg.post("camera#camera_script","gun_focus",{focus = true , dir =  focus_dir, sound_manager = go.get_id("Sound_manager") })
+			if not game_state.paused then
+				msg.post("camera#camera_script","gun_focus",{focus = true , dir =  focus_dir, sound_manager = go.get_id("Sound_manager") })
+			end
 		end
 		if self.gun_state[self.rot] ~= nil then 
 			sprite.set_vflip(self.gun_state[self.rot].slot, self.gun_state[self.rot].flip)
@@ -281,8 +270,8 @@ function update(self, dt)
 	self.clipping_flag = false  
  
 			
-end
-end
+
+
 
 
 --go.set("go#cross_hair", "cros_pos", mouse_cords)
@@ -470,7 +459,7 @@ function on_message(self, message_id, message, sender)
 end
 function on_input(self, action_id, action)
 	if not game_state.paused then 
-	if  self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag > 0 and Pstate.alive and not self.clipped and not self.reload_timer then
+	if  self.gun_master_list[self.gun_swap[self.cur_gun]].in_mag > 0 and not self.clipped and not self.reload_timer then
 	if action_id == hash("trigger") then 
 		if self.cur_gun == 1 then
 			if not self.gun_1_delay then
@@ -502,7 +491,7 @@ function on_input(self, action_id, action)
 		if self.btn_prst ~= true then
 			self.btn_prst = true
 
-			timer.delay( gun_rel_delay ,false,
+			timer.delay( gun_rel_delay+0.1 ,false,
 			function() 
 				self.btn_prst = false
 			end)
@@ -542,16 +531,16 @@ function on_input(self, action_id, action)
 	end
 	
 	if action_id == hash("R_up")  then 
-		self.gun_dir.y = action.value
+		self.gun_dir.y = action.value * settings.right_y_invert
 	end
 	if action_id == hash("R_down")  then 
-		self.gun_dir.y = -action.value
+		self.gun_dir.y = -action.value * settings.right_y_invert
 	end
 	if action_id == hash("R_left")   then 
-		self.gun_dir.x = -action.value
+		self.gun_dir.x = -action.value * settings.right_x_invert
 	end
 	if action_id == hash("R_right")  then 
-		self.gun_dir.x = action.value
+		self.gun_dir.x = action.value * settings.right_x_invert
 	end
 	
 	

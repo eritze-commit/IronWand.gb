@@ -1,0 +1,500 @@
+script: "/main/GUI/settings_menu/settings_menu.gui_script"
+fonts {
+  name: "PixeRlino"
+  font: "/main/GUI/hud/PixeRlino.font"
+}
+nodes {
+  position {
+    x: 330.0
+    y: 446.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "back\n"
+  ""
+  font: "PixeRlino"
+  id: "back"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 330.0
+    y: 417.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.7019608
+    y: 0.7019608
+    z: 0.7019608
+  }
+  type: TYPE_TEXT
+  text: "view controlls"
+  font: "PixeRlino"
+  id: "controlls"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 330.0
+    y: 386.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "volume"
+  font: "PixeRlino"
+  id: "volume"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 148.0
+    y: 357.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "sfx vol "
+  font: "PixeRlino"
+  id: "sfx_volume"
+  pivot: PIVOT_W
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 114.0
+    y: 324.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "music vol"
+  font: "PixeRlino"
+  id: "music_volume"
+  pivot: PIVOT_W
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 330.0
+    y: 357.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "<100%>"
+  font: "PixeRlino"
+  id: "sfx"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 330.0
+    y: 324.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.7019608
+    y: 0.7019608
+    z: 0.7019608
+  }
+  type: TYPE_TEXT
+  text: "<100%>"
+  font: "PixeRlino"
+  id: "music"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 330.0
+    y: 245.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "joystick\n"
+  "left\n"
+  "\n"
+  "\n"
+  "right"
+  font: "PixeRlino"
+  id: "joystick"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 138.0
+    y: 206.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "invert y \n"
+  "\n"
+  "\n"
+  "invert y "
+  font: "PixeRlino"
+  id: "joystick_y"
+  pivot: PIVOT_W
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 138.0
+    y: 176.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "invert x\n"
+  "\n"
+  "\n"
+  "invert x"
+  font: "PixeRlino"
+  id: "joystick_x"
+  pivot: PIVOT_W
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 330.0
+    y: 165.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.7019608
+    y: 0.7019608
+    z: 0.7019608
+  }
+  type: TYPE_TEXT
+  text: "<false>"
+  font: "PixeRlino"
+  id: "jy"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 330.0
+    y: 135.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.7019608
+    y: 0.7019608
+    z: 0.7019608
+  }
+  type: TYPE_TEXT
+  text: "<false>"
+  font: "PixeRlino"
+  id: "jx"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 308.0
+    y: 170.0
+  }
+  scale {
+    x: 5.145298
+    y: 10.856913
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  type: TYPE_BOX
+  blend_mode: BLEND_MODE_MULT
+  id: "box"
+  inherit_alpha: true
+  alpha: 0.9
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 330.0
+    y: 107.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "camera\n"
+  ""
+  font: "PixeRlino"
+  id: "camera"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 330.0
+    y: 80.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.7019608
+    y: 0.7019608
+    z: 0.7019608
+  }
+  type: TYPE_TEXT
+  text: "<on>"
+  font: "PixeRlino"
+  id: "scrn_shake_toggle"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 85.0
+    y: 80.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "screen shake"
+  font: "PixeRlino"
+  id: "screen_shake"
+  pivot: PIVOT_W
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 136.0
+    y: 213.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "keyboard controlls\n"
+  "move - wasd\n"
+  "shoot - left click\n"
+  "scope toggle - right click\n"
+  "menu nav - wasd\n"
+  "select button - space\n"
+  "reload - e or r \n"
+  "dash - left shift\n"
+  "pause - esc\n"
+  "switch gun - q \n"
+  "\n"
+  "\n"
+  ""
+  font: "PixeRlino"
+  id: "keyboard_controlls"
+  pivot: PIVOT_W
+  layer: "front"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 330.0
+    y: 446.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "back\n"
+  ""
+  font: "PixeRlino"
+  id: "back2"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 330.0
+    y: 417.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.7019608
+    y: 0.7019608
+    z: 0.7019608
+  }
+  type: TYPE_TEXT
+  text: "controller"
+  font: "PixeRlino"
+  id: "controlls_controller"
+  layer: "front"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 330.0
+    y: 446.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_TEXT
+  text: "back\n"
+  ""
+  font: "PixeRlino"
+  id: "back3"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 136.0
+    y: 213.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "controller controlls\n"
+  "(xbox controller names !)\n"
+  "move - L joystick\n"
+  "gun aim - R joystick\n"
+  "shoot - RB\n"
+  "scope toggle - RT\n"
+  "menu nav - dpad\n"
+  "select button - X\n"
+  "reload - B\n"
+  "dash - LB\n"
+  "pause - A\n"
+  "switch gun - LT\n"
+  "\n"
+  "\n"
+  ""
+  font: "PixeRlino"
+  id: "controller_controlls"
+  pivot: PIVOT_W
+  layer: "front"
+  inherit_alpha: true
+  visible: false
+}
+nodes {
+  position {
+    x: 330.0
+    y: 245.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.7019608
+    y: 0.7019608
+    z: 0.7019608
+  }
+  type: TYPE_TEXT
+  text: "<false>"
+  font: "PixeRlino"
+  id: "jyr"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 330.0
+    y: 215.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.7019608
+    y: 0.7019608
+    z: 0.7019608
+  }
+  type: TYPE_TEXT
+  text: "<false>"
+  font: "PixeRlino"
+  id: "jxr"
+  layer: "front"
+  inherit_alpha: true
+}
+layers {
+  name: "back"
+}
+layers {
+  name: "front"
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

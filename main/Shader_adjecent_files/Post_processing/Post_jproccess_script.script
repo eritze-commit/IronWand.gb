@@ -30,9 +30,12 @@ function update(self, dt)
 		last_w = w 
 		
 		local screen_size = math.sqrt(w^2+h^2)
-		local b = 0.0025
+		local b = 0.0021
+		--local b = 0.0025
 		local d = 3
-		self.cur_zoom = math.floor((b*screen_size+d)+0.5) 
+		self.cur_zoom = math.min(math.floor((b*screen_size+d)+0.5),8)
+		 -- self.cur_zoom = ((b*screen_size+d)+0.5) 
+		print("self cur zoom ", self.cur_zoom) 
 		msg.post("/Player_ROOT/camera#camera_script","camera_change_zoom",{zoom = self.cur_zoom}) 
 
 	end

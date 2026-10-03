@@ -1,5 +1,5 @@
 local debug_data = {
-    debug = true,
+    debug = false,
     -- god_gun = true,
     -- upgrade_menu = true,
     -- floor_reset = true,

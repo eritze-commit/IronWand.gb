@@ -192,6 +192,7 @@ local function Node_Placer()
 				if not env.statue_pos[x.."_"..y ] then 
 					if math.random(1,25) == 1  then 
 						local random_enemie =  math.random(1,#enemies) 
+						if Pstate.alive then
 						local  new_enemy = factory.create("/DynamicProceduralEnemyController#factory", vmath.vector3((x*16)+8,(y*16)+8,1))
 						msg.post(new_enemy, "start_path", {
 							name = enemies[random_enemie].name ,
@@ -212,6 +213,7 @@ local function Node_Placer()
 						enemies_spawned = enemies_spawned + 1 
 						--print("NODE PLACED AT ",vmath.vector3((x*16)+8,(y*16)+8,1))5
 					end 
+					end
 				end
 				if enemies_spawned >= enmey_max_buffer then 
 					break
@@ -249,9 +251,11 @@ end
 -- end
 -- function update(self, dt)
 -- end
+local enemy_spawn_que = {}
 function on_message(self, message_id, message, sender)
 	if message_id == hash("enemy_reset") then 
 		Node_Placer()
+		
 	end
 	if message_id == hash("clear_enemies") then 
 		for i = #buffer_of_enemies, 1, -1 do
@@ -260,9 +264,11 @@ function on_message(self, message_id, message, sender)
 		end
 		--print("BUFFER OF ENEIEMES",#buffer_of_enemies)
 		cur_wave = 0 
+		buffer_of_enemies = {}
 		enemy_state.enemy_max_in_lvl = 0
 		enemy_state.enemy_cur_alive = 0
 		enemy_state.enemy_cur_wave = 0 
+--		enemy_spawn_next = false
 	end
 	if message_id == hash("enemy_clear_from_buffer") and Pstate.alive  then 
 		for i = #buffer_of_enemies, 1, -1 do 
@@ -274,11 +280,17 @@ function on_message(self, message_id, message, sender)
 		if #buffer_of_enemies <= 0 and Pstate.alive then 
 			if cur_wave >= max_waves then 
 				cur_wave = 0 
-				msg.post("/global#Game_state_manager","change_state",{state = "up_floor"})
+				timer.delay(0.1,false,function() 
+					if Pstate.alive  then
+						msg.post("/global#Game_state_manager","change_state",{state = "up_floor"})
+					end
+				
+				end)
 				enemy_state.enemy_cur_wave = cur_wave
 			else
 				timer.delay(2,false,function() 
-					Node_Placer()
+						Node_Placer()
+					
 				end)
 			end
 			

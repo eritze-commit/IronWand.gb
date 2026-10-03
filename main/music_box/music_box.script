@@ -1,18 +1,35 @@
-local function rotate_music() 
-	local s_s_max = 1.3
+local settings = require("main.GLOBAL.settings_data")
+local function sfx(sfx)
+	local s_s_max = 1.2
+	local s_s_min = 0.6
+	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+	sound.play("/Sound_manager#"..sfx,{speed = random_offset })
+end
+local function sfx_stop(sfx)
+	sound.stop("/Sound_manager#"..sfx)
+end
+
+local function rotate_music(self) 
+	local s_s_max = 1.2
 	local s_s_min = 0.7
 	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
-	local random_slice = math.random(1, 9)
-	sound.play("/music_box#sng_slice_"..random_slice,{speed = random_offset },function() 	
-		timer.delay(math.random(10,30),false, function() 
-			rotate_music()
-		end)
+	self.music_slice = math.random(1, 9)
+	self.time = math.random(1,60)
+	self.music_playing = true
+	sound.play("/music_box#sng_slice_"..self.music_slice,{speed = random_offset },function() 	
+		self.music_playing = false
+		--print("timer end ")
+		msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "music_end" , time = self.time, optional = 0 }})
+		
 	end)
 end
 function init(self)
-	sound.set_group_gain("sfx",0.4)
-	sound.set_group_gain("music",0.3)
-	rotate_music()
+	self.music_playing = false
+	self.time = 1
+	self.music_slice = 1
+	sound.set_group_gain("sfx",settings.sfx_vol)
+	sound.set_group_gain("music",settings.music_vol/settings.music_damper)
+	rotate_music(self)
 end
 
 function final(self)
@@ -21,33 +38,33 @@ function final(self)
 	-- Remove this function if not needed
 end
 
-
-
-function update(self, dt)
-	-- Add update code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
-end
-
-function late_update(self, dt)
-	-- This function is called at the end of update cycle but before render
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
-end
-
-function fixed_update(self, dt)
-	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
-	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
-	-- Physics section of game.project
-	-- Add update code here
-	-- Learn more: https://defold.com/manuals/script/
-	-- Remove this function if not needed
-end
-
 function on_message(self, message_id, message, sender)
-	if message_id == hash("sound_done") then
-		
-		print("rotated music ") 
+	if message_id == hash("stop_music") then
+		if self.music_playing then 
+			self.time = 0
+			sound.stop("/music_box#sng_slice_"..self.music_slice)
+			--rotate_music(self) 
+		end
+	end
+	if message_id == hash("pause_music")  then
+		sfx_stop("tape_stop")
+		sfx_stop("tape_start")
+		local delay = 0
+		if message.paused then
+			sfx("tape_stop")
+		else
+			sfx("tape_start")
+			delay = 0.35
+		end
+		timer.delay(delay,false,function() 
+			sound.pause("/music_box#sng_slice_"..self.music_slice,message.paused)
+		end) 
+	end
+	if message_id == hash("timer_end") then
+		if message.type == "music_end" then
+			rotate_music(self)
+		end
+		--print("rotated music ") 
 	end
 end
 

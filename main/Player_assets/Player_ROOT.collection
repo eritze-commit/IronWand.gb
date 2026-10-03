@@ -49,7 +49,7 @@ embedded_instances {
   "embedded_components {\n"
   "  id: \"plr\"\n"
   "  type: \"sprite\"\n"
-  "  data: \"default_animation: \\\"walk\\\"\\n"
+  "  data: \"default_animation: \\\"idle\\\"\\n"
   "material: \\\"/builtins/materials/sprite.material\\\"\\n"
   "size {\\n"
   "  x: 16.0\\n"

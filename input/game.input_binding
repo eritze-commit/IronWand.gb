@@ -124,7 +124,7 @@ gamepad_trigger {
 }
 gamepad_trigger {
   input: GAMEPAD_RPAD_RIGHT
-  action: "swap"
+  action: "reload"
 }
 gamepad_trigger {
   input: GAMEPAD_RPAD_DOWN
@@ -132,19 +132,19 @@ gamepad_trigger {
 }
 gamepad_trigger {
   input: GAMEPAD_LSTICK_DOWN
-  action: "down"
+  action: "L_down"
 }
 gamepad_trigger {
   input: GAMEPAD_LSTICK_LEFT
-  action: "left"
+  action: "L_left"
 }
 gamepad_trigger {
   input: GAMEPAD_LSTICK_RIGHT
-  action: "right"
+  action: "L_right"
 }
 gamepad_trigger {
   input: GAMEPAD_LSTICK_UP
-  action: "up"
+  action: "L_up"
 }
 gamepad_trigger {
   input: GAMEPAD_RPAD_UP
@@ -152,7 +152,7 @@ gamepad_trigger {
 }
 gamepad_trigger {
   input: GAMEPAD_RTRIGGER
-  action: "asm*"
+  action: "focus"
 }
 gamepad_trigger {
   input: GAMEPAD_RSTICK_DOWN
@@ -172,9 +172,13 @@ gamepad_trigger {
 }
 gamepad_trigger {
   input: GAMEPAD_LTRIGGER
-  action: "reload"
+  action: "swap"
 }
 gamepad_trigger {
   input: GAMEPAD_CONNECTED
   action: "connected"
+}
+gamepad_trigger {
+  input: GAMEPAD_RPAD_DOWN
+  action: "escape"
 }

@@ -5,14 +5,15 @@ local active = require("main.Enemy_Assets.drops.spawnded_items_data")
 local game_state = require("main.GLOBAL.in_game")
 local global = require("main.GLOBAL.GLOBAL")
 local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
-
+local settings = require("main.GLOBAL.settings_data")
 
 
 function init(self)
+	self.current_enemy_timer_handle = -67
 	self.curent_state = "menu"
 	self.avalable_states  = {
-		["menu"] = {["paused"]=true,["dead"]=true },
-		["playing"] = {["menu"]=true,["dead"]=true },
+		["menu"] = {["paused"]=true,["dead"]=true ,["playing"]=true},
+		["playing"] = {["menu"]=true,["dead"]=true ,["playing"]=true,["paused"] = true },
 		["dead"] = {["playing"]=true,["paused"]=true},
 		["paused"] = {["playing"]=true,["paused"]=true,["shop"]=true,["menu"]=true},
 		["up_floor"] = {["playing"]=true,["shop"]=true,["paused"]=true},
@@ -20,9 +21,13 @@ function init(self)
 		["combo"] = {["playing"]=true},
 		["shop"] = {["up_floor"]=true}
 	}
+	msg.post("/Map#Auto_Tiler","asm",{map = 1})
+	local player_pos = go.get_position("Player_ROOT/Pl_Sprite")
+	go.set_position(vmath.vector3(player_pos.x,player_pos.y,730.0), "/Player_ROOT/camera")
 end
 
 local combo_state = 0
+local floor_timers = {}
 local timer_active = false
 local paused = false
 local shop_floor = 2 
@@ -55,13 +60,21 @@ function on_message(self, message_id, message, sender)
 			self.curent_state = message.state
 
 			if self.curent_state == "playing" then 
-				
-				self.curent_state = "playing"
+				msg.post("/music_box#music_box","stop_music")
+				self.curent_state = "not_playing"
+				for i = #floor_timers , 1, -1 do
+					timer.cancel(floor_timers[i])
+--					print("timer ",i," timers ",floor_timers[i])
+					table.remove(floor_timers,i)
+				end
+				msg.post("/Gui_collection/hud#hud","cancel_up_floor")
+				msg.post("/music_box#music_box","pause_music",{paused = false})
+				msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","clear_enemies")
 				msg.post("/Player_ROOT/gun_cont#gun_controller","acquire_input_focus")
 				msg.post("/Player_ROOT/Player#Player_Script","give_input")
 				msg.post("/Player_ROOT/go#cross_hair","toggle",{toggle = true})
 				active.cur_scene_active = false 
-				Pstate.alive = true
+
 				msg.post("Player_ROOT/Pl_Sprite#Pl_Sprite_Script","player_idle")
 				if not debug.floor_reset then
 					for slot, item in ipairs(upgrades.upgrade_slots) do 
@@ -73,13 +86,16 @@ function on_message(self, message_id, message, sender)
 				Pstate.health = Pstate.max_health
 				shop_floor = shop_floor_incriment
 				global.round_total_time = 0 
+				shop_floor = shop_floor_incriment
 				if not debug.token_reset then
 					map_state.mana = 0 
 				end
 				if not debug.floor_reset then
 					map_state.map_cur_floor = 0
 				end
-				msg.post("/global#Game_state_manager","change_state",{state = "paused",extra = false})
+				if game_state.paused then
+					msg.post("/global#Game_state_manager","change_state",{state = "paused",extra = false})
+				end
 				msg.post("/Gui_collection/hud#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})		
 				--print("RIght state",message.state)
 				sound.play("/Sound_manager#player_spawn")
@@ -87,9 +103,26 @@ function on_message(self, message_id, message, sender)
 				msg.post("/Map#Auto_Tiler","reset_floor_state")
 				msg.post("/global#GLobal_modifyer_state_manager","update_floor_values")
 				msg.post("/Gui_collection/StartMenu#Start GUi","show_gui",{show = false}) 
-				msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","clear_enemies")
+				while active.cur_scene_active do 
+						active.cur_scene_active = false			
+				end
+				
+				
+				-- 730.0 camera z cord 
 				msg.post("/Map#Auto_Tiler","asm",{map = 1})
-				timer.delay(1,false, function() 
+				go.set_position(vmath.vector3(-200,-200,730.0), "/Player_ROOT/camera")
+				
+					while go.get_position("/Player_ROOT/Player") ~= vmath.vector3((21* 16)+8,(11*16)+8,0) do 
+						go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
+					end
+				timer.delay(0.5,false, function() 
+					Pstate.alive = true
+					self.curent_state = "playing"
+				end)
+				if self.current_enemy_timer_handle ~= -67 then
+					timer.cancel(self.current_enemy_timer_handle)
+				end
+				self.current_enemy_timer_handle = timer.delay(5,false, function() 
 					msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","enemy_reset") 
 				end)
 
@@ -97,11 +130,27 @@ function on_message(self, message_id, message, sender)
 				msg.post("/Gui_collection/hud#hud","show_gui",{show = true})
 				msg.post("/Gui_collection/hud#hud","acquire_input_focus")
 				msg.post("/Gui_collection/StartMenu#Start GUi","release_input_focus")
-				timer.delay(0.1,false , function()
-					active.cur_scene_active = true 
+				settings.music_damper = 1
+				sound.set_group_gain("music",settings.music_vol/settings.music_damper)
+				timer.delay(0.2,false , function()
+					while not active.cur_scene_active do 
+						active.cur_scene_active = true
+					end
 			  end ) 
 			elseif self.curent_state == "menu" then
+			--print("timer ", #floor_timers)
+				for i = #floor_timers , 1, -1 do
+					timer.cancel(floor_timers[i])
+					--print("timer ",i," timers ",floor_timers[i])
+					table.remove(floor_timers,i)
+				end
+				msg.post("/Gui_collection/hud#hud","cancel_up_floor")
+				msg.post("/Player_ROOT/gun_cont#gun_controller","release_input_focus")
+				msg.post("/Player_ROOT/Player#Player_Script","release_input")
+				msg.post("/music_box#music_box","pause_music",{paused = false})
 				msg.post("/Player_ROOT/go#cross_hair","toggle",{toggle = false})
+				settings.music_damper = 3
+				sound.set_group_gain("music",settings.music_vol/settings.music_damper)
 				self.curent_state = "menu"
 				msg.post("/Gui_collection/StartMenu#Start GUi","show_gui",{show = true}) 
 				msg.post("/Gui_collection/hud#hud","release_input_focus")
@@ -114,35 +163,50 @@ function on_message(self, message_id, message, sender)
 				self.curent_state = "playing"
 				map_state.map_cur_floor = map_state.map_cur_floor + 1
 				--go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
+				msg.post("/Gui_collection/hud#hud","update_pause_values")
 				msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","clear_enemies")
 				if map_state.map_cur_floor == shop_floor then
 						
-						timer.delay(1,false,function()
-							active.cur_scene_active = false
+					floor_timers[#floor_timers+1] = timer.delay(1,false,function()
+							if Pstate.alive then
+								active.cur_scene_active = false
 							--msg.post("/Gui_collection/hud#hud","show_gui",{show = false})
-							msg.post("/Player_ROOT/gun_cont#gun_controller","release_input_focus")
-							msg.post("/Player_ROOT/Player#Player_Script","release_input")
-							msg.post("Player_ROOT/Pl_Sprite#Pl_Sprite_Script","player_idle")
-							msg.post("/Map#Auto_Tiler","cls")
+							
+								msg.post("/Player_ROOT/gun_cont#gun_controller","release_input_focus")
+								msg.post("/Player_ROOT/Player#Player_Script","release_input")
+								msg.post("Player_ROOT/Pl_Sprite#Pl_Sprite_Script","player_idle")
+								msg.post("/Map#Auto_Tiler","cls")
+							end
 						end)
-						timer.delay(2,false,function()
-							msg.post("/Player_ROOT/go#cross_hair","toggle",{toggle = false})
-							self.curent_state = "up_floor"
-							msg.post("/global#Game_state_manager","change_state",{state = "shop"})
+					floor_timers[#floor_timers+1] = timer.delay(2,false,function()
+							if Pstate.alive then
+								msg.post("/Player_ROOT/go#cross_hair","toggle",{toggle = false})
+								window.set_mouse_lock(false)
+								msg.post("/Gui_collection/hud#hud","release_input_focus")
+								self.curent_state = "up_floor"
+								msg.post("/global#Game_state_manager","change_state",{state = "shop"})
+							end
 
 						end)
 				else
-					msg.post("/Player_ROOT/go#cross_hair","toggle",{toggle = true })
+					if not game_state.paused then
+						window.set_mouse_lock(true)
+						msg.post("/Player_ROOT/go#cross_hair","toggle",{toggle = true })
+					end
+
+					
 					msg.post("/Player_ROOT/gun_cont#gun_controller","acquire_input_focus")
 					msg.post("/Player_ROOT/Player#Player_Script","give_input")
-					timer.delay(2,false,function()
+					msg.post("/global#GLobal_modifyer_state_manager","update_floor_values")
+					floor_timers[#floor_timers+1] = timer.delay(2,false,function()
+						msg.post("/Gui_collection/hud#hud","release_input_focus")
 						--msg.post("/Gui_collection/hud#hud","show_gui",{show = false})
-						msg.post("/global#GLobal_modifyer_state_manager","update_floor_values")
 						msg.post("/Gui_collection/hud#hud","map_info",{floor = 1 })
+						
 						--go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
 					end)
 	
-					timer.delay(3,false,function()
+					floor_timers[#floor_timers+1] = timer.delay(3,false,function()
 						active.cur_scene_active = false
 						--msg.post("/Gui_collection/hud#hud","show_gui",{show = true })
 						go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
@@ -179,9 +243,19 @@ function on_message(self, message_id, message, sender)
 							end
 						end
 					end)
-					
-					timer.delay(6,false,function() 
+					floor_timers[#floor_timers+1] = timer.delay(5,false,function() 
+						msg.post("/Gui_collection/hud#hud","acquire_input_focus")
+					end)
+					floor_timers[#floor_timers+1] = timer.delay(6,false,function() 
+
 						msg.post("/DynamicProceduralEnemyController#Enemy_Spawner","enemy_reset")
+						if Pstate.alive then
+							for i = #floor_timers , 1, -1 do
+								timer.cancel(floor_timers[i])
+					--print("timer ",i," timers ",floor_timers[i])
+								table.remove(floor_timers,i)
+							end
+						end
 						--go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
 					end)
 				end
@@ -195,8 +269,9 @@ function on_message(self, message_id, message, sender)
 				msg.post("/Player_ROOT/Player#Player_Script","release_input")
 				active.cur_scene_active = false 
 				Pstate.alive = false
-				shop_floor = shop_floor_incriment
+				--shop_floor = shop_floor_incriment
 				--map_state.mana = 0
+				msg.post("/music_box#music_box","pause_music",{paused = true})
 				sound.play("/Sound_manager#player_death")
 				msg.post("/Gui_collection/hud#hud","show_gui",{show = false})
 				window.set_mouse_lock(false)
@@ -208,6 +283,7 @@ function on_message(self, message_id, message, sender)
 				-- end)
 				
 				msg.post("/Gui_collection/death#death_screen","toggle_game_over",{state = true}) 
+				msg.post("Player_ROOT/Pl_Sprite#Pl_Sprite_Script","player_dead")
 				timer.delay(1.5,false,function() 
 					
 					msg.post("/Gui_collection/death#death_screen","acquire_input_focus")
@@ -215,7 +291,7 @@ function on_message(self, message_id, message, sender)
 					print("global cur diff ", global.cur_diff)
 					msg.post("/Gui_collection/death#death_screen","toggle_death_screen",{toggle = true,floor_state = map_state.map_cur_floor , round_time = global.round_total_time }) 
 					--msg.post("/Map#Auto_Tiler","cls")
-					go.set_position(vmath.vector3(0,0,0,0), "/Player_ROOT/Player")
+--					go.set_position(vmath.vector3(0,0,0,0), "/Player_ROOT/Player")
 				--msg.post("/global#Game_state_manager","change_state",{state = "menu"})
 					
 				end)
@@ -229,6 +305,7 @@ function on_message(self, message_id, message, sender)
 				if self.current_state ~= "shop" then				
 					msg.post("/Player_ROOT/go#cross_hair","toggle",{toggle = not message.extra})
 				end
+				msg.post("/music_box#music_box","pause_music",{paused = message.extra})
 				msg.post("/Gui_collection/hud#hud","paused",{visibles = message.extra})
 				
 			elseif self.curent_state == "combo" then

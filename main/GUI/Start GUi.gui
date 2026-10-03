@@ -77,9 +77,11 @@ nodes {
     z: 0.102
   }
   type: TYPE_BOX
+  blend_mode: BLEND_MODE_MULT
   id: "backDrop"
   layer: "layer1"
   inherit_alpha: true
+  alpha: 0.95
   size_mode: SIZE_MODE_AUTO
 }
 nodes {
