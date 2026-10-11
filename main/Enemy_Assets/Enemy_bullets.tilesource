@@ -3,6 +3,13 @@ tile_width: 16
 tile_height: 16
 collision_groups: "default"
 animations {
+  id: "arc"
+  start_tile: 25
+  end_tile: 28
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
   id: "big"
   start_tile: 1
   end_tile: 4
@@ -10,10 +17,24 @@ animations {
   fps: 10
 }
 animations {
+  id: "dart"
+  start_tile: 17
+  end_tile: 20
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 15
+}
+animations {
   id: "medium"
   start_tile: 5
   end_tile: 8
   playback: PLAYBACK_LOOP_PINGPONG
+  fps: 10
+}
+animations {
+  id: "phase"
+  start_tile: 21
+  end_tile: 24
+  playback: PLAYBACK_LOOP_FORWARD
   fps: 10
 }
 animations {

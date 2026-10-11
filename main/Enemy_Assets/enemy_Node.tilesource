@@ -3,6 +3,48 @@ tile_width: 18
 tile_height: 18
 collision_groups: "default"
 animations {
+  id: "assasin"
+  start_tile: 441
+  end_tile: 446
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "assasin_1"
+  start_tile: 451
+  end_tile: 456
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "assasin_2"
+  start_tile: 461
+  end_tile: 466
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "bat"
+  start_tile: 161
+  end_tile: 167
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "bat_1"
+  start_tile: 171
+  end_tile: 177
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "bat_2"
+  start_tile: 181
+  end_tile: 187
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
   id: "batorb"
   start_tile: 41
   end_tile: 46
@@ -20,6 +62,69 @@ animations {
   id: "batorb_2"
   start_tile: 61
   end_tile: 66
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "bee"
+  start_tile: 191
+  end_tile: 196
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 12
+}
+animations {
+  id: "bee_1"
+  start_tile: 201
+  end_tile: 206
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 12
+}
+animations {
+  id: "bee_2"
+  start_tile: 211
+  end_tile: 216
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 12
+}
+animations {
+  id: "bomb"
+  start_tile: 341
+  end_tile: 346
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "bomb_1"
+  start_tile: 341
+  end_tile: 346
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "bomb_2"
+  start_tile: 341
+  end_tile: 346
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "btrf"
+  start_tile: 381
+  end_tile: 387
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "btrf_1"
+  start_tile: 391
+  end_tile: 397
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "btrf_2"
+  start_tile: 401
+  end_tile: 407
   playback: PLAYBACK_LOOP_FORWARD
   fps: 10
 }
@@ -43,6 +148,96 @@ animations {
   end_tile: 156
   playback: PLAYBACK_LOOP_FORWARD
   fps: 10
+}
+animations {
+  id: "eye"
+  start_tile: 251
+  end_tile: 256
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "eye_1"
+  start_tile: 261
+  end_tile: 266
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "eye_2"
+  start_tile: 271
+  end_tile: 276
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "glitch"
+  start_tile: 411
+  end_tile: 416
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "glitch_1"
+  start_tile: 421
+  end_tile: 426
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "glitch_2"
+  start_tile: 431
+  end_tile: 436
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "mole"
+  start_tile: 311
+  end_tile: 316
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 9
+}
+animations {
+  id: "mole_1"
+  start_tile: 321
+  end_tile: 326
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 9
+}
+animations {
+  id: "mole_2"
+  start_tile: 331
+  end_tile: 336
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 9
+}
+animations {
+  id: "nothing"
+  start_tile: 10
+  end_tile: 10
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "saw"
+  start_tile: 281
+  end_tile: 286
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 11
+}
+animations {
+  id: "saw_1"
+  start_tile: 291
+  end_tile: 296
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 11
+}
+animations {
+  id: "saw_2"
+  start_tile: 301
+  end_tile: 306
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 11
 }
 animations {
   id: "skull"
@@ -96,6 +291,27 @@ animations {
   fps: 15
 }
 animations {
+  id: "spider"
+  start_tile: 351
+  end_tile: 354
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "spider_1"
+  start_tile: 361
+  end_tile: 364
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
+  id: "spider_2"
+  start_tile: 371
+  end_tile: 374
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 10
+}
+animations {
   id: "spinin"
   start_tile: 1
   end_tile: 3
@@ -125,5 +341,47 @@ animations {
   playback: PLAYBACK_LOOP_FORWARD
   fps: 10
   flip_horizontal: 1
+}
+animations {
+  id: "wall"
+  start_tile: 221
+  end_tile: 226
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 8
+}
+animations {
+  id: "wall_1"
+  start_tile: 231
+  end_tile: 234
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 7
+}
+animations {
+  id: "wall_2"
+  start_tile: 241
+  end_tile: 244
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 7
+}
+animations {
+  id: "wildcard"
+  start_tile: 471
+  end_tile: 495
+  playback: PLAYBACK_LOOP_PINGPONG
+  fps: 15
+}
+animations {
+  id: "wildcard_1"
+  start_tile: 471
+  end_tile: 495
+  playback: PLAYBACK_LOOP_PINGPONG
+  fps: 15
+}
+animations {
+  id: "wildcard_2"
+  start_tile: 471
+  end_tile: 495
+  playback: PLAYBACK_LOOP_PINGPONG
+  fps: 15
 }
 extrude_borders: 2

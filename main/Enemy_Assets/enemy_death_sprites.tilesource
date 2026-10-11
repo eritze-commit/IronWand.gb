@@ -3,16 +3,70 @@ tile_width: 18
 tile_height: 18
 collision_groups: "default"
 animations {
+  id: "assasin_death"
+  start_tile: 85
+  end_tile: 90
+  fps: 10
+}
+animations {
+  id: "bat_death"
+  start_tile: 111
+  end_tile: 117
+  fps: 15
+}
+animations {
   id: "batorb_death"
   start_tile: 73
   end_tile: 77
   fps: 12
 }
 animations {
+  id: "bee_death"
+  start_tile: 131
+  end_tile: 134
+  fps: 10
+}
+animations {
+  id: "bomb_death"
+  start_tile: 231
+  end_tile: 237
+  fps: 12
+}
+animations {
+  id: "btrf_death"
+  start_tile: 271
+  end_tile: 275
+  fps: 10
+}
+animations {
   id: "cow_death"
   start_tile: 51
   end_tile: 55
   fps: 10
+}
+animations {
+  id: "eye_death"
+  start_tile: 161
+  end_tile: 166
+  fps: 11
+}
+animations {
+  id: "glitch_death"
+  start_tile: 281
+  end_tile: 285
+  fps: 10
+}
+animations {
+  id: "mole_death"
+  start_tile: 201
+  end_tile: 204
+  fps: 7
+}
+animations {
+  id: "saw_death"
+  start_tile: 191
+  end_tile: 193
+  fps: 7
 }
 animations {
   id: "skull_death"
@@ -27,9 +81,27 @@ animations {
   fps: 10
 }
 animations {
+  id: "spider_death"
+  start_tile: 241
+  end_tile: 246
+  fps: 12
+}
+animations {
   id: "steye_death"
   start_tile: 92
   end_tile: 96
   fps: 15
+}
+animations {
+  id: "wall_death"
+  start_tile: 141
+  end_tile: 145
+  fps: 11
+}
+animations {
+  id: "wildcard_death"
+  start_tile: 56
+  end_tile: 59
+  fps: 10
 }
 extrude_borders: 2

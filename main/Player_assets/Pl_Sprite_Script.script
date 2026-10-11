@@ -148,11 +148,11 @@ function on_message(self, message_id, message, sender)
 	if message_id == hash("trigger_response") and not Pstate.immunity_frame and message.other_group == hash("bullet_box") and Pstate.alive  then 
 		if not self.immunity then
 			msg.post(message.other_id,"player_hit",{data = 6767})
-		else
 			self.immunity = true 
-			timer.delay(0.3,false, function() 
+			timer.delay(0.5,false, function() 
 				self.immunity = false
 			end)
+			
 		end
 	elseif message_id == hash("trigger_response") and Pstate.immunity_frame then 
 		local graphic = factory.create("/global#quick_graphic",go.get_position(".")+vmath.vector3(0,6,10))

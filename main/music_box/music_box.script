@@ -13,7 +13,7 @@ local function rotate_music(self)
 	local s_s_max = 1.2
 	local s_s_min = 0.7
 	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
-	self.music_slice = math.random(1, 9)
+	self.music_slice = math.random(1, 21)
 	self.time = math.random(1,60)
 	self.music_playing = true
 	sound.play("/music_box#sng_slice_"..self.music_slice,{speed = random_offset },function() 	

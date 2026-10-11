@@ -32,7 +32,6 @@ embedded_components {
   "}\n"
   ""
   position {
-    y: 2.0
     z: 1.19
   }
 }
@@ -48,8 +47,8 @@ embedded_components {
   "}\n"
   ""
   position {
-    y: -1.0
-    z: 1.0
+    y: -4.0
+    z: 0.4
   }
   scale {
     x: 0.7
@@ -103,7 +102,7 @@ embedded_components {
   "    count: 1\n"
   "    id: \"entity\"\n"
   "  }\n"
-  "  data: 1.972269\n"
+  "  data: 4.1906776\n"
   "}\n"
   "locked_rotation: true\n"
   "bullet: true\n"

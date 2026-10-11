@@ -39,7 +39,7 @@ function on_message(self, message_id, message, sender)
 		global.map_tint = -(global.floor_t * 0.25)
 		global.enemie_floor_hp_scale = 1 + (map_state.map_cur_floor / global.max_floor) * global.health_scale 
 		global.enemy_spawn_scale = math.floor(global.floor_t * 25)
-		global.enemy_spawn_delay_scalar = 3 + (global.floor_t * 25)
+		global.enemy_spawn_delay_scalar = 10 + (global.floor_t * 25)
 	end
 	-- Add message-handling code here
 	-- Learn more: https://defold.com/manuals/message-passing/

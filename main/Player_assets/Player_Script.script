@@ -40,7 +40,7 @@ end
 
 local function input_direction(self) 
 	self.dir = vmath.vector3(0,0,0) 
-	print("dir factor", self.dir_factor)
+--	print("dir factor", self.dir_factor)
 	if self.joy_stick_dir_factor.x > 0 then
 		self.dir.x = self.dir.x + self.joy_stick_dir_factor.x
 		self.prev_state = "right"
@@ -130,7 +130,9 @@ local function dash(self)
 			particlefx.stop("Particle #Plr_Dash")
 			--particlefx.stop("Particle #PLr_Trail")
 			dash_init = false
-			Pstate.immunity_frame = false
+			timer.delay(0.1,false,function() 
+				Pstate.immunity_frame = false
+			end)
 			--print("dash cooldown ",dash_cooldown) 
 			msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "can_dash" , time = dash_cooldown/ (1 + upgrades.data_layer["quicker dash"].speed ), optional = 0 }})
 			
@@ -154,7 +156,7 @@ function update(self, dt)
 			input_direction(self) 
 	--print("self.dir :"..self.dir)
 			Pstate.player_dir = self.dir
-			Pstate.player_speed = self.speed
+			Pstate.player_speed = self.speed * ( 1 + upgrades.data_layer["+player speed"].speed )
 			if vmath.length_sqr(self.dir) > 0 and  dash_state == false  then 
 				self.pos = go.get_position(".")
 		--local velocity = go.get("#collisionobject", "linear_velocity")

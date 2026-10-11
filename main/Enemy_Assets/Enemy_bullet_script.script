@@ -9,23 +9,102 @@ function init(self)
 	self.position = go.get_position(".")
 	self.z  = self.position.z
 	go.set("#sprite","color_mod",self.color_shift) 
+	self.type = "star"
+	self.follow = false
+	self.follow_target = ""
+	self.wall_collision = true 
+	self.pull_strenght = 0.07
+	self.follow_offset = 0
+	self.follow_offset_dir = 0 
+	self.rotate = true
+	self.rotate_speed = 0.1
+	self.arc_end = vmath.vector3()
+	self.arc_start = vmath.vector3()
+	self.t = 0
+	self.arc_t = vmath.vector3()
+	self.arc_offset = vmath.vector3(0,1,0)
+	self.arc_dir = vmath.vector3()
+	self.arc_height = 0
+	self.under_shadow = ""
+	self.lenght_end = vmath.vector3()
+	self.all_collisions  = true
 end
 
 function final(self)
 	local s_s_max = 0.9
 	local s_s_min = 0.2
+	if go.exists(self.under_shadow) then
+		go.delete(self.under_shadow)
+	end
 	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
 	sound.stop("/Sound_manager#bullet_collision_sound")
-	sound.play("/Sound_manager#bullet_collision_sound",{speed = random_offset, gain = 0.2})
+	sound.play("/Sound_manager#bullet_collision_sound",{speed = random_offset, gain = 0.1})
 	particlefx.play("#enemy_bullet_destroy")
 end
 
 function update(self, dt)
 	if active.cur_scene_active then 
 		if not game_state.paused then 
-		self.position = go.get_position(".")
-		self.position.z = self.z 
-		go.set_position(self.position+self.dir*self.speed * dt, ".")
+			if self.type == "dart" then
+				local center_dir = vmath.normalize(go.get_position("/Player_ROOT/Player") - go.get_position("."))					
+				local center_rad = math.atan2(center_dir.y,center_dir.x)
+				--go.animate(".", "euler.z", go.PLAYBACK_LOOP_FORWARD, 180/center_rad, go.EASING_LINEAR, 0.1)
+				go.set(".","euler.z",center_rad*180/math.pi)
+				--print("center_rad",center_rad)
+			end
+			if not self.follow then
+				if self.type ~= "arc" then
+					--print("self ", self.speed)
+					self.position = go.get_position(".")
+					self.position.z = self.z 
+					go.set_position(self.position+self.dir*self.speed * dt, ".")
+				elseif self.type == "arc" then
+					self.position = self.position +self.arc_dir*self.speed * dt
+					go.set_position(self.position-vmath.vector3(0,0,0.9),self.under_shadow)
+					local arc_sub = self.position -self.arc_end
+					local arc_square_y = arc_sub.y^2
+					local arc_square_x = arc_sub.x^2
+					local arc_add = arc_square_y + arc_square_x
+					local cur_lenght = math.sqrt(arc_add) 
+					--self.arc_offset = vmath.vector3(-self.arc_dir.y,self.arc_dir.x,0)
+--					print("next pos ",self.position)
+--					print("arc dir ",self.arc_dir)
+--					print("arc end ",self.arc_end,self.lenght_end)
+					self.t = 1 - math.abs( cur_lenght/self.lenght_end )
+--					print("self t ",self.t )
+--					print("lenght diff",cur_lenght ,self.lenght_end)
+					local y_offset = self.position +(self.arc_offset*(self.arc_height* ( 4 * self.t * (1 - self.t) ) ))
+					y_offset.z = self.z 
+					go.set_position(y_offset, ".")
+					
+					if cur_lenght < 2 and self.t < 0.20 then
+						self.all_collisions = true
+						
+						
+					end
+					if cur_lenght < 1 then
+						go.delete(".")
+						self.all_collisions = true
+						
+					end
+					
+				end
+			else
+				self.position = go.get_position(".")
+				if go.exists(self.follow_target) then
+					if self.rotate then
+						local rotate_rad = math.atan2(self.follow_offset_dir.y,self.follow_offset_dir.x)
+						rotate_rad = rotate_rad + self.rotate_speed
+						self.follow_offset_dir = vmath.normalize(vmath.vector3(math.cos(rotate_rad),math.sin(rotate_rad),0))
+					end
+					local new_pos = vmath.lerp(self.pull_strenght,self.position,go.get_position(self.follow_target)+self.follow_offset_dir*self.follow_offset )
+					self.position.z = self.z 
+					go.set_position(new_pos, ".")
+					
+				else
+					go.delete()
+				end
+			end
 		end
 	else
 		go.delete()
@@ -40,12 +119,48 @@ function on_message(self, message_id, message, sender)
 		physics.set_shape("#collisionobject", "bullet", {type = physics.SHAPE_TYPE_SPHERE, diameter  = message.diameter })
 		physics.set_shape("#collisionobject1", "bullet", {type = physics.SHAPE_TYPE_SPHERE, diameter  = message.diameter })
 		sprite.play_flipbook("#sprite",message.type)
-		if message.type == "star" then 
-			self.lifetime = 10
+		--print("message_type",message.type)
+		sprite.play_flipbook("#sprite2",message.type)
+		if message.follow == true then 
+			self.follow = true 
+			self.lifetime = message.lifetime
+			self.follow_target = message.follow_target
+			self.wall_collision = message.wall_collision
+			self.pull_strenght = message.pull_strenght
+			self.follow_offset = message.follow_offset
+			self.follow_offset_dir = message.offset_dir
+			self.rotate = message.rotate
+			self.rotate_speed = message.rotate_speed
+		else
+			self.follow = false
 		end
-
+		if message.type == "phase" then
+			self.wall_collision = false
+		end
+		if message.type == "arc" then
+			self.lifetime = message.lifetime
+			self.arc_end = message.arc_end
+			self.arc_start = go.get_position(".")
+			self.position = go.get_position(".")
+			self.arc_dir = message.arc_dir
+			self.arc_height = message.arc_height
+			local arc_sub = self.arc_start-self.arc_end
+			local arc_square_y = arc_sub.y^2
+			local arc_square_x = arc_sub.x^2
+			local arc_add = arc_square_y + arc_square_x
+			self.lenght_end = math.sqrt(arc_add) 
+			self.wall_collision = false
+			self.under_shadow = factory.create("/global#under_shadow",go.get_position(".")-vmath.vector3(0,0,0.9))
+			
+			self.all_collisions = false
+			--print("self_unde_shadow",go.get_position(self.under_shadow))
+		end
+		if message.type == "star" then 
+			self.lifetime = 20
+		end
+		self.type = message.type
 		self.dir = message.dir 
-		self.speed = message.speed
+ 		self.speed = message.speed
 
 		msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "bullet_destroy" , time = self.lifetime, optional = 0 }})
 		-- timer.delay(self.lifetime,false, function() 
@@ -67,8 +182,15 @@ function on_message(self, message_id, message, sender)
 		msg.post(sender,"Hit_response",{data = 6767})
 	end
 	if message_id == hash("contact_point_response") then
-		go.set("#sprite","flasher",vmath.vector4(10,0,0,0))
-		go.delete(".")
+		if self.all_collisions then
+			if message.other_group == hash("wall") and not self.wall_collision then
+			
+			else
+				go.set("#sprite","flasher",vmath.vector4(10,0,0,0))
+				go.delete(".")
+			end
+			
+		end
 		
 	end
 end

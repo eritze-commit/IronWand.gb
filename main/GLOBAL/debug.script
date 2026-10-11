@@ -3,7 +3,7 @@ local hud_state = require("main.Player_assets.G-UNZ.Hud_state")
 function init(self)
 	if debug.debug then
 		hud_state.mana = 99999
-		hud_state.map_cur_floor = 50
+		hud_state.map_cur_floor = 100
 	end
 end
 

@@ -33,9 +33,12 @@ function on_message(self, message_id, message, sender)
 				else
 			loot_name = message.loot
 				end
-			local loot_tables = {["core"]={"gun_mag","mana_orb","heart","mana_star","heart"},
+			local loot_tables = {
+			["core"]={"gun_mag","mana_orb","heart","mana_star","heart"},
 			["heart"] = {"heart"},
-			["mag"] = {"gun_mag"}, }
+			["pot"] = {"gun_mag","mana_orb","heart","mana_star","heart"},
+			["mag"] = {"gun_mag"}, 
+			}
 			for i =1,   math.random(message.min_drop,message.max_drop) do 
 				local x_modulatro = math.random(0,1) == 1 and -1 or 1 
 				local y_modulatro = math.random(0,1) == 1 and -1 or 1 

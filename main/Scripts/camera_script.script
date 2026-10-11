@@ -1,5 +1,8 @@
+local debug = require  "main.GLOBAL.debug_data"
 function init(self)
---msg.post(".", "acquire_input_focus")
+	if debug.camera then 
+		msg.post(".", "acquire_input_focus")
+	end
 	self.speed = 4
 	self.cur_zoom = 5.0
 	self.pressed = false 

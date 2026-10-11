@@ -2,6 +2,7 @@ local debug = require  "main.GLOBAL.debug_data"
 local Pstate = require("main.Player_assets.Player_state_module")
 local map_state = require("main.Player_assets.G-UNZ.Hud_state")
 local active = require("main.Enemy_Assets.drops.spawnded_items_data")
+local enemy_data = require("main.Enemy_Assets.enemy_data")
 local game_state = require("main.GLOBAL.in_game")
 local global = require("main.GLOBAL.GLOBAL")
 local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
@@ -60,6 +61,7 @@ function on_message(self, message_id, message, sender)
 			self.curent_state = message.state
 
 			if self.curent_state == "playing" then 
+				enemy_data:start_run()
 				msg.post("/music_box#music_box","stop_music")
 				self.curent_state = "not_playing"
 				for i = #floor_timers , 1, -1 do
@@ -171,7 +173,7 @@ function on_message(self, message_id, message, sender)
 							if Pstate.alive then
 								active.cur_scene_active = false
 							--msg.post("/Gui_collection/hud#hud","show_gui",{show = false})
-							
+								
 								msg.post("/Player_ROOT/gun_cont#gun_controller","release_input_focus")
 								msg.post("/Player_ROOT/Player#Player_Script","release_input")
 								msg.post("Player_ROOT/Pl_Sprite#Pl_Sprite_Script","player_idle")
@@ -180,15 +182,13 @@ function on_message(self, message_id, message, sender)
 						end)
 					floor_timers[#floor_timers+1] = timer.delay(2,false,function()
 							if Pstate.alive then
-								msg.post("/Player_ROOT/go#cross_hair","toggle",{toggle = false})
-								window.set_mouse_lock(false)
-								msg.post("/Gui_collection/hud#hud","release_input_focus")
-								self.curent_state = "up_floor"
-								msg.post("/global#Game_state_manager","change_state",{state = "shop"})
+								msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "floor_shop_toggle" , time = 1, optional = 0 }})
+								
 							end
 
 						end)
 				else
+					enemy_data:new_floor()
 					if not game_state.paused then
 						window.set_mouse_lock(true)
 						msg.post("/Player_ROOT/go#cross_hair","toggle",{toggle = true })
@@ -328,8 +328,18 @@ function on_message(self, message_id, message, sender)
 		else
 			print("SENDER OF WRONG STATE ",sender,"sent state",message.state,"CUR STATE ",self.curent_state)
 		end
-		 
 
+	end
+	if message_id == hash("timer_end") then
+		if message.type == "floor_shop_toggle" then
+			if Pstate.alive then
+				msg.post("/Player_ROOT/go#cross_hair","toggle",{toggle = false})
+				window.set_mouse_lock(false)
+				msg.post("/Gui_collection/hud#hud","release_input_focus")
+				self.curent_state = "up_floor"
+				msg.post("/global#Game_state_manager","change_state",{state = "shop"})
+			end
+		end
 	end
 end
 

@@ -21,6 +21,12 @@ animations {
   playback: PLAYBACK_NONE
 }
 animations {
+  id: "pot"
+  start_tile: 7
+  end_tile: 7
+  playback: PLAYBACK_NONE
+}
+animations {
   id: "shadow_core"
   start_tile: 2
   end_tile: 2
@@ -36,6 +42,12 @@ animations {
   id: "shadow_mag"
   start_tile: 6
   end_tile: 6
+  playback: PLAYBACK_NONE
+}
+animations {
+  id: "shadow_pot"
+  start_tile: 8
+  end_tile: 8
   playback: PLAYBACK_NONE
 }
 extrude_borders: 2

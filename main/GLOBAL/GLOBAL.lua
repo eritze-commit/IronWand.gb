@@ -15,7 +15,6 @@ local global = {
 	round_total_time = 0,
 
 
-
 	
 	crit_chance  = 2,
 	crit_multiplyer = 1.5 ,

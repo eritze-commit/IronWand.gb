@@ -5,26 +5,26 @@ emitters {
   tile_source: "/main/Player_assets/Particle_fx/Particle_sheet_2_cube.tilesource"
   animation: "loop_all"
   material: "/builtins/materials/particlefx.material"
-  max_particle_count: 10
+  max_particle_count: 3
   type: EMITTER_TYPE_SPHERE
   properties {
     key: EMITTER_KEY_SPAWN_RATE
     points {
-      y: 100.0
+      y: 74.0
     }
     spread: 50.0
   }
   properties {
     key: EMITTER_KEY_SIZE_X
     points {
-      y: 10.0
+      y: 7.0
     }
     spread: 15.0
   }
   properties {
     key: EMITTER_KEY_SIZE_Y
     points {
-      y: 10.0
+      y: 7.0
     }
     spread: 15.0
   }
@@ -37,14 +37,14 @@ emitters {
   properties {
     key: EMITTER_KEY_PARTICLE_SPEED
     points {
-      y: 75.0
+      y: 147.0
     }
     spread: 50.0
   }
   properties {
     key: EMITTER_KEY_PARTICLE_SIZE
     points {
-      y: 7.0
+      y: 2.0
     }
     spread: 5.0
   }
@@ -106,15 +106,21 @@ emitters {
   particle_properties {
     key: PARTICLE_KEY_ALPHA
     points {
+      y: 2.016246
+      t_x: 0.27230433
+      t_y: 0.9622112
+    }
+    points {
+      x: 1.0
       y: 0.0
-      t_x: 0.07194582
-      t_y: 0.99740857
+      t_x: 0.99985754
+      t_y: 0.016877083
     }
   }
   particle_properties {
     key: PARTICLE_KEY_ROTATION
     points {
-      y: 63.812305
+      y: 279.27362
     }
     points {
       x: 1.0

@@ -44,6 +44,7 @@ track_cpu = 0
 
 [sound]
 use_thread = 1
+max_component_count = 64
 
 [particle_fx]
 max_count = 256

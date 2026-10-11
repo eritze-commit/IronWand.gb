@@ -17,7 +17,7 @@ embedded_components {
   "}\n"
   ""
   position {
-    z: 1.2
+    z: 1.5
   }
 }
 embedded_components {
@@ -69,4 +69,27 @@ embedded_components {
   "  data: 2.9333625\n"
   "}\n"
   ""
+}
+embedded_components {
+  id: "sprite2"
+  type: "sprite"
+  data: "default_animation: \"star\"\n"
+  "material: \"/main/Enemy_Assets/Enemy_shader_related_files/Enemy_Material_custom.material\"\n"
+  "blend_mode: BLEND_MODE_ADD\n"
+  "size {\n"
+  "  x: 16.0\n"
+  "  y: 16.0\n"
+  "}\n"
+  "textures {\n"
+  "  sampler: \"texture_sampler\"\n"
+  "  texture: \"/main/Enemy_Assets/Enemy_bullets.tilesource\"\n"
+  "}\n"
+  ""
+  position {
+    z: 1.19
+  }
+  scale {
+    x: 1.05
+    y: 1.05
+  }
 }
