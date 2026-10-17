@@ -63,7 +63,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
 			self.add_new_floor_enemy(self)
 		end
 		self.cur_floor_enemy_list[#self.cur_floor_enemy_list+1] = {category = "wildcard",name = "wildcard"}
-		pprint(self.cur_floor_enemy_list)
+		--pprint(self.cur_floor_enemy_list)
 		
 	end,
 	start_run = function(self)
@@ -71,13 +71,13 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
 		for i = 1, 6 do 
 			self.add_new_round_enemy(self)
 		end
-		pprint(self.cur_round_enemy_list)
+		--pprint(self.cur_round_enemy_list)
 		for i = 1, 7 do 
-			print("last_floor_cat",self.last_floor_category)
+		--	print("last_floor_cat",self.last_floor_category)
 			self.add_new_floor_enemy(self)
 		end
 		self.cur_floor_enemy_list[#self.cur_floor_enemy_list+1] = {category = "wildcard",name = "wildcard"}
-		pprint(self.cur_floor_enemy_list)
+		--pprint(self.cur_floor_enemy_list)
 	end,
 	
 	
@@ -112,6 +112,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             flee_noise = false,
             rush_noise = true,
             circle_noise = false,
+            can_dash = true,
 		},
 		knockback = true,
         attacks = {
@@ -127,7 +128,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
 		name = "assasin",
 		speed = 35, 
 		health = math.random(40,50),
-		attack_cooldown = 4 ,
+		attack_cooldown = 5,
 		smart_aim =  true,
 		h_flip = true ,
 		weight_values = { 
@@ -152,6 +153,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             flee_noise = false,
             rush_noise = true,
             circle_noise = false,
+            can_dash = true,
 		},
 		knockback = true,
         attacks = {
@@ -167,7 +169,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
 		name = "glitch",
 		speed = 5, 
 		health = math.random(20,30),
-		attack_cooldown = 0.15 ,
+		attack_cooldown = 0.2 ,
 		smart_aim =  true,
 		h_flip = false ,
 		weight_values = { 
@@ -192,6 +194,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             flee_noise = false,
             rush_noise = true,
             circle_noise = false,
+            can_dash = true,
 		},
 		knockback = true,
         attacks = {
@@ -212,7 +215,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
 	["mole"] = {
 		name = "mole",
 		speed = 0, 
-		health = math.random(50,70),
+		health = math.random(50,60),
 		attack_cooldown = 5,
 		smart_aim =  true,
 		h_flip = false ,
@@ -238,6 +241,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             flee_noise = false,
             rush_noise = true,
             circle_noise = false,
+            can_dash = false,
 		},
 		knockback = false,
         attacks = {
@@ -254,7 +258,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
 		name = "batorb",
 		speed = 30, 
 		health = math.random(30,50),
-		attack_cooldown = 2,
+		attack_cooldown = 3,
 		smart_aim =  true,
 		h_flip = false ,
 		weight_values = { 
@@ -271,14 +275,15 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             rush_time = 0.3,
             fluke_time = 0.1,
             fluke_speed_multiplier = 2,
-            fluke_noise_strenght = 0,
-            flee_noise_strenght = 0,
+            fluke_noise_strenght = 0.5,
+            flee_noise_strenght = 0.5,
             rush_noise_strenght = 0.5,
-            circle_noise_strenght = 0,
-            fluke_noise = false,
-            flee_noise = false,
+            circle_noise_strenght = 0.5,
+            fluke_noise = true,
+            flee_noise = true,
             rush_noise = true,
-            circle_noise = false,
+            circle_noise = true,
+            can_dash = true,
 		},
 		knockback = true,
         attacks = {
@@ -312,14 +317,15 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             rush_time = 0.3,
             fluke_time = 0.1,
             fluke_speed_multiplier = 2,
-            fluke_noise_strenght = 0,
-            flee_noise_strenght = 0,
+            fluke_noise_strenght = 0.5,
+            flee_noise_strenght = 0.5,
             rush_noise_strenght = 0.5,
-            circle_noise_strenght = 0,
-            fluke_noise = false,
-            flee_noise = false,
+            circle_noise_strenght = 0.5,
+            fluke_noise = true,
+            flee_noise = true,
             rush_noise = true,
-            circle_noise = false,
+            circle_noise = true,
+            can_dash = true,
 		},
 		knockback = true,
         attacks = {
@@ -356,14 +362,15 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             rush_time = 0.3,
             fluke_time = 0.1,
             fluke_speed_multiplier = 1,
-            fluke_noise_strenght = 0,
-            flee_noise_strenght = 0,
+            fluke_noise_strenght = 0.5,
+            flee_noise_strenght = 0.5,
             rush_noise_strenght = 0.5,
-            circle_noise_strenght = 0,
-            fluke_noise = false,
-            flee_noise = false,
+            circle_noise_strenght = 0.5,
+            fluke_noise = true,
+            flee_noise = true,
             rush_noise = true,
-            circle_noise = false,
+            circle_noise = true,
+            can_dash = false,
 		},
 		knockback = true,
         attacks = {
@@ -380,7 +387,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
 		name = "eye",
 		speed = 30, 
 		health = math.random(30,50),
-		attack_cooldown = 3,
+		attack_cooldown = 4,
 		smart_aim =  true,
 		h_flip = false ,
 		weight_values = { 
@@ -397,14 +404,15 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             rush_time = 0.5,
             fluke_time = 0.1,
             fluke_speed_multiplier = 2,
-            fluke_noise_strenght = 0,
-            flee_noise_strenght = 0,
+            fluke_noise_strenght = 0.5,
+            flee_noise_strenght = 0.5,
             rush_noise_strenght = 0.5,
-            circle_noise_strenght = 0,
-            fluke_noise = false,
-            flee_noise = false,
+            circle_noise_strenght = 0.5,
+            fluke_noise = true,
+            flee_noise = true,
             rush_noise = true,
-            circle_noise = false,
+            circle_noise = true,
+            can_dash = true,
 		},
 		knockback = true,
         attacks = {
@@ -444,6 +452,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             flee_noise = false,
             rush_noise = true,
             circle_noise = false,
+            can_dash = false,
 		},
 		knockback = true,
         attacks = {
@@ -476,14 +485,15 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             rush_time = 0.3,
             fluke_time = 0.1,
             fluke_speed_multiplier = 2,
-            fluke_noise_strenght = 0,
-            flee_noise_strenght = 0,
+            fluke_noise_strenght = 0.5,
+            flee_noise_strenght = 0.5,
             rush_noise_strenght = 0.5,
-            circle_noise_strenght = 0,
-            fluke_noise = false,
-            flee_noise = false,
+            circle_noise_strenght = 0.5,
+            fluke_noise = true,
+            flee_noise = true,
             rush_noise = true,
-            circle_noise = false,
+            circle_noise = true,
+            can_dash = true,
 		},
 		knockback = true,
         attacks = {
@@ -524,6 +534,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             flee_noise = false,
             rush_noise = true,
             circle_noise = true,
+            can_dash = true,
 		},
 		knockback = true,
         attacks = {
@@ -564,6 +575,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             flee_noise = false,
             rush_noise = true,
             circle_noise = true,
+            can_dash = true,
 		},
 		knockback = true,
         attacks = {
@@ -605,6 +617,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             flee_noise = false,
             rush_noise = true,
             circle_noise = true,
+            can_dash = false,
 		},
 		knockback = true,
         attacks = {
@@ -645,6 +658,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             flee_noise = false,
             rush_noise = true,
             circle_noise = true,
+            can_dash = false,
 		},
 		knockback = false,
         attacks = {
@@ -680,13 +694,14 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             fluke_time = 0.1,
             fluke_speed_multiplier = 1.5,
             fluke_noise_strenght = 0.5,
-            flee_noise_strenght = 0,
+            flee_noise_strenght = 0.5,
             rush_noise_strenght = 0.5,
             circle_noise_strenght = 0.5,
             fluke_noise = true,
-            flee_noise = false,
+            flee_noise = true,
             rush_noise = true,
             circle_noise = true,
+            can_dash = false,
 		},
 		knockback = false,
         attacks = {
@@ -704,7 +719,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
 		name = "steye",
 		speed = 0, 
 		health = math.random(20,40),
-		attack_cooldown = 3 ,
+		attack_cooldown = 4 ,
 		smart_aim =  true,
 		h_flip = false,
 		weight_values = { 
@@ -729,6 +744,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
             flee_noise = false,
             rush_noise = true,
             circle_noise = true,
+            can_dash = false,
 		},
 		knockback = false,
         attacks = {
@@ -743,7 +759,7 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
 		name = "wildcard",
 		speed = 30, 
 		health = math.random(40,50),
-		attack_cooldown = 4,
+		attack_cooldown = 5,
 		smart_aim =  true,
 		h_flip = true ,
 		weight_values = { 
@@ -756,18 +772,19 @@ enemy_master_list = { {category = "tank",name = "mole" } ,{category = "tank",nam
 		x_ray = false,
 		movement_values = {
             path_find_frequency = 3,
-            rush_speed_multiplier = 1,
+            rush_speed_multiplier = 1.5,
             rush_time = 0.1,
             fluke_time = 0.1,
             fluke_speed_multiplier = 1,
-            fluke_noise_strenght = 0,
-            flee_noise_strenght = 0,
+            fluke_noise_strenght = 0.5,
+            flee_noise_strenght = 0.5,
             rush_noise_strenght = 0.5,
-            circle_noise_strenght = 0,
-            fluke_noise = false,
-            flee_noise = false,
+            circle_noise_strenght = 0.5,
+            fluke_noise = true,
+            flee_noise = true,
             rush_noise = true,
-            circle_noise = false,
+            circle_noise = true,
+            can_dash = true,
 		},
 		knockback = true,
         attacks = {

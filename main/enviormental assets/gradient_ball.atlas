@@ -1,0 +1,4 @@
+images {
+  image: "/main/enviormental assets/gradient_circle.png"
+}
+extrude_borders: 2

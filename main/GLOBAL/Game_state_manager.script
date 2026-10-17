@@ -8,6 +8,12 @@ local global = require("main.GLOBAL.GLOBAL")
 local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
 local settings = require("main.GLOBAL.settings_data")
 
+local function sfx(sfx)
+	local s_s_max = 3
+	local s_s_min = 2
+	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+	sound.play("/Sound_manager#"..sfx,{speed = random_offset })
+end
 
 function init(self)
 	self.current_enemy_timer_handle = -67
@@ -202,6 +208,7 @@ function on_message(self, message_id, message, sender)
 						msg.post("/Gui_collection/hud#hud","release_input_focus")
 						--msg.post("/Gui_collection/hud#hud","show_gui",{show = false})
 						msg.post("/Gui_collection/hud#hud","map_info",{floor = 1 })
+						sfx("IW_roomclear")
 						
 						--go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
 					end)
@@ -245,6 +252,7 @@ function on_message(self, message_id, message, sender)
 					end)
 					floor_timers[#floor_timers+1] = timer.delay(5,false,function() 
 						msg.post("/Gui_collection/hud#hud","acquire_input_focus")
+						
 					end)
 					floor_timers[#floor_timers+1] = timer.delay(6,false,function() 
 
@@ -313,7 +321,7 @@ function on_message(self, message_id, message, sender)
 				combo_state = combo_state + 1
 				if not timer_active then
 					timer_active = true
-					timer.delay(10, false, function() 
+					timer.delay(30, false, function() 
 						timer_active = false
 						msg.post("/Gui_collection/hud#hud","update_combo",{visible  = timer_active, combo = combo_state, color = vmath.vector4(1,0,1,1),strenght =0.5+(combo_state/20)*5 })
 						combo_state = 0
@@ -329,6 +337,10 @@ function on_message(self, message_id, message, sender)
 			print("SENDER OF WRONG STATE ",sender,"sent state",message.state,"CUR STATE ",self.curent_state)
 		end
 
+	end
+	if message_id == hash("add_to_timer_buffer") then
+		floor_timers[#floor_timers+1] = message.timer
+		print("test RAN BRUH ")
 	end
 	if message_id == hash("timer_end") then
 		if message.type == "floor_shop_toggle" then

@@ -277,14 +277,31 @@ function on_message(self, message_id, message, sender)
 	end
 end
 
-
+local but_selected
 
 function on_input(self, action_id, action)
+	if not but_selected then
+	if  action_id ~= hash("down") and action_id ~= hash("up") and action_id ~= hash("action_but")  then
+		if action.pressed then
+			but_selected = true
+			timer.delay(0.5,false,function() 
+				but_selected = false
+			end)
+			gui.set_visible(gui.get_node("info_text"),true)
+			gui.set_visible(gui.get_node("info_text_box"),true)
+			--print("action is not true ran ")
+		end
+		
+		end
+	end
 	if not self.button_selected then 
+		
+		
 		if action_id == hash("down") or action_id == hash("up") then 
-			
+			gui.set_visible(gui.get_node("info_text"),false)
+			gui.set_visible(gui.get_node("info_text_box"),false)
 			self.button_selected = true
-			timer.delay(0.125,false,function() 
+			timer.delay(0.15,false,function() 
 				self.button_selected = false
 			end)
 		if action_id == hash("down") then
@@ -308,6 +325,8 @@ function on_input(self, action_id, action)
 		
 	end
 	if action_id == hash("action_but") and not self.button_selected  then 
+		gui.set_visible(gui.get_node("info_text"),false)
+		gui.set_visible(gui.get_node("info_text_box"),false)
 		if self.cur_button_state ~= 0 then
 			self.button_selected = true
 			timer.delay(0.2,false,function() 

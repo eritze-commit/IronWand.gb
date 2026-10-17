@@ -1,6 +1,7 @@
 local settings = {
     -- not part of settings menu 
     music_damper = 3,
+    rct = true,
     --part of settings menu
     left_y_invert = 1,
     left_x_invert = 1,

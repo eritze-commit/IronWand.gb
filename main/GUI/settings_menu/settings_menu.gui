@@ -6,7 +6,7 @@ fonts {
 nodes {
   position {
     x: 330.0
-    y: 446.0
+    y: 457.0
   }
   size {
     x: 200.0
@@ -28,7 +28,7 @@ nodes {
 nodes {
   position {
     x: 330.0
-    y: 417.0
+    y: 428.0
   }
   size {
     x: 200.0
@@ -49,7 +49,7 @@ nodes {
 nodes {
   position {
     x: 330.0
-    y: 386.0
+    y: 397.0
   }
   size {
     x: 200.0
@@ -65,7 +65,7 @@ nodes {
 nodes {
   position {
     x: 148.0
-    y: 357.0
+    y: 368.0
   }
   size {
     x: 200.0
@@ -82,7 +82,7 @@ nodes {
 nodes {
   position {
     x: 114.0
-    y: 324.0
+    y: 335.0
   }
   size {
     x: 200.0
@@ -99,7 +99,7 @@ nodes {
 nodes {
   position {
     x: 330.0
-    y: 357.0
+    y: 368.0
   }
   size {
     x: 200.0
@@ -120,7 +120,7 @@ nodes {
 nodes {
   position {
     x: 330.0
-    y: 324.0
+    y: 335.0
   }
   size {
     x: 200.0
@@ -141,7 +141,7 @@ nodes {
 nodes {
   position {
     x: 330.0
-    y: 245.0
+    y: 256.0
   }
   size {
     x: 200.0
@@ -149,10 +149,10 @@ nodes {
   }
   type: TYPE_TEXT
   text: "joystick\n"
-  "left\n"
+  "right\n"
   "\n"
   "\n"
-  "right"
+  "left"
   font: "PixeRlino"
   id: "joystick"
   layer: "front"
@@ -161,7 +161,7 @@ nodes {
 nodes {
   position {
     x: 138.0
-    y: 206.0
+    y: 217.0
   }
   size {
     x: 200.0
@@ -181,7 +181,7 @@ nodes {
 nodes {
   position {
     x: 138.0
-    y: 176.0
+    y: 187.0
   }
   size {
     x: 200.0
@@ -201,7 +201,7 @@ nodes {
 nodes {
   position {
     x: 330.0
-    y: 165.0
+    y: 176.0
   }
   size {
     x: 200.0
@@ -222,7 +222,7 @@ nodes {
 nodes {
   position {
     x: 330.0
-    y: 135.0
+    y: 146.0
   }
   size {
     x: 200.0
@@ -268,7 +268,7 @@ nodes {
 nodes {
   position {
     x: 330.0
-    y: 107.0
+    y: 123.0
   }
   size {
     x: 200.0
@@ -285,7 +285,7 @@ nodes {
 nodes {
   position {
     x: 330.0
-    y: 80.0
+    y: 98.0
   }
   size {
     x: 200.0
@@ -306,7 +306,7 @@ nodes {
 nodes {
   position {
     x: 85.0
-    y: 80.0
+    y: 98.0
   }
   size {
     x: 200.0
@@ -323,7 +323,7 @@ nodes {
 nodes {
   position {
     x: 136.0
-    y: 213.0
+    y: 224.0
   }
   size {
     x: 200.0
@@ -353,7 +353,7 @@ nodes {
 nodes {
   position {
     x: 330.0
-    y: 446.0
+    y: 457.0
   }
   size {
     x: 200.0
@@ -375,7 +375,7 @@ nodes {
 nodes {
   position {
     x: 330.0
-    y: 417.0
+    y: 428.0
   }
   size {
     x: 200.0
@@ -397,7 +397,7 @@ nodes {
 nodes {
   position {
     x: 330.0
-    y: 446.0
+    y: 457.0
   }
   size {
     x: 200.0
@@ -419,7 +419,7 @@ nodes {
 nodes {
   position {
     x: 136.0
-    y: 213.0
+    y: 224.0
   }
   size {
     x: 200.0
@@ -451,7 +451,7 @@ nodes {
 nodes {
   position {
     x: 330.0
-    y: 245.0
+    y: 256.0
   }
   size {
     x: 200.0
@@ -472,7 +472,7 @@ nodes {
 nodes {
   position {
     x: 330.0
-    y: 215.0
+    y: 226.0
   }
   size {
     x: 200.0
@@ -487,6 +487,60 @@ nodes {
   text: "<false>"
   font: "PixeRlino"
   id: "jxr"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 330.0
+    y: 73.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "graphics"
+  font: "PixeRlino"
+  id: "graphics"
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 130.0
+    y: 47.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "RCT effect"
+  font: "PixeRlino"
+  id: "rct"
+  pivot: PIVOT_W
+  layer: "front"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 330.0
+    y: 47.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.7019608
+    y: 0.7019608
+    z: 0.7019608
+  }
+  type: TYPE_TEXT
+  text: "<on>"
+  font: "PixeRlino"
+  id: "rct_toggle"
   layer: "front"
   inherit_alpha: true
 }

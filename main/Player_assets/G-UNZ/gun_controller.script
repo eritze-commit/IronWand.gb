@@ -8,6 +8,14 @@ local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
 local gun2 = upgrades.data_layer["2gun"]
 local gun1 = upgrades.data_layer["1gun"]
 
+local function sfx(sfx)
+	local s_s_max = 1.1
+	local s_s_min = 0.90
+	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+	sound.play("/Sound_manager#"..sfx,{speed = random_offset })
+end
+
+
 function init(self)
 	--msg.post(".", "acquire_input_focus")
 	self.clipped_items = {} 
@@ -415,7 +423,7 @@ local function gun_focus(self)
 		msg.post("camera#camera_script","gun_focus",{focus = false , dir =  vmath.vector3() })
 	end
 end
-
+local last_swap = 1
 function on_message(self, message_id, message, sender)
 	if message_id == hash("collision_response" ) or hash("contact_point_response") then
 		self.clipping_flag = true
@@ -498,6 +506,10 @@ function on_input(self, action_id, action)
 			self.cur_gun = self.cur_gun + 1 
 			if self.cur_gun > self.max_gun then 
 				self.cur_gun = 1 
+			end
+			if self.cur_gun ~= last_swap then
+				last_swap = self.cur_gun
+				sfx("IW_switchgun")
 			end
 			sprite.play_flipbook("gun_cont#slot", self.gun_master_list[ self.gun_swap[self.cur_gun] ].gun_name )
 			gun_state.gun_name = self.gun_master_list[ self.gun_swap[self.cur_gun] ].gun_name

@@ -33,12 +33,19 @@ function init(self)
 	}
 	self.cur_floor_algo = 0 
 	self.pressed = false 
+	self.gradient_circle_buffer = {}
 	math.randomseed(os.time())
 
 end
+local function clear_gradient_circles(self) 
+	for i = #self.gradient_circle_buffer , 1 , -1 do
+		go.delete(self.gradient_circle_buffer[i])
+		self.gradient_circle_buffer[i] = nil 
+	end
+end
 local tile_set_name = "classic"
 local object_que = {}
-local function clr_screen()
+local function clr_screen(self)
 	for y = 0, 23 do 
 		for x = 0, 37 do 
 				for i = 1 , #object_que do 
@@ -47,6 +54,7 @@ local function clr_screen()
 			object_que = {}
 			env.floor_tiles = {}
 			env.statue_pos = {}
+			tilemap.set_tile("/Map#Standard","ground_decor",x,y, 0 ) 
 			tilemap.set_tile("/Map#Standard","zero",x,y, 0 ) 
 			tilemap.set_tile("/Map#Standard","wall",x,y, 0 ) 
 			tilemap.set_tile("/Map#Standard","wall_on_top",x,y, 0 ) 
@@ -56,6 +64,64 @@ local function clr_screen()
 		end
 	end
 end
+local function ground_decor()
+	for y = 0, 23 do 
+		for x = 0, 37 do 
+			if tilemap.get_tile_info("/Map#Standard", "zero", x, y).index == 18 and math.random() < 0.3 then
+				local random_set = math.random()
+				if random_set < 0.004 then
+					tilemap.set_tile("/Map#Standard","ground_decor",x,y,tiles.ground_decor.special[math.random(1,#tiles.ground_decor.special)] ) 
+				elseif random_set < 0.05 then
+					tilemap.set_tile("/Map#Standard","ground_decor",x,y,tiles.ground_decor.interests[math.random(1,#tiles.ground_decor.interests)] ) 
+				elseif random_set < 0.2 then
+					tilemap.set_tile("/Map#Standard","ground_decor",x,y,tiles.ground_decor.foliage[math.random(1,#tiles.ground_decor.foliage)] ) 
+				elseif random_set < 0.25 then
+					tilemap.set_tile("/Map#Standard","ground_decor",x,y,tiles.ground_decor.crack[math.random(1,#tiles.ground_decor.crack)] ) 
+				elseif random_set < 0.5 then
+					tilemap.set_tile("/Map#Standard","ground_decor",x,y,tiles.ground_decor.rocks[math.random(1,#tiles.ground_decor.rocks)] ) 
+				else
+					tilemap.set_tile("/Map#Standard","ground_decor",x,y,tiles.ground_decor.dark_tiles[math.random(1,#tiles.ground_decor.dark_tiles)] ) 
+				end
+				
+			end
+		end
+	end
+end
+local function gradient_circles(self) 
+	local start_tile = vmath.vector3((21* 16)+8,(11*16)+8,0)
+	for y = 0, 23 do 
+		for x = 0, 37 do 
+			if tilemap.get_tile_info("/Map#Standard", "zero", x, y).index == 18 and math.random(1,100) < global.gradient_circles  then
+				
+				if math.random() < 0.5 then
+					local gradient_circle = factory.create("/global#gradient_cshadow",vmath.vector3(x*16+math.random(0,16),y*16+math.random(0,16),0))
+					self.gradient_circle_buffer[#self.gradient_circle_buffer +1] = gradient_circle
+					--print("id",gradient_circle)
+					msg.post(gradient_circle,"change_shape",{type="shadow"})
+				else
+					local gradient_circle = factory.create("/global#gradient_circle",vmath.vector3(x*16+math.random(0,16),y*16+math.random(0,16),0))
+					self.gradient_circle_buffer[#self.gradient_circle_buffer +1] = gradient_circle
+					--print("id",gradient_circle)
+					msg.post(gradient_circle,"change_shape",{type="middle"})
+					
+				end
+				if math.random() < 0.3 then
+					local gradient_circle = factory.create("/global#gradient_circle",vmath.vector3(x*16+math.random(0,16),y*16+math.random(0,16),0))
+					self.gradient_circle_buffer[#self.gradient_circle_buffer +1] = gradient_circle
+					msg.post(gradient_circle,"change_shape",{type="back"})
+					--print("id",gradient_circle)
+				end
+					
+			end
+		end
+	end
+	-- generate back 
+	local gradient_circle = factory.create("/global#gradient_circle",start_tile)
+	self.gradient_circle_buffer[#self.gradient_circle_buffer +1] = gradient_circle
+	--print("id",gradient_circle)
+	msg.post(gradient_circle,"change_shape",{type="back"})
+end
+
 local function Room_gen_floor_v3() -- V 3 
 	local y = 11
 	local x = 21
@@ -284,7 +350,8 @@ local function map_assembler(self)
 	go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
 	go.set("/Map#Standard","color_mod",vmath.vector4(global.map_tint,0,0,0))
 	go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
-	clr_screen()
+	clear_gradient_circles(self)
+	clr_screen(self)
 	if self.cur_floor_algo == 0 then 
 		Room_gen_floor_v2()
 		self.cur_floor_algo = 1 
@@ -294,7 +361,9 @@ local function map_assembler(self)
 	end
 	go.set_position(vmath.vector3((21* 16)+8,(11*16)+8,0), "/Player_ROOT/Player")
 	msg.post("/Player_ROOT/gun_cont#gun_controller","clipped")
+	ground_decor()
 	angel_gen()
+	gradient_circles(self)
 	wall_placer()
 	auto_tiler(self)
 	shadow_gen()

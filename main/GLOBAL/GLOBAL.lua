@@ -13,6 +13,7 @@ local global = {
 	floor_t = 0,
 	enemie_floor_hp_scale = 0 , 
 	round_total_time = 0,
+	gradient_circles = 0,
 
 
 	

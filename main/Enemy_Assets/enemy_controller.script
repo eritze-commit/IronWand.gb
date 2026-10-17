@@ -6,6 +6,13 @@
 	local game_state = require("main.GLOBAL.in_game")
 	local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
 	
+local function sfx(sfx)
+	local s_s_max = 1.5
+	local s_s_min = 0.5
+	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+	sound.play("/Sound_manager#"..sfx,{speed = random_offset })
+end
+	
 function init(self)
 	self.pl_p = go.get_position("/Player_ROOT/Player")
 	self.self_pos = go.get_position(".")
@@ -407,15 +414,16 @@ local function path_state_calc(self)
 		local stuck = nil
 	if self.can_see_player then 
 		self.r_t.selected = probability_projection(self)
-		print("probability_projection = ",self.r_t.selected ) 
+--		print("probability_projection = ",self.r_t.selected ) 
 		if self.r_t.selected == "fluke" then 
 			--self.smoothness = 100 --self.smoothness * 10
 			stuck = path_finder(self  ,{noise = self.movement_values.fluke_noise , noise_strenght = self.movement_values.fluke_noise_strenght, path = "fluke", offset = math.random(1,2) })
 			--print("PATH FLUKE ")
-			if not self.speed_modulation_timer then
+			if not self.speed_modulation_timer and self.movement_values.can_dash then
+				sfx("IW_enemy_dash")
 				self.speed_modulation_timer = true
 				self.speed = self.speed * self.movement_values.fluke_speed_multiplier
-				print("ts ran 1 ")
+				--print("ts ran 1 ")
 				timer.delay(self.movement_values.fluke_time, false, function() 
 					--print("fluked right now with speed")
 					self.speed_modulation_timer = false
@@ -431,11 +439,12 @@ local function path_state_calc(self)
 		elseif self.r_t.selected == "rush" then 
 			stuck = path_finder(self  ,{noise = self.movement_values.rush , noise_strenght = self.movement_values.rush_noise_strenght, path = "rush" })
 			
-			if not self.speed_modulation_timer then
+			if not self.speed_modulation_timer and self.movement_values.can_dash then
+				sfx("IW_enemy_dash")
 				self.speed_modulation_timer = true
 				self.speed = self.speed * self.movement_values.rush_speed_multiplier
 				timer.delay(self.movement_values.rush_time, false, function() 
-					print("ts ran 2 ")
+					
 					self.speed = self.default_speed
 					self.speed_modulation_timer = false
 				--print("rushed right now with speed")
@@ -576,6 +585,7 @@ local enemy_attacks = {
 	end,
 	["speed_change"] = function(self,name,speed,diameter,ammount,modulation)
 		if not self.speed_modulation_timer then
+				sfx("IW_enemy_dash")
 				self.speed_modulation_timer = true
 				self.speed = self.speed * modulation.multiply
 				--print("ts ran 1 ")
@@ -808,7 +818,7 @@ function on_message(self, message_id, message, sender)
 
 	if message_id == hash("start_path") then 
 		self.default_speed = enemy_data.enemies[message.name].speed 
-		self.speed = enemy_data.enemies[message.name].speed 
+		self.speed = 0 -- enemy_data.enemies[message.name].speed 
 		self.health = message.health
 		self.max_health =  message.health
 		self.h_flip = message.h_flip
@@ -831,27 +841,32 @@ function on_message(self, message_id, message, sender)
 		if  message.name == "bomb" then
 			self.explode_on_death = true
 		end
+		self.dir = vmath.vector3()
+		path_finder(self)
 		physics.set_shape("#collisionobject", "enitity", {type = physics.SHAPE_TYPE_SPHERE, diameter  = self.hitbox_diameter })
-		msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "enemy_spawn" , time = global.enemy_spawn_delay_scalar*message.random_module, optional = message.name }})
+		msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "enemy_spawn" , time = global.enemy_spawn_delay_scalar*message.random_module, optional = {name = message.name, speed = enemy_data.enemies[message.name].speed } }})
 		
 			
 		
 	end 
 	if message_id == hash("timer_end") then
 		if message.type == "chain_shot" then
+			sfx("IW_enemy_attack_second")
 			local my_bullet = factory.create("#factory", message.optional.pos,nil,{color_shift = vmath.vector4(self.default_tint,0,0,0)})
 			msg.post(my_bullet,"spawn_data",{dir = message.optional.dir, speed = message.optional.speed ,diameter =  message.optional.diameter , type = message.optional.name  })
 		end
 		if message.type == "delayslug_shot" then
+			sfx("IW_enemy_attack_second")
 			local my_bullet = factory.create("#factory", go.get_position("."),nil,{color_shift = vmath.vector4(self.default_tint,0,0,0)})
 			msg.post(my_bullet,"spawn_data",{dir = message.optional.dir, speed = message.optional.speed ,diameter =  message.optional.diameter , type = message.optional.name  })
 		end
 		if message.type == "delayslug_shot" then
-			
+		    sfx("IW_enemy_attack_second")
 			local my_bullet = factory.create("#factory", go.get_position("."),nil,{color_shift = vmath.vector4(self.default_tint,0,0,0)})
 			msg.post(my_bullet,"spawn_data",{dir = message.optional.dir, speed = message.optional.speed ,diameter =  message.optional.diameter , type = message.optional.name})
 		end
 		if message.type == "arc_shot" then
+			sfx("IW_enemy_attack_second")
 			local player_pos = go.get_position("/Player_ROOT/Player")
 			local my_pos = go.get_position(".")
 			local dir = vmath.normalize(player_pos - my_pos)					
@@ -860,6 +875,7 @@ function on_message(self, message_id, message, sender)
 			msg.post(my_bullet,"spawn_data",{arc_dir = dir, speed = message.optional.speed ,diameter =  message.optional.diameter , type = message.optional.name ,arc_end = player_pos,lifetime = 10,arc_height = message.optional.arc_height  })
 		end
 		if message.type == "smart_semiauto_shot" then
+			sfx("IW_enemy_attack_second")
 			self.player_prediction = go.get_position("/Player_ROOT/Player")
 			self.my_pos = go.get_position(".")
 			for i = 1 , 4 do 
@@ -875,6 +891,7 @@ function on_message(self, message_id, message, sender)
 			msg.post(my_bullet,"spawn_data",{dir = self.shoot_dir , speed = message.optional.speed ,diameter =  message.optional.diameter, type = message.optional.name  })
 		end
 		if message.type == "semiauto_shot" then
+			sfx("IW_enemy_attack_second")
 			local player_pos = go.get_position("/Player_ROOT/Player")
 			local my_pos = go.get_position(".")
 			local dir = vmath.normalize(player_pos - my_pos)					
@@ -903,9 +920,11 @@ function on_message(self, message_id, message, sender)
 				if not game_state.paused then 
 					particlefx.stop("#Ring_Particle")
 					particlefx.play("#Ring_Particle")
+					sfx("IW_charge")
 					timer.delay(0.3, false, function() 
 						local attack = self.attacks[math.random(1,#self.attacks)]
 						--pprint("attack ",attack)
+						sfx("IW_enemy_attack")
 						enemy_attacks[attack.type](self,attack.bullet,attack.speed,attack.diameter,attack.ammount,attack.modulation)
 						
 					end)	
@@ -944,11 +963,13 @@ function on_message(self, message_id, message, sender)
 				self.max_drops = math.random(2,5)
 				self.min_drops = 2
 			end
+			sfx("IW_enemy_spawn")
 			particlefx.play("#enemy_spawn")
 			self.alive = true
-			self.name = message.optional
-			sprite.play_flipbook("#Main_sprite",message.optional)
-			path_finder(self,{noise = false})
+			self.name = message.optional.name
+			self.speed = message.optional.speed
+			sprite.play_flipbook("#Main_sprite",message.optional.name)
+			--path_finder(self,{noise = false})
 			msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "enemy_attack" , time = math.random() + (self.enemy_shooting_speed*(magic_atackdelay_baseline_number+enemy_state.enemy_cur_alive/magic_attackdelay_scalar_number)), optional = 1 }})
 		
 		--timer.delay(  math.random() + self.enemy_shooting_speed,true,function() 
@@ -963,7 +984,7 @@ function on_message(self, message_id, message, sender)
 				physics.raycast_async(go.get_position("."), go.get_position("/Player_ROOT/Player")+vmath.vector3(0,-4,0),{hash("entity")})
 			end
 		end)
-
+		--path_state_calc(self) 
 		msg.post("/global#Timer_squeduler","add_timer",{data = {script = go.get_id(), type = "enemy_path_find" , time = 1 + math.random() + self.movement_values.path_find_frequency , optional = 1 }})
 		-- timer.delay(, true , function() 
 		-- 	if not  self.can_see_player  then 

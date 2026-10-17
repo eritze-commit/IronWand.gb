@@ -409,7 +409,10 @@ nodes {
     y: 100.0
   }
   type: TYPE_TEXT
-  text: "made by : Eritze"
+  text: "2026\n"
+  "Iron Wand  v1.0\n"
+  "made by : Eritze\n"
+  ""
   font: "PixeRlino"
   id: "self"
   yanchor: YANCHOR_BOTTOM
@@ -441,6 +444,47 @@ nodes {
   layer: "layer2"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
+  visible: false
+}
+nodes {
+  position {
+    x: 305.0
+    y: 260.0
+  }
+  scale {
+    x: 2.982213
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  type: TYPE_BOX
+  id: "info_text_box"
+  layer: "layer2"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  visible: false
+}
+nodes {
+  position {
+    x: 310.0
+    y: 260.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  text: "try  pressing wasd or space "
+  font: "PixeRlino"
+  id: "info_text"
+  layer: "layer2"
+  inherit_alpha: true
   visible: false
 }
 layers {

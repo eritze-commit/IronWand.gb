@@ -15,9 +15,9 @@ end
 
 function init(self)
     self.all_nodes = {"back","controlls","volume","sfx_volume","music_volume","sfx","music","joystick","joystick_y","joystick_x","jy","jx","box","camera"
-,"scrn_shake_toggle","screen_shake","keyboard_controlls","back2","controlls_controller","back3","controller_controlls","jyr","jxr"}
+,"scrn_shake_toggle","screen_shake","keyboard_controlls","back2","controlls_controller","back3","controller_controlls","jyr","jxr","graphics","rct","rct_toggle"}
     self.settings_nodes = {"back","controlls","volume","sfx_volume","music_volume","sfx","music","joystick","joystick_y","joystick_x","jy","jx","box","camera"
-,"scrn_shake_toggle","screen_shake","jyr","jxr"}
+,"scrn_shake_toggle","screen_shake","jyr","jxr","graphics","rct","rct_toggle"}
     
     self.sender = ""
     for i = 1 , #self.all_nodes do 
@@ -25,20 +25,65 @@ function init(self)
     end
     self.button_default_color = vmath.vector4(0.8, 0.8, 0.8, 1)
 	self.node_highlight_color = vmath.vector4(1, 1, 1, 1)
-	self.button_states = {"back","controlls","sfx","music","jyr","jxr","jy","jx","scrn_shake_toggle"}
+	self.button_states = {"back","controlls","sfx","music","jyr","jxr","jy","jx","scrn_shake_toggle","rct_toggle"}
 	self.cur_button_state = 0
 	self.last_node_selected = "back2"
 	self.cur_selected  = nil
 	self.button_selected = false
 	self.escape_buffer = "back"
 	self.button_lr_actions = {
+        ["rct_toggle_r"] = function()
+            settings.rct = true 
+            gui.set_text(gui.get_node("rct_toggle"), "<".."on"..">")
+        end,
+        ["rct_toggle_l"] = function()
+            settings.rct = false
+            gui.set_text(gui.get_node("rct_toggle"), "<".."off"..">")
+        end,
+        ["scrn_shake_toggle_r"] = function()
+            settings.screen_shake = true 
+            gui.set_text(gui.get_node("scrn_shake_toggle"), "<".."on"..">")
+        end,
+        ["scrn_shake_toggle_l"] = function()
+            settings.screen_shake = false
+            gui.set_text(gui.get_node("scrn_shake_toggle"), "<".."off"..">")
+        end,
         ["jyr_r"] = function() 
-            local sfx_vol = settings.sfx_vol + 0.1
-            settings.sfx_vol = math.min(1,math.max(0,sfx_vol ))
+            settings.right_y_invert = -1
+            gui.set_text(gui.get_node("jyr"), "<".."true"..">")
+            
+        end,
+        ["jyr_l"] = function() 
+            settings.right_y_invert = 1
+            gui.set_text(gui.get_node("jyr"), "<".."false"..">")
             
         end,
         ["jxr_r"] = function() 
+            settings.right_x_invert = -1
+            gui.set_text(gui.get_node("jxr"), "<".."true"..">")
+        end,
+        ["jxr_l"] = function() 
+            settings.right_x_invert = 1
+            gui.set_text(gui.get_node("jxr"), "<".."false"..">")
+        end,
+
+        ["jy_r"] = function() 
+            settings.left_y_invert = -1
+            gui.set_text(gui.get_node("jy"), "<".."true"..">")
             
+        end,
+        ["jy_l"] = function() 
+            settings.left_y_invert = 1
+            gui.set_text(gui.get_node("jy"), "<".."false"..">")
+            
+        end,
+        ["jx_r"] = function() 
+            settings.left_x_invert = -1
+            gui.set_text(gui.get_node("jx"), "<".."true"..">")
+        end,
+        ["jx_l"] = function() 
+            settings.left_x_invert = 1
+            gui.set_text(gui.get_node("jx"), "<".."false"..">")
         end,
         ["sfx_r"] = function() 
       --      print("settings_vol",settings.sfx_vol)
@@ -120,7 +165,7 @@ function init(self)
         end,
         ["back2"] = function() 
             self.cur_button_state = 1 
-            self.button_states = {"back","controlls","sfx","music","jyr","jxr","jy","jx","scrn_shake_toggle"}
+            self.button_states = {"back","controlls","sfx","music","jyr","jxr","jy","jx","scrn_shake_toggle","rct_toggle"}
             for i = 1 , #self.settings_nodes do 
                 
                 gui.set_visible(gui.get_node(self.settings_nodes[i]),true)

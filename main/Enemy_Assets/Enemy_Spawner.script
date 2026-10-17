@@ -28,6 +28,9 @@ local function Node_Placer()
 	--local enmey_max_buffer = 1 +  math.floor( global.expo_decay * 8 )  +   math.floor( ( cur_wave * (global.expo_decay * 9 ) ) ) --2 +  math.floor( global.expo_decay * 11 )  +   math.floor( ( cur_wave * (global.expo_decay * 5 ) ) )
 	--print("tried spawing enemy",enmey_max_buffer,"global expo decay ", global.expo_decay, "cur wave ", cur_wave) 
 	while true do 
+	if next(env.floor_tiles) == nil  then
+		break
+	end
 	for y = 0, 23 do 
 		for x = 0, 37 do 
 			if env.floor_tiles[x.."_"..y]  then
@@ -38,7 +41,7 @@ local function Node_Placer()
 						local  new_enemy = factory.create("/DynamicProceduralEnemyController#factory", vmath.vector3((x*16)+8,(y*16)+8,1))
 						msg.post(new_enemy, "start_path", {
 							name = enemy_data.enemies[random_enemy].name ,
-							health = ( enemy_data.enemies[random_enemy].health / global.health_divide ) * global.enemie_floor_hp_scale ,
+							health = ( enemy_data.enemies[random_enemy].health / global.health_divide ) * ( global.enemie_floor_hp_scale / 1.25),
 							special =  math.random() < 0.025	  ,
 							 --0.025  ,
 							smart_aim = enemy_data.enemies[random_enemy].smart_aim,
@@ -127,10 +130,11 @@ function on_message(self, message_id, message, sender)
 				end)
 				enemy_state.enemy_cur_wave = cur_wave
 			else
-				timer.delay(2,false,function() 
+				local timer = timer.delay(2,false,function() 
 						Node_Placer()
 					
 				end)
+				msg.post("/global#Game_state_manager","add_to_timer_buffer",{timer = timer,  })
 			end
 			
 		end

@@ -1,0 +1,3 @@
+sound: "/main/assets/sounds/IW_switch_gun.wav"
+group: "sfx"
+gain: 1.2

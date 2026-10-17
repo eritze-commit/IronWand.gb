@@ -3,18 +3,22 @@ layers {
   id: "zero"
   z: -1.0
   cell {
-    x: -2
-    y: -2
+    x: -6
+    y: -10
     tile: 20
   }
   cell {
-    x: 37
-    y: 23
+    x: 52
+    y: 40
     tile: 20
   }
 }
 layers {
-  id: "layer"
+  id: "ground_decor"
+  z: -0.5
+}
+layers {
+  id: "layer1"
   z: 0.0
 }
 layers {

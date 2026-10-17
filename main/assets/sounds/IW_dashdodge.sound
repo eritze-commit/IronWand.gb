@@ -1,0 +1,3 @@
+sound: "/main/assets/sounds/IW_dash_dodge.wav"
+group: "sfx"
+gain: 1.2

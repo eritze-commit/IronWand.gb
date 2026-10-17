@@ -1,5 +1,8 @@
 local tile_sets = {
     tile_set_names = {"classic","stone","pillar","minimal","skull","cracked","futurica","tile","ancient"},
+    --ground_decor = {271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286},
+    ground_decor = {dark_tiles = {283,284,285,286,283,283}, rocks = {271,272,273,274}, foliage = {275,276,277,278},interests = {279,280,281,282} , crack = {287,288,289,290},special = {291,292}},
+--    ground_decor = {283,284,285,286},
 --    tile_set_names = {"minimal"},
     ["classic"] = {	
     -- wall tiles

@@ -416,7 +416,7 @@ nodes {
     z: 0.7019608
   }
   type: TYPE_TEXT
-  text: "menu"
+  text: "exit to menu "
   font: "PixeRlino"
   id: "menu"
   parent: "paused"

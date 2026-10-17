@@ -160,7 +160,7 @@ local upgrade = {
 	{
 		type = "enemy", 
 		name = "shrapnel death", 
-		shrapnel = function() return math.floor(3 + global.floor_t * 1 ) + ( math.floor(math.random() * global.floor_t * 3) )  end,
+		shrapnel = function() return math.floor(5 + global.floor_t * 5 ) + ( math.floor(math.random() * global.floor_t * 5) )  end,
 		chance = function() return math.floor( global.floor_t * 30) + (10 + math.floor(math.random() * global.floor_t * 30) ) end,
 		price = function() return price_calc() end,
 		description = function(self)

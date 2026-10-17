@@ -1352,6 +1352,156 @@ convex_hulls {
   count: 0
   collision_group: ""
 }
+convex_hulls {
+  index: 919
+  count: 10
+  collision_group: ""
+}
+convex_hulls {
+  index: 929
+  count: 6
+  collision_group: ""
+}
+convex_hulls {
+  index: 935
+  count: 6
+  collision_group: ""
+}
+convex_hulls {
+  index: 941
+  count: 7
+  collision_group: ""
+}
+convex_hulls {
+  index: 948
+  count: 14
+  collision_group: ""
+}
+convex_hulls {
+  index: 962
+  count: 10
+  collision_group: ""
+}
+convex_hulls {
+  index: 972
+  count: 8
+  collision_group: ""
+}
+convex_hulls {
+  index: 980
+  count: 10
+  collision_group: ""
+}
+convex_hulls {
+  index: 990
+  count: 9
+  collision_group: ""
+}
+convex_hulls {
+  index: 999
+  count: 9
+  collision_group: ""
+}
+convex_hulls {
+  index: 1008
+  count: 7
+  collision_group: ""
+}
+convex_hulls {
+  index: 1015
+  count: 8
+  collision_group: ""
+}
+convex_hulls {
+  index: 1023
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 1027
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 1031
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 1035
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 1039
+  count: 9
+  collision_group: ""
+}
+convex_hulls {
+  index: 1048
+  count: 6
+  collision_group: ""
+}
+convex_hulls {
+  index: 1054
+  count: 6
+  collision_group: ""
+}
+convex_hulls {
+  index: 1060
+  count: 8
+  collision_group: ""
+}
+convex_hulls {
+  index: 1068
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 1072
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 1076
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 1080
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 1084
+  count: 0
+  collision_group: ""
+}
+convex_hulls {
+  index: 1084
+  count: 0
+  collision_group: ""
+}
+convex_hulls {
+  index: 1084
+  count: 0
+  collision_group: ""
+}
+convex_hulls {
+  index: 1084
+  count: 0
+  collision_group: ""
+}
+convex_hulls {
+  index: 1084
+  count: 0
+  collision_group: ""
+}
+convex_hulls {
+  index: 1084
+  count: 0
+  collision_group: ""
+}
 collision_groups: "nothing"
 collision_groups: "wall"
 animations {

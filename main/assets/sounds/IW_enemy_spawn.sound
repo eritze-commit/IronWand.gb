@@ -1,0 +1,3 @@
+sound: "/main/assets/sounds/IW_enemy_spawn.wav"
+group: "sfx"
+gain: 0.7

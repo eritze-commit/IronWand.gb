@@ -372,15 +372,15 @@ animations {
 }
 animations {
   id: "wildcard_1"
-  start_tile: 471
-  end_tile: 495
+  start_tile: 501
+  end_tile: 521
   playback: PLAYBACK_LOOP_PINGPONG
   fps: 15
 }
 animations {
   id: "wildcard_2"
-  start_tile: 471
-  end_tile: 495
+  start_tile: 531
+  end_tile: 550
   playback: PLAYBACK_LOOP_PINGPONG
   fps: 15
 }

@@ -1,6 +1,14 @@
+local settings = require("main.GLOBAL.settings_data")
 local Pstate = require "main.Player_assets.Player_state_module"
 local upgrades = require("main.GUI.Upgrade_modules.upgrade_data_layer")
 local game_state = require("main.GLOBAL.in_game")
+
+local function sfx(sfx)
+	local s_s_max = 1.5
+	local s_s_min = 0.5
+	local random_offset =  s_s_min + (math.random() * (s_s_max -  s_s_min))
+	sound.play("/Sound_manager#"..sfx,{speed = random_offset })
+end
 
 function init(self)
 	--msg.post(".", "acquire_input_focus")
@@ -155,6 +163,7 @@ function on_message(self, message_id, message, sender)
 			
 		end
 	elseif message_id == hash("trigger_response") and Pstate.immunity_frame then 
+		sfx("IW_dashdodge")
 		local graphic = factory.create("/global#quick_graphic",go.get_position(".")+vmath.vector3(0,6,10))
 		msg.post(graphic,"spawn",{graphic = "dash",duration = 0.5 })
 		
@@ -173,6 +182,7 @@ function on_message(self, message_id, message, sender)
 			if upgrades.data_layer["shield"].owns == 1 and upgrades.data_layer["shield"].active == 1 then
 				upgrades.data_layer["shield"].active = 0
 				local graphic = factory.create("/global#quick_graphic",go.get_position(".")+vmath.vector3(0,6,10))
+				sfx("IW_shieldbreak")
 				msg.post(graphic,"spawn",{graphic = "shield",duration = 1.5 })
 			else
 			
@@ -180,7 +190,9 @@ function on_message(self, message_id, message, sender)
 			sound.stop("/Sound_manager#Pl_hit_sfx")
 			sound.play("/Sound_manager#Pl_hit_sfx")
 			msg.post("/Gui_collection/hud#hud","health_bar_change",{health = Pstate.health , max_health = Pstate.max_health})
+				if settings.screen_shake then
 					msg.post("/Player_ROOT/camera#camera_script","screen_shake",{strenght  = 10})
+				end
 				if Pstate.health <= 0 then 
 					sprite.play_flipbook("Pl_Sprite#plr","dead")
 					Pstate.alive = false
@@ -190,7 +202,8 @@ function on_message(self, message_id, message, sender)
 			end
 		else
 			local graphic = factory.create("/global#quick_graphic",go.get_position(".")+vmath.vector3(0,6,10))
-			msg.post(graphic,"spawn",{graphic = "dodge",duration = 2 })
+			sfx("IW_dodge")
+			msg.post(graphic,"spawn",{graphic = "dodge",duration = 3 })
 		end
 	end
 	
