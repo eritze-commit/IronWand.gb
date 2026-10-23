@@ -338,7 +338,7 @@ nodes {
   "select button - space\n"
   "reload - e or r \n"
   "dash - left shift\n"
-  "pause - esc\n"
+  "pause - p or Lctrl\n"
   "switch gun - q \n"
   "\n"
   "\n"

@@ -68,13 +68,13 @@ nodes {
 }
 nodes {
   position {
-    x: -609.0
+    x: -1433.0
     y: 240.0
     z: 1.0
   }
   scale {
-    x: 4.799695
-    y: 6.853936
+    x: 8.904173
+    y: 11.204339
   }
   size {
     x: 205.0
@@ -82,6 +82,7 @@ nodes {
   }
   type: TYPE_BOX
   id: "box"
+  xanchor: XANCHOR_LEFT
   layer: "frnt6"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO

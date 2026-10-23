@@ -2,8 +2,8 @@ local debug = require  "main.GLOBAL.debug_data"
 local hud_state = require("main.Player_assets.G-UNZ.Hud_state")
 function init(self)
 	if debug.debug then
-		hud_state.mana = 10000
-		hud_state.map_cur_floor = 50
+		hud_state.mana = 1000
+		hud_state.map_cur_floor = 100
 	end
 end
 

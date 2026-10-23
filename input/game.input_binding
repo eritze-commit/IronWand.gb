@@ -79,12 +79,16 @@ key_trigger {
   action: "dash"
 }
 key_trigger {
-  input: KEY_ESC
+  input: KEY_P
   action: "escape"
 }
 key_trigger {
   input: KEY_R
   action: "reload"
+}
+key_trigger {
+  input: KEY_LCTRL
+  action: "escape"
 }
 mouse_trigger {
   input: MOUSE_BUTTON_LEFT

@@ -15,7 +15,29 @@ display_device_info = 0
 update_frequency = 100
 
 [android]
-input_method = HiddenInputField
+input_method = KeyEvent
+app_icon_36x36 = /main/assets/Images/IW_square_logo.png
+app_icon_48x48 = /main/assets/Images/IW_square_logo.png
+app_icon_72x72 = /builtins/assets/images/logo/logo_256.png
+app_icon_96x96 = /main/assets/Images/IW_square_logo.png
+app_icon_144x144 = /main/assets/Images/IW_square_logo.png
+app_icon_192x192 = /main/assets/Images/IW_square_logo.png
+push_icon_small = /main/assets/Images/IW_square_logo.png
+push_icon_large = /main/assets/Images/IW_square_logo.png
+push_icon_small_ldpi = /main/assets/Images/IW_square_logo.png
+push_icon_small_mdpi = /main/assets/Images/IW_square_logo.png
+push_icon_small_hdpi = /main/assets/Images/IW_square_logo.png
+push_icon_small_xhdpi = /main/assets/Images/IW_square_logo.png
+push_icon_small_xxhdpi = /main/assets/Images/IW_square_logo.png
+push_icon_small_xxxhdpi = /main/assets/Images/IW_square_logo.png
+push_icon_large_ldpi = /main/assets/Images/IW_square_logo.png
+push_icon_large_mdpi = /main/assets/Images/IW_square_logo.png
+push_icon_large_hdpi = /main/assets/Images/IW_square_logo.png
+push_icon_large_xhdpi = /main/assets/Images/IW_square_logo.png
+push_icon_large_xxhdpi = /main/assets/Images/IW_square_logo.png
+push_icon_large_xxxhdpi = /main/assets/Images/IW_square_logo.png
+push_field_title = Iron Wand
+push_field_text = Iron Wand
 
 [html5]
 scale_mode = stretch
@@ -67,4 +89,7 @@ sub_step_count = 4
 
 [label]
 max_count = 128
+
+[windows]
+app_icon = /main/assets/Images/IW_Ico_logo.ico
 
